@@ -5,6 +5,10 @@ package comp30820.group2.asteroids;
  * @author B. Agar Cox, E. Brard, T. Kelly, W. Song
  *
  */
+/*MODIFICATIONS:
+ * 22/03/nn ??; 
+ * 
+ */
 public class Rectangle {
 	// NOTE: x,y represents the top left corner of our Rectangle (a.k.a. Hit-Box)
 	//       It seems that a traditional computer graphics "local" coordinate

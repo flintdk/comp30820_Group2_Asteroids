@@ -1,9 +1,25 @@
 package comp30820.group2.asteroids;
 
-/** Store pairs of numbers and perform operations
+/** Store pairs of numbers and perform operations - the heart of Asteroids!
+ * Vectors can:
+ * <ul>
+ * 	<li>represent a point in two dimensional space (x, y cordinates)</li>
+ *  <li>represent velocity
+ *  	<ul>
+ *  		<li>direction is given by angle with reference to the origin of a coordinate system</li>
+ *  		<li>speed is given by the length of the line</li>
+ *  	</ul>
+ *  </li>
+ * </ul>
+ * This Vector class gives us everything we need to navigate the two dimensional
+ * space of the Asteroids game.
  * 
  * @author B. Agar Cox, E. Brard, T. Kelly, W. Song 
  *
+ */
+/*MODIFICATIONS:
+ * 22/03/nn ??; 
+ * 
  */
 public class Vector {
 	public double x;

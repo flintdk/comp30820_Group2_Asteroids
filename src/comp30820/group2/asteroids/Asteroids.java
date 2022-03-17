@@ -1,5 +1,7 @@
 package comp30820.group2.asteroids;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
@@ -9,6 +11,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -21,7 +25,14 @@ import javafx.stage.Stage;
  * @author B. Agar Cox, E. Brard, T. Kelly, W. Song
  *
  */
+/*MODIFICATIONS:
+ * 22/03/nn ??; 
+ * 
+ */
 public class Asteroids extends Application {
+	
+	// Define a constant for our Application Name
+	public static final String APP_NAME = "COMP30820_Group2_Asteroids";
 	
 	public static void main(String[] args)
 	{
@@ -117,11 +128,13 @@ public class Asteroids extends Application {
 		// different regions of the screen. We want ours to be right in the center.
 //		context.setFill(Color.BLACK);
 //		context.fillRect(0,0,800,600);
-		Sprite background = new Sprite("file:img/space.png");
+		// Load the image file (path is relative to class loader!)
+		//Sprite background = new Sprite("file:img/space.png");
+		Sprite background = new Sprite("/img/space.png");
 		background.position.set(400,300);
 		//background.render(context);
 		
-		Sprite spaceship = new Sprite("file:img/spaceship.png");
+		Sprite spaceship = new Sprite("/img/spaceship.png");
 		spaceship.position.set(100,300);
 		//spaceship.velocity.set(50,0);
 		//spaceship.render(context);
@@ -143,12 +156,39 @@ public class Asteroids extends Application {
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
 				if (keyPressedList.contains("UP")) {
+					try {
+						// Fire thrusters!!
+						Media sound = new Media(Asteroids.class.getResource("/snd/thrust.wav").toURI().toString());
+						MediaPlayer mediaPlayer = new MediaPlayer(sound);
+						mediaPlayer.play();
+					}
+					catch (URISyntaxException USE) {
+						// ####################################################### LOGGING??
+						System.out.println(USE.getStackTrace());
+					}
 					// Think of the length of the velocity vector as 'speed'
 					spaceship.velocity.setLength(100);
 					spaceship.velocity.setAngle(spaceship.rotation);
 				}
 				else {  // Not pressing up
 					spaceship.velocity.setLength(0);
+				}
+				// For UP we want to make sure we move in the direction the
+				// spaceship is facing!!
+				if (keyPressedList.contains("SPACE")) {
+					try {
+						// Fire thrusters!!
+						Media sound = new Media(Asteroids.class.getResource("/snd/fire.wav").toURI().toString());
+						MediaPlayer mediaPlayer = new MediaPlayer(sound);
+						mediaPlayer.play();
+					}
+					catch (URISyntaxException USE) {
+						// ####################################################### LOGGING??
+						System.out.println(USE.getStackTrace());
+					}
+					// Think of the length of the velocity vector as 'speed'
+					spaceship.velocity.setLength(100);
+					spaceship.velocity.setAngle(spaceship.rotation);
 				}
 //				if (keyPressedList.contains("DOWN")) {
 //					spaceship.velocity.setLength(50);

@@ -1,8 +1,10 @@
 package comp30820.group2.asteroids;
 
+import java.net.URISyntaxException;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.transform.Rotate;
+//import javafx.scene.transform.Rotate;
 
 /** On-screen entities that can move around in the game.
  * 
@@ -13,6 +15,10 @@ import javafx.scene.transform.Rotate;
  * 
  * @author B. Agar Cox, E. Brard, T. Kelly, W. Song 
  *
+ */
+/*MODIFICATIONS:
+ * 22/03/nn ??; 
+ * 
  */
 public class Sprite {
 	public Vector position;
@@ -42,10 +48,20 @@ public class Sprite {
 	}
 	
 	/** Set the image attribute for this Sprite
+	 * 
+	 * NOTE: The image file name is relative to the classloader!!
 	 * @param imageFileName
 	 */
 	public void setImage(String imageFileName) {
-		this.image = new Image(imageFileName);
+		try {
+			// First attempt loads a file from the filesystem...
+			//this.image = new Image(imageFileName);
+			this.image = new Image(Asteroids.class.getResource(imageFileName).toURI().toString());
+		}
+		catch (URISyntaxException USE) {
+			// ####################################################### LOGGING??
+			System.out.println(USE.getStackTrace());
+		}
 		this.boundary.setSize(this.image.getWidth(), this.image.getHeight());
 	}
 	
