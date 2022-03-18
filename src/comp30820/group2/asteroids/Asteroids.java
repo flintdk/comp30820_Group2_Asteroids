@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import comp30820.group2.asteroids.Configuration.Graphics;
+import comp30820.group2.asteroids.Configuration.SoundEffects;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -40,12 +42,18 @@ public class Asteroids extends Application {
 		System.out.println("Asteroids: Working Directory = " + System.getProperty("user.dir"));
 
 		try {
+			// Load our configuration file
+			Configuration.loadConfig();
+			
 			launch(args);
 		}
 		catch (Exception error) {
 			error.printStackTrace();
 		}
 		finally {
+			// Before exit - save our configuration file
+			Configuration.saveConfig();
+
 			System.exit(0);
 		}
 	}
@@ -77,7 +85,7 @@ public class Asteroids extends Application {
 		// creates an image *that can be drawn on* using a set of graphics commands
 		// provided by a "GraphicsContext". Canvas has a specified height and width
 		// and all the drawing operations are clipped to the bounds of the canvas.
-		Canvas canvas = new Canvas(800,600);
+		Canvas canvas = new Canvas(Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
 		// In order to perform draw operations on the canvas we need to create
 		// a graphicsContext object (we get it *from* the canvas.
 		GraphicsContext context = canvas.getGraphicsContext2D();
@@ -127,14 +135,14 @@ public class Asteroids extends Application {
 		// The BorderPane allows us to set containers/to set objects and nodes in
 		// different regions of the screen. We want ours to be right in the center.
 //		context.setFill(Color.BLACK);
-//		context.fillRect(0,0,800,600);
+//		context.fillRect(0,0,Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
 		// Load the image file (path is relative to class loader!)
 		//Sprite background = new Sprite("file:img/space.png");
-		Sprite background = new Sprite("/img/space.png");
+		Sprite background = new Sprite(Graphics.SPACE.path);
 		background.position.set(400,300);
 		//background.render(context);
 		
-		Sprite spaceship = new Sprite("/img/spaceship.png");
+		Sprite spaceship = new Sprite(Graphics.SPACESHIP.path);
 		spaceship.position.set(100,300);
 		//spaceship.velocity.set(50,0);
 		//spaceship.render(context);
@@ -158,7 +166,8 @@ public class Asteroids extends Application {
 				if (keyPressedList.contains("UP")) {
 					try {
 						// Fire thrusters!!
-						Media sound = new Media(Asteroids.class.getResource("/snd/thrust.wav").toURI().toString());
+						// We use Asteroids as our resource-anchor class...
+						Media sound = new Media(Asteroids.class.getResource(SoundEffects.THRUST.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
 						mediaPlayer.play();
 					}
@@ -177,8 +186,9 @@ public class Asteroids extends Application {
 				// spaceship is facing!!
 				if (keyPressedList.contains("SPACE")) {
 					try {
-						// Fire thrusters!!
-						Media sound = new Media(Asteroids.class.getResource("/snd/fire.wav").toURI().toString());
+						// Fire lasers!!
+						// We use Asteroids as our resource-anchor class...
+						Media sound = new Media(Asteroids.class.getResource(SoundEffects.FIRE.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
 						mediaPlayer.play();
 					}
@@ -190,10 +200,11 @@ public class Asteroids extends Application {
 					spaceship.velocity.setLength(100);
 					spaceship.velocity.setAngle(spaceship.rotation);
 				}
-//				if (keyPressedList.contains("DOWN")) {
-//					spaceship.velocity.setLength(50);
-//					spaceship.velocity.setAngle(spaceship.rotation);
-//				}
+
+				// #################################################################
+				// Deal with keyReleases? Set boolean flag on key press so that, for
+				// example, we don't attempt to play a sound a second time until the
+				// key releases?  Can we detect if "the sound has ended"?? Address
 
 				// We know the frame rate of the AnimationTimer, so every time
 				// the 'handle' gets called, we know that 1/60th of a second has
@@ -205,10 +216,7 @@ public class Asteroids extends Application {
 			}
 		};
 		gameloop.start();
-		
-		
-		
-		
+
 		mainStage.show();
 	}
 }

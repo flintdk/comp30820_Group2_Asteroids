@@ -54,8 +54,9 @@ public class Sprite {
 	 */
 	public void setImage(String imageFileName) {
 		try {
-			// First attempt loads a file from the filesystem...
+			// First attempt loaded a file from the filesystem...
 			//this.image = new Image(imageFileName);
+			// We use Asteroids as our resource-anchor class...
 			this.image = new Image(Asteroids.class.getResource(imageFileName).toURI().toString());
 		}
 		catch (URISyntaxException USE) {
@@ -132,7 +133,7 @@ public class Sprite {
 		// Update the position according to velocity
 		this.position.add(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 		// Wrap around screen..
-		this.wrap(800,600);
+		this.wrap(Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
 	}
 	
 	/** Draw our image on the screen.  In order to draw an object onto a canvas
