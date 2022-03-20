@@ -176,20 +176,50 @@ public class Asteroids extends Application {
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
 				if (keyPressedList.contains("UP")) {
+					// The animation timer runs 60 times a second.  If a player presses a button
+					// that triggers a sound to play (like say the ships thrusters) then - if the
+					// player holds the button down - you can get an audio distortion as the media
+					// player attempts to play the clip over and over again (60 times per second)
+					// HOW TO DEAL WITH THIS?
+
 					try {
 						// Fire thrusters!!
 						// We use Asteroids as our resource-anchor class...
 						Media sound = new Media(Asteroids.class.getResource(SoundEffects.THRUST.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
+						//mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 						mediaPlayer.play();
+//							mediaPlayer.setOnEndOfMedia(() -> {
+//								
+//							 });
 					}
 					catch (URISyntaxException USE) {
 						// ####################################################### LOGGING??
 						System.out.println(USE.getStackTrace());
 					}
 					// Think of the length of the velocity vector as 'speed'
-					spaceship.velocity = spaceship.velocity.lengthSetTo(100);
-					spaceship.velocity = spaceship.velocity.angleSetTo(spaceship.rotation);
+
+					// First crude attempt:  Just start the spaceship moving
+					// instantly in the direction it's facing, at a fixed speed:
+					// spaceship.velocity = spaceship.velocity.lengthSetTo(100);
+					// spaceship.velocity = spaceship.velocity.angleSetTo(spaceship.rotation);
+					
+					// If the user is pointing the spaceship and firing thrusters
+					// then we want to increment  our speed based on the direction
+					// we're facing.
+					
+					// First we work out the change in velocity...
+					double changeX
+						= Math.cos(Math.toRadians(spaceship.rotation)) * Configuration.SPEED_INCREMENT;
+				    double changeY
+				    	= Math.sin(Math.toRadians(spaceship.rotation)) * Configuration.SPEED_INCREMENT;
+				    
+				    // Don't violate maximum speed limit
+				    GameVector newVelocity = spaceship.velocity.add(changeX, changeY);
+				    if (newVelocity.getLength() < Configuration.SPEED_MAX) {
+						// Now we want to add those velocity increments to the current velocity!
+					    spaceship.velocity = newVelocity;
+				    }
 				}
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
@@ -225,4 +255,7 @@ public class Asteroids extends Application {
 
 		mainStage.show();
 	}
+
+	/* GETTERS AND SETTERS */
+
 }

@@ -58,6 +58,17 @@ public class GameVector extends Point2D {
 		super(point.getX(),point.getY());
 	}
 	
+	/** Convenience method, return a new GameVector with dx added to x and dy
+	 * added to y
+	 * @param x
+	 */
+	public GameVector add(double dx, double dy) {
+		// Point2D has no methods to directly set the x and y coordinates. So
+		// we exploit the add method and simply add:
+		//   -> the difference between the new desired value and the current value
+		return new GameVector( super.add(dx, dy) );
+	}
+
 	/** Convenience method, return a new GameVector with this.x moved to x
 	 * @param x
 	 */
