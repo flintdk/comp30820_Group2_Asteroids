@@ -108,22 +108,6 @@ public class Configuration {
             this.path = path;
         }
     };
-    // Graphics resources
-    public enum Graphics {
-        ASTEROIDS_SMALL(Resource.IMG.path + "asteroids_small.png"),
-        ASTEROIDS_LARGE(Resource.IMG.path + "asteroids_large.png"),
-        FIRE(Resource.IMG.path + "fire.png"),
-        LASER(Resource.IMG.path + "laser.png"),
-        ROCK(Resource.IMG.path + "rock.png"),
-        SPACE(Resource.IMG.path + "space.png"),
-        SPACESHIP(Resource.IMG.path + "spaceship.png");
-        
-        public final String path;
-
-        private Graphics(String path) {
-            this.path = path;
-        }
-    };
 	
     /** Prevents instantiation. */
     private Configuration() {

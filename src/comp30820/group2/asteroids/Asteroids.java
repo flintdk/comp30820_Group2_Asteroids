@@ -1,11 +1,10 @@
 package comp30820.group2.asteroids;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import comp30820.group2.asteroids.Configuration.Graphics;
 import comp30820.group2.asteroids.Configuration.SoundEffects;
+import comp30820.group2.asteroids.Sprite.Graphics;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -15,7 +14,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /** Asteroids - the Classic Arcade Game.
@@ -137,13 +135,27 @@ public class Asteroids extends Application {
 //		context.setFill(Color.BLACK);
 //		context.fillRect(0,0,Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
 		// Load the image file (path is relative to class loader!)
-		//Sprite background = new Sprite("file:img/space.png");
-		Sprite background = new Sprite(Graphics.SPACE.path);
-		background.position.set(400,300);
-		//background.render(context);
-		
-		Sprite spaceship = new Sprite(Graphics.SPACESHIP.path);
-		spaceship.position.set(100,300);
+		// The background is a special case, we make sure it's scaled to the size
+		// of our background (as per the config file!)
+		GameObject background
+			= new Sprite(Graphics.SPACE.path,
+					Double.valueOf(Configuration.SCENE_WIDTH),
+					Double.valueOf(Configuration.SCENE_HEIGHT) );
+		background.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
+
+		GameObject spaceship;
+		if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
+			spaceship = new Sprite(Graphics.SPACESHIP.path);
+		}
+		else if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.EASTER_EGG) {
+			spaceship = new Sprite(Graphics.SPACESHIP.path);
+		}
+		else {
+			// Configuration.GraphicsMode.CLASSIC
+			// Default to 'Classic' mode where the game objects are Polygons..
+			spaceship = new AsteroidsShape(AsteroidsShape.InGameShape.SPACEHIP);
+		}
+		spaceship.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
 		//spaceship.velocity.set(50,0);
 		//spaceship.render(context);
 		
@@ -176,11 +188,8 @@ public class Asteroids extends Application {
 						System.out.println(USE.getStackTrace());
 					}
 					// Think of the length of the velocity vector as 'speed'
-					spaceship.velocity.setLength(100);
-					spaceship.velocity.setAngle(spaceship.rotation);
-				}
-				else {  // Not pressing up
-					spaceship.velocity.setLength(0);
+					spaceship.velocity = spaceship.velocity.lengthSetTo(100);
+					spaceship.velocity = spaceship.velocity.angleSetTo(spaceship.rotation);
 				}
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
@@ -196,9 +205,6 @@ public class Asteroids extends Application {
 						// ####################################################### LOGGING??
 						System.out.println(USE.getStackTrace());
 					}
-					// Think of the length of the velocity vector as 'speed'
-					spaceship.velocity.setLength(100);
-					spaceship.velocity.setAngle(spaceship.rotation);
 				}
 
 				// #################################################################
