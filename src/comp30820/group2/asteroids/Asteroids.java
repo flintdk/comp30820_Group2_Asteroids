@@ -2,6 +2,7 @@ package comp30820.group2.asteroids;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 import comp30820.group2.asteroids.Configuration.SoundEffects;
 import comp30820.group2.asteroids.Sprite.Graphics;
@@ -135,29 +136,45 @@ public class Asteroids extends Application {
 //		context.setFill(Color.BLACK);
 //		context.fillRect(0,0,Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
 		// Load the image file (path is relative to class loader!)
-		// The background is a special case, we make sure it's scaled to the size
-		// of our background (as per the config file!)
+		// **** The background is a special case, we make sure it's scaled to the
+		// size of our background (as per the config file!) and IT DOES NOT MOVE
 		GameObject background
 			= new Sprite(Graphics.SPACE.path,
 					Double.valueOf(Configuration.SCENE_WIDTH),
 					Double.valueOf(Configuration.SCENE_HEIGHT) );
 		background.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
+		
+		// We keep track of all the objects on screen.
+		List<GameObject> movingObjectsOnScreen = new ArrayList<GameObject>();
+		
+		// We also keep track of all the possible pairs of objects on screen (so
+		// that we can check for collisions).
+		// ????????????? Can asteroids hit other asteroids? What happens? ???????????????????????????  ANSWER ME
 
 		GameObject spaceship;
+		GameObject asteroid;
+		
 		if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
 			spaceship = new Sprite(Graphics.SPACESHIP.path);
+			asteroid  = new Sprite(Graphics.ASTEROID.path);
 		}
 		else if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.EASTER_EGG) {
 			spaceship = new Sprite(Graphics.SPACESHIP.path);
+			asteroid  = new Sprite(Graphics.ASTEROID.path);
 		}
 		else {
 			// Configuration.GraphicsMode.CLASSIC
 			// Default to 'Classic' mode where the game objects are Polygons..
-			spaceship = new AsteroidsShape(AsteroidsShape.InGameShape.SPACEHIP);
+			spaceship = new AsteroidsShape(AsteroidsShape.InGameShape.SPACESHIP);
+			asteroid  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_LARGE);
 		}
 		spaceship.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
+		asteroid.randomInit();
 		//spaceship.velocity.set(50,0);
 		//spaceship.render(context);
+		
+		movingObjectsOnScreen.add(spaceship);
+		movingObjectsOnScreen.add(asteroid);
 		
 		// The AnimationTimer is a way you can create a set of code that will run
 		// 60 times per second in JavaFX
@@ -245,10 +262,16 @@ public class Asteroids extends Application {
 				// We know the frame rate of the AnimationTimer, so every time
 				// the 'handle' gets called, we know that 1/60th of a second has
 				// passed.
-				spaceship.update(1/60.0);
+// Instead of running each update individually, we can use a Lambda Expression to
+// the method on each object as we iterate over the list.
+//				spaceship.update(1/60.0);
+//				asteroid.update(1/60.0);
+				// LAMBDA EXPRESSION
+				movingObjectsOnScreen.forEach( (object) -> object.update(1/60.0));
 
 				background.render(context);
-				spaceship.render(context);
+				// LAMBDA EXPRESSION
+				movingObjectsOnScreen.forEach( (object) -> object.render(context));
 			}
 		};
 		gameloop.start();

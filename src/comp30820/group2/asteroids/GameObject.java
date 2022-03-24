@@ -1,5 +1,7 @@
 package comp30820.group2.asteroids;
 
+import java.util.Random;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
@@ -32,6 +34,23 @@ public abstract class GameObject {
 		// The default hitModel is just a 1 x 1 square!
 		this.hitModel = new Polygon(0, 0, 1, 0, 1, 1, 0, 1);
 	}
+	
+	/** Helper method to set a random initial screen position and velocity for
+	 * game objects.  
+	 * 
+	 */
+	// ################################################ Can we use this for hyperspace as well as asteroids?
+	public void randomInit() {
+		Random r = new Random();
+		this.position = new GameVector((Configuration.SCENE_WIDTH * r.nextDouble()),(Configuration.SCENE_HEIGHT * r.nextDouble()));
+		this.rotation = r.nextDouble() * 360.0;
+		double initialX
+			= Math.cos(Math.toRadians(this.rotation)) * Configuration.ASTEROID_LRG_SPEED;
+		double initialY
+    		= Math.sin(Math.toRadians(this.rotation)) * Configuration.ASTEROID_LRG_SPEED;
+		this.velocity = new GameVector(initialX, initialY);
+		
+	};
 	
 	/** Access the hitModel for this 'game object'.  The expectation is that
 	 * this is the only method that will be used to access the hitModel of this object.
@@ -163,4 +182,5 @@ public abstract class GameObject {
 	 * @param context
 	 */
 	public abstract void drawObject(GraphicsContext context);
+
 }

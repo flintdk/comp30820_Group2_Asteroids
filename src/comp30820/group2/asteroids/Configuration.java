@@ -119,9 +119,17 @@ public class Configuration {
 	public static GraphicsMode GRAPHICS_MODE = GraphicsMode.CLASSIC;
 	public static int SCENE_WIDTH = 800;
 	public static int SCENE_HEIGHT = 600;
-	public static int SPEED_MAX = 80;
+	public static int SPEED_MAX = 500;
 	public static int SPEED_INCREMENT = 10;
-	
+	public static int ASTEROID_LRG_SIZE = 60;
+	public static int ASTEROID_LRG_SPEED = 50;
+	public static int ASTEROID_MED_SIZE = 40;
+	public static int ASTEROID_MED_SPEED = 100;
+	public static int ASTEROID_SML_SIZE = 20;
+	public static int ASTEROID_SML_SPEED = 150;
+	public static int ASTEROID_RADIUS_VARIANCE = 15;
+	public static int ASTEROID_GRANULARITY = 25;
+
 	public static Result CONFIGURATION_LOADED = Result.FAILURE;
     
     // A Static Initialization Block in Java is a block that runs before the
@@ -263,6 +271,14 @@ public class Configuration {
 		SCENE_HEIGHT = Integer.parseInt(configProps.getProperty("SCENE_HEIGHT"));
 		SPEED_MAX = Integer.parseInt(configProps.getProperty("SPEED_MAX"));
 		SPEED_INCREMENT = Integer.parseInt(configProps.getProperty("SPEED_INCREMENT"));
+		ASTEROID_LRG_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_LRG_SIZE"));
+		ASTEROID_LRG_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_LRG_SPEED"));
+		ASTEROID_MED_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_MED_SIZE"));
+		ASTEROID_MED_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_MED_SPEED"));
+		ASTEROID_SML_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_SML_SIZE"));
+		ASTEROID_SML_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_SML_SPEED"));
+		ASTEROID_RADIUS_VARIANCE = Integer.parseInt(configProps.getProperty("ASTEROID_RADIUS_VARIANCE"));
+		ASTEROID_GRANULARITY = Integer.parseInt(configProps.getProperty("ASTEROID_GRANULARITY"));
 	}
     
     /** Save the User-specific Asteroids application configuration
@@ -312,6 +328,15 @@ public class Configuration {
 		configProps.setProperty("SCENE_HEIGHT", String.valueOf(SCENE_HEIGHT));
 		configProps.setProperty("SPEED_MAX", String.valueOf(SPEED_MAX));
 		configProps.setProperty("SPEED_INCREMENT",  String.valueOf(SPEED_INCREMENT));
+		configProps.setProperty("ASTEROID_LRG_SIZE",  String.valueOf(ASTEROID_LRG_SIZE));
+		configProps.setProperty("ASTEROID_LRG_SPEED",  String.valueOf(ASTEROID_LRG_SPEED));
+		configProps.setProperty("ASTEROID_MED_SIZE",  String.valueOf(ASTEROID_MED_SIZE));
+		configProps.setProperty("ASTEROID_MED_SPEED",  String.valueOf(ASTEROID_MED_SPEED));
+		configProps.setProperty("ASTEROID_MED_SPEED",  String.valueOf(ASTEROID_MED_SPEED));
+		configProps.setProperty("ASTEROID_SML_SIZE",  String.valueOf(ASTEROID_SML_SIZE));
+		configProps.setProperty("ASTEROID_SML_SPEED",  String.valueOf(ASTEROID_SML_SPEED));
+		configProps.setProperty("ASTEROID_RADIUS_VARIANCE",  String.valueOf(ASTEROID_RADIUS_VARIANCE));
+		configProps.setProperty("ASTEROID_GRANULARITY",  String.valueOf(ASTEROID_GRANULARITY));
 	}
     
     /** Get the Host Operating System.

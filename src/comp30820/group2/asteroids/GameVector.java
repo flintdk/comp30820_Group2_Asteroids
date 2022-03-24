@@ -1,5 +1,8 @@
 package comp30820.group2.asteroids;
 
+// Getting a weird Point2D class is not accessible error?  Check out the following
+// article - it details an access error that sometimes occurs:
+//   -> https://stackoverflow.com/questions/22812488/using-javafx-in-jre-8-access-restriction-error
 import javafx.geometry.Point2D;
 
 /** <p>Store pairs of numbers and perform operations - the heart of Asteroids! This
