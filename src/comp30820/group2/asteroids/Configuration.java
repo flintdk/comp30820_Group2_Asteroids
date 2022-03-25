@@ -127,8 +127,8 @@ public class Configuration {
 	public static int ASTEROID_MED_SPEED = 100;
 	public static int ASTEROID_SML_SIZE = 20;
 	public static int ASTEROID_SML_SPEED = 150;
-	public static int ASTEROID_RADIUS_VARIANCE = 15;
-	public static int ASTEROID_GRANULARITY = 25;
+	public static int ASTEROID_RADIUS_VARIANCE = 30;  // Percent
+	public static int ASTEROID_GRANULARITY = 25;  // No. of Points to divide circle
 
 	public static Result CONFIGURATION_LOADED = Result.FAILURE;
     

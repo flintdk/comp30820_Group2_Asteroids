@@ -117,7 +117,7 @@ public abstract class GameObject {
 	 * @param deltaTime
 	 * @return
 	 */
-	public void update(double deltaTime) {
+	public void updatePosition(double deltaTime) {
 		// Update the position according to velocity
 		this.position
 			= new GameVector(

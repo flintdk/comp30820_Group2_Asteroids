@@ -81,6 +81,22 @@ public class AsteroidsShape extends GameObject {
 			// create asteroids of different sizes.
 			generateAsteroidPolygon(Configuration.ASTEROID_LRG_SIZE);
 		}
+		else if (shapeName == InGameShape.ASTEROID_MEDIUM) {
+			// To generate an asteroid we want to generate an irregular shaped
+			// polygon. Our team decided to generate the irregular shaped polygon
+			// inside squares of different sizes.  That way we have one method
+			// to generate the shape, and just call it with different sizes to
+			// create asteroids of different sizes.
+			generateAsteroidPolygon(Configuration.ASTEROID_MED_SIZE);
+		}
+		else if (shapeName == InGameShape.ASTEROID_SMALL) {
+			// To generate an asteroid we want to generate an irregular shaped
+			// polygon. Our team decided to generate the irregular shaped polygon
+			// inside squares of different sizes.  That way we have one method
+			// to generate the shape, and just call it with different sizes to
+			// create asteroids of different sizes.
+			generateAsteroidPolygon(Configuration.ASTEROID_SML_SIZE);
+		}
 		else if (shapeName == InGameShape.FIRE) {
 			xpoints = new double[]{0,1,1,0};
 			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
@@ -113,7 +129,7 @@ public class AsteroidsShape extends GameObject {
 		// ypoints arrays) and - obviously - implemented in java.
 
 		// We receive the maxRadius, 
-		double minRadius=maxRadius - Configuration.ASTEROID_RADIUS_VARIANCE;
+		double minRadius=maxRadius * (100 - Configuration.ASTEROID_RADIUS_VARIANCE) / 100.0 ;
 		
 		// We are going to go around the outside of our circle and generate one
 		// coordinate for every 360/granularity degrees.  So we know how big to

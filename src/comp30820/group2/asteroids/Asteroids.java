@@ -95,6 +95,10 @@ public class Asteroids extends Application {
 		// Create an ArrayList to store the keys that are currently being pressed
 		ArrayList<String> keyPressedList = new ArrayList<String>();
 		
+		//######################################################################
+		//                              KEYSTROKES
+		//######################################################################
+		
 		// We want an EventListener so the user can control the spaceship. An event
 		// listener is something that responds to user driven action like a key
 		// press or a mouse press or something like that.  We will set attach our
@@ -115,7 +119,6 @@ public class Asteroids extends Application {
 					if (!keyPressedList.contains(keyName)) {
 						keyPressedList.add(keyName);
 					}
-					
 				}
 		);
 		mainScene.setOnKeyReleased(
@@ -129,7 +132,10 @@ public class Asteroids extends Application {
 					
 				}
 		);
-			
+		
+		//######################################################################
+		//                         STARTUP GAME OBJECTS
+		//######################################################################
 		
 		// The BorderPane allows us to set containers/to set objects and nodes in
 		// different regions of the screen. We want ours to be right in the center.
@@ -151,30 +157,52 @@ public class Asteroids extends Application {
 		// that we can check for collisions).
 		// ????????????? Can asteroids hit other asteroids? What happens? ???????????????????????????  ANSWER ME
 
+		// Create on-screen objects at the very start of the game:
 		GameObject spaceship;
-		GameObject asteroid;
+		GameObject asteroid1;
+		GameObject asteroid2;
+		GameObject asteroid3;
 		
+		// Initialise the startup objects...
 		if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
 			spaceship = new Sprite(Graphics.SPACESHIP.path);
-			asteroid  = new Sprite(Graphics.ASTEROID.path);
+			asteroid1  = new Sprite(Graphics.ASTEROID.path,
+							Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
+							Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
+			asteroid2  = new Sprite(Graphics.ASTEROID.path,
+					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
+					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
+			asteroid3  = new Sprite(Graphics.ASTEROID.path,
+					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
+					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
 		}
-		else if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.EASTER_EGG) {
-			spaceship = new Sprite(Graphics.SPACESHIP.path);
-			asteroid  = new Sprite(Graphics.ASTEROID.path);
-		}
+//		else if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.EASTER_EGG) {
+//			spaceship = new Sprite(Graphics.SPACESHIP.path);
+//			asteroid1  = new Sprite(Graphics.ASTEROID.path);
+//		}
 		else {
 			// Configuration.GraphicsMode.CLASSIC
 			// Default to 'Classic' mode where the game objects are Polygons..
 			spaceship = new AsteroidsShape(AsteroidsShape.InGameShape.SPACESHIP);
-			asteroid  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_LARGE);
+			asteroid1  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_LARGE);
+			asteroid2  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_MEDIUM);
+			asteroid3  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_SMALL);
 		}
 		spaceship.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
-		asteroid.randomInit();
+		asteroid1.randomInit();
+		asteroid2.randomInit();
+		asteroid3.randomInit();
 		//spaceship.velocity.set(50,0);
 		//spaceship.render(context);
 		
 		movingObjectsOnScreen.add(spaceship);
-		movingObjectsOnScreen.add(asteroid);
+		movingObjectsOnScreen.add(asteroid1);
+		movingObjectsOnScreen.add(asteroid2);
+		movingObjectsOnScreen.add(asteroid3);
+		
+		//######################################################################
+		//                         THE ANIMATION / RUNNING GAME
+		//######################################################################
 		
 		// The AnimationTimer is a way you can create a set of code that will run
 		// 60 times per second in JavaFX
@@ -184,6 +212,9 @@ public class Asteroids extends Application {
 				// Code we want to run goes here...
 				
 				// Process user input
+				// FOR CONSIDERATION: Should we extract our keystrokes and make
+				//                    them part of the configuration file so users
+				//                    can choose/save their own.
 				if (keyPressedList.contains("LEFT")) {
 					spaceship.rotation -= 3;
 				}
@@ -267,7 +298,9 @@ public class Asteroids extends Application {
 //				spaceship.update(1/60.0);
 //				asteroid.update(1/60.0);
 				// LAMBDA EXPRESSION
-				movingObjectsOnScreen.forEach( (object) -> object.update(1/60.0));
+				movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
+				
+				// COLLISION DETECTION?????????????????????????????
 
 				background.render(context);
 				// LAMBDA EXPRESSION
