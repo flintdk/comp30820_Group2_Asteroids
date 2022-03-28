@@ -1,3 +1,4 @@
+
 package comp30820.group2.asteroids;
 
 import java.net.URISyntaxException;
@@ -37,6 +38,9 @@ public class Asteroids extends Application {
 	// Define a constant for our Application Name
 	public static final String APP_NAME = "COMP30820_Group2_Asteroids";
 	
+	//use for space enfocer juste une fois 
+    private HashMap<String, Boolean> currentlyActiveKeys = new HashMap<>();
+
 	public static void main(String[] args)
 	{
 		// Sanity check: Print out the working directory of the application.
@@ -101,10 +105,6 @@ public class Asteroids extends Application {
 		// Create an ArrayList to store the keys that are currently being pressed
 		ArrayList<String> keyPressedList = new ArrayList<String>();
 		
-		//######################################################################
-		//                              KEYSTROKES
-		//######################################################################
-		
 		// We want an EventListener so the user can control the spaceship. An event
 		// listener is something that responds to user driven action like a key
 		// press or a mouse press or something like that.  We will set attach our
@@ -125,6 +125,12 @@ public class Asteroids extends Application {
 					if (!keyPressedList.contains(keyName)) {
 						keyPressedList.add(keyName);
 					}
+					if (keyName == "SPACE") {
+						if (!currentlyActiveKeys.containsKey(keyName)) {
+			                currentlyActiveKeys.put(keyName, true);
+			            }
+					}
+					
 				}
 		);
 		mainScene.setOnKeyReleased(
@@ -135,7 +141,7 @@ public class Asteroids extends Application {
 					if (keyPressedList.contains(keyName)) {
 						keyPressedList.remove(keyName);
 					}
-					
+					currentlyActiveKeys.remove(event.getCode().toString());
 				}
 		);
 
@@ -155,13 +161,6 @@ public class Asteroids extends Application {
 					Double.valueOf(Configuration.SCENE_WIDTH),
 					Double.valueOf(Configuration.SCENE_HEIGHT) );
 		background.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
-		
-		// We keep track of all the objects on screen.
-		List<GameObject> movingObjectsOnScreen = new ArrayList<GameObject>();
-		
-		// We also keep track of all the possible pairs of objects on screen (so
-		// that we can check for collisions).
-		// ????????????? Can asteroids hit other asteroids? What happens? ???????????????????????????  ANSWER ME
 
 		// We keep track of all the objects on screen.
 		List<GameObject> movingObjectsOnScreen = new ArrayList<GameObject>();
@@ -175,6 +174,7 @@ public class Asteroids extends Application {
 		GameObject asteroid1;
 		GameObject asteroid2;
 		GameObject asteroid3;
+
 		// Initialise the startup objects...
 		if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
 			spaceship = new Sprite(Graphics.SPACESHIP.path);
@@ -287,9 +287,39 @@ public class Asteroids extends Application {
 				}
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
-				if (keyPressedList.contains("SPACE")) {
+				if (removeActiveKey("SPACE")) {
 					try {
+						System.out.println("Size of the array, number of bullet " + bulletArr.size() + " "+ spaceship.position.getX() + "  " + spaceship.rotation);
 						// Fire lasers!!
+						//add a bullet to the array of bullets on the screen
+						//get the initial position of the bullet based on the spaceship position 
+						double bulletIniX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
+						double bulletIniY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
+
+
+						bulletArr.add(new AsteroidsShape(AsteroidsShape.InGameShape.BULLET));
+						bulletArr.get(bulletArr.size()-1).position = new GameVector( bulletIniX,bulletIniY);
+						bulletArr.get(bulletArr.size()-1).rotation = spaceship.rotation;
+
+						
+						double changeX
+							= Math.cos(Math.toRadians(bulletArr.get(bulletArr.size()-1).rotation)) * Configuration.SPEED_BULLET;
+					    double changeY
+					    	= Math.sin(Math.toRadians(bulletArr.get(bulletArr.size()-1).rotation)) * Configuration.SPEED_BULLET;
+					    
+					    // Don't violate maximum speed limit
+					    GameVector newVelocity = bulletArr.get(bulletArr.size()-1).velocity.add(changeX, changeY);
+					    if (newVelocity.getLength() < Configuration.SPEED_MAX) {
+							// Now we want to add those velocity increments to the current velocity!
+					    	bulletArr.get(bulletArr.size()-1).velocity = new GameVector( changeX,changeY);
+					    }
+						
+
+						//est ce que toutes les bullet on la meme vitesse ? et la vitesse est constante right ? 
+						// creer la bullet a la fin du vaisceau ?  DONE
+						//mm c'est pas encore ca hein ? 
+					    //est ce que la vitesse dela bullet depend de la vitess du vaisceau ? 
+					    //ajouter une fonction pour supprimer la bullet once it's out of the screen 
 						// We use Asteroids as our resource-anchor class...
 						Media sound = new Media(Asteroids.class.getResource(SoundEffects.FIRE.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
@@ -338,13 +368,10 @@ public class Asteroids extends Application {
 
 				//System.out.println("square"+asteroid1.hitModel().getBoundsInLocal());
 				//System.out.println("spaceship"+spaceship.hitModel().getBoundsInLocal());
-				System.out.println("inter"+Shape.intersect(spaceship.hitModel(),asteroid1.hitModel()).getBoundsInLocal());
+				//System.out.println("inter"+Shape.intersect(spaceship.hitModel(),asteroid1.hitModel()).getBoundsInLocal());
 				//##############################################################
 				//##############################################################
 
-				background.render(context);
-				// LAMBDA EXPRESSION
-				movingObjectsOnScreen.forEach( (object) -> object.render(context));
 			}
 
 		};
@@ -354,5 +381,14 @@ public class Asteroids extends Application {
 	}
 
 	/* GETTERS AND SETTERS */
+	private boolean removeActiveKey(String codeString) {
+        Boolean isActive = currentlyActiveKeys.get(codeString);
 
+        if (isActive != null && isActive) {
+            currentlyActiveKeys.put(codeString, false);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
