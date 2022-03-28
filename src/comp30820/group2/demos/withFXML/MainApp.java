@@ -1,4 +1,4 @@
-package comp30820.group2.demoJFX;
+package comp30820.group2.demos.withFXML;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

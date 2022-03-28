@@ -1,4 +1,4 @@
-package comp30820.group2.demoJFX;
+package comp30820.group2.demos.plain;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

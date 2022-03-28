@@ -1,4 +1,4 @@
-package comp30820.group2.demoJFX;
+package comp30820.group2.demos.withFXML;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

@@ -5,8 +5,10 @@ module comp30820_group2_asteroids {
 	requires javafx.media;
 	
 	opens comp30820.group2.asteroids to javafx.fxml;
-	opens comp30820.group2.demoJFX to javafx.fxml;
+	opens comp30820.group2.demos.plain to javafx.fxml;
+	opens comp30820.group2.demos.withFXML to javafx.fxml;
 	
 	exports comp30820.group2.asteroids;
-	exports comp30820.group2.demoJFX;
+	exports comp30820.group2.demos.plain;
+	exports comp30820.group2.demos.withFXML;
 }
