@@ -24,11 +24,11 @@ public class AsteroidsShape extends GameObject {
     // Polygons Supported by the game
     public enum InGameShape {
     	SPACESHIP("Triangular spaceship"),
-        ASTEROID_LARGE("Irregular shaped Asteroid, Large!"),
+    	ASTEROID_LARGE("Irregular shaped Asteroid, Large!"),
         ASTEROID_MEDIUM("Irregular shaped Asteroid, Medium!"),
         ASTEROID_SMALL("Irregular shaped Asteroid, Small!"),
-    	FIRE("Muzzle flare for when our cannon fires"),
-        LASER("The laser beam shot out by our cannon");
+    	MUZZLE_FLARE("Muzzle flare for when our cannon fires"),
+        BULLET("The bullet shot out by our cannon");
         
         public final String description;
 
@@ -97,13 +97,14 @@ public class AsteroidsShape extends GameObject {
 			// create asteroids of different sizes.
 			generateAsteroidPolygon(Configuration.ASTEROID_SML_SIZE);
 		}
-		else if (shapeName == InGameShape.FIRE) {
+		else if (shapeName == InGameShape.MUZZLE_FLARE) {
 			xpoints = new double[]{0,1,1,0};
-			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
+			ypoints = new double[]{0,0,1,1};  //create a square of 1 by 1
 		}
-		else if (shapeName == InGameShape.LASER) {
+		else if (shapeName == InGameShape.BULLET) {
 			xpoints = new double[]{0,1,1,0};
 			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
+			wrap = false ;
 		}
 		else {
 			// Boring old 1x1 square for a default!!

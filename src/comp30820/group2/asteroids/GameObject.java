@@ -20,9 +20,11 @@ import javafx.scene.shape.Shape;
 public abstract class GameObject {
 	public GameVector position;
 	public GameVector velocity;
-	public double rotation;  // degrees
+	public double rotation;  // degrees - it's the angle of the orientation! 
 	public Shape hitModel;  // A polygon describing our game objects on screen
-	
+	public boolean wrap ;  // Some objects 'wrap' around the screen (spaceship, asteroids)
+	                       // ... and some do not (bullets, alien ships)
+
 	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
 	 * 0-angled, minimum-HitBox 'game object').
 	 * 
@@ -33,6 +35,7 @@ public abstract class GameObject {
 		this.rotation = 0;
 		// The default hitModel is just a 1 x 1 square!
 		this.hitModel = new Polygon(0, 0, 1, 0, 1, 1, 0, 1);
+		this.wrap = true ;
 	}
 	
 	/** Helper method to set a random initial screen position and velocity for
@@ -51,7 +54,7 @@ public abstract class GameObject {
 		this.velocity = new GameVector(initialX, initialY);
 		
 	};
-	
+
 	/** Access the hitModel for this 'game object'.  The expectation is that
 	 * this is the only method that will be used to access the hitModel of this object.
 	 * @return
@@ -125,9 +128,13 @@ public abstract class GameObject {
 						this.velocity.getX() * deltaTime, this.velocity.getY() * deltaTime
 						)
 				);
-		// Wrap around screen..
-		this.wrap(Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
+
+		if (this.wrap) {
+			// Wrap around screen..
+			this.wrap(Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
+		}
 	}
+	
 	
 	/** Draw our object on the screen.  In order to draw an object onto a canvas
 	 * in JavaFX we use a graphics context object

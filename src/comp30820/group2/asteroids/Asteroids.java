@@ -3,6 +3,7 @@ package comp30820.group2.asteroids;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 import comp30820.group2.asteroids.Configuration.SoundEffects;
 import comp30820.group2.asteroids.Sprite.Graphics;
@@ -35,6 +36,9 @@ public class Asteroids extends Application {
 	// Define a constant for our Application Name
 	public static final String APP_NAME = "COMP30820_Group2_Asteroids";
 	
+	//use for space enfocer juste une fois 
+    private HashMap<String, Boolean> currentlyActiveKeys = new HashMap<>();
+
 	public static void main(String[] args)
 	{
 		// Sanity check: Print out the working directory of the application.
@@ -91,13 +95,13 @@ public class Asteroids extends Application {
 		
 		// Now we add our canvas to our layout pane (in the middle pane).
 		root.setCenter(canvas);
-		
-		// Create an ArrayList to store the keys that are currently being pressed
-		ArrayList<String> keyPressedList = new ArrayList<String>();
-		
+
 		//######################################################################
 		//                              KEYSTROKES
 		//######################################################################
+
+		// Create an ArrayList to store the keys that are currently being pressed
+		ArrayList<String> keyPressedList = new ArrayList<String>();
 		
 		// We want an EventListener so the user can control the spaceship. An event
 		// listener is something that responds to user driven action like a key
@@ -119,6 +123,12 @@ public class Asteroids extends Application {
 					if (!keyPressedList.contains(keyName)) {
 						keyPressedList.add(keyName);
 					}
+					if (keyName == "SPACE") {
+						if (!currentlyActiveKeys.containsKey(keyName)) {
+			                currentlyActiveKeys.put(keyName, true);
+			            }
+					}
+					
 				}
 		);
 		mainScene.setOnKeyReleased(
@@ -129,10 +139,10 @@ public class Asteroids extends Application {
 					if (keyPressedList.contains(keyName)) {
 						keyPressedList.remove(keyName);
 					}
-					
+					currentlyActiveKeys.remove(event.getCode().toString());
 				}
 		);
-		
+
 		//######################################################################
 		//                         STARTUP GAME OBJECTS
 		//######################################################################
@@ -149,7 +159,7 @@ public class Asteroids extends Application {
 					Double.valueOf(Configuration.SCENE_WIDTH),
 					Double.valueOf(Configuration.SCENE_HEIGHT) );
 		background.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
-		
+
 		// We keep track of all the objects on screen.
 		List<GameObject> movingObjectsOnScreen = new ArrayList<GameObject>();
 		
@@ -162,7 +172,7 @@ public class Asteroids extends Application {
 		GameObject asteroid1;
 		GameObject asteroid2;
 		GameObject asteroid3;
-		
+
 		// Initialise the startup objects...
 		if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
 			spaceship = new Sprite(Graphics.SPACESHIP.path);
@@ -200,10 +210,14 @@ public class Asteroids extends Application {
 		movingObjectsOnScreen.add(asteroid2);
 		movingObjectsOnScreen.add(asteroid3);
 		
+		// Create an empty array of bullets 
+		//GameObject[] bulletArr = new AsteroidsShape(AsteroidsShape.InGameShape.BULLET)[];
+		ArrayList<GameObject> bulletArr = new ArrayList<>();
+		
 		//######################################################################
 		//                         THE ANIMATION / RUNNING GAME
 		//######################################################################
-		
+
 		// The AnimationTimer is a way you can create a set of code that will run
 		// 60 times per second in JavaFX
 		// Anonymous inner class????????
@@ -271,9 +285,39 @@ public class Asteroids extends Application {
 				}
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
-				if (keyPressedList.contains("SPACE")) {
+				if (removeActiveKey("SPACE")) {
 					try {
+						System.out.println("Size of the array, number of bullet " + bulletArr.size() + " "+ spaceship.position.getX() + "  " + spaceship.rotation);
 						// Fire lasers!!
+						//add a bullet to the array of bullets on the screen
+						//get the initial position of the bullet based on the spaceship position 
+						double bulletIniX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
+						double bulletIniY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
+
+
+						bulletArr.add(new AsteroidsShape(AsteroidsShape.InGameShape.BULLET));
+						bulletArr.get(bulletArr.size()-1).position = new GameVector( bulletIniX,bulletIniY);
+						bulletArr.get(bulletArr.size()-1).rotation = spaceship.rotation;
+
+						
+						double changeX
+							= Math.cos(Math.toRadians(bulletArr.get(bulletArr.size()-1).rotation)) * Configuration.SPEED_BULLET;
+					    double changeY
+					    	= Math.sin(Math.toRadians(bulletArr.get(bulletArr.size()-1).rotation)) * Configuration.SPEED_BULLET;
+					    
+					    // Don't violate maximum speed limit
+					    GameVector newVelocity = bulletArr.get(bulletArr.size()-1).velocity.add(changeX, changeY);
+					    if (newVelocity.getLength() < Configuration.SPEED_MAX) {
+							// Now we want to add those velocity increments to the current velocity!
+					    	bulletArr.get(bulletArr.size()-1).velocity = new GameVector( changeX,changeY);
+					    }
+						
+
+						//est ce que toutes les bullet on la meme vitesse ? et la vitesse est constante right ? 
+						// creer la bullet a la fin du vaisceau ?  DONE
+						//mm c'est pas encore ca hein ? 
+					    //est ce que la vitesse dela bullet depend de la vitess du vaisceau ? 
+					    //ajouter une fonction pour supprimer la bullet once it's out of the screen 
 						// We use Asteroids as our resource-anchor class...
 						Media sound = new Media(Asteroids.class.getResource(SoundEffects.FIRE.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
@@ -293,10 +337,11 @@ public class Asteroids extends Application {
 				// We know the frame rate of the AnimationTimer, so every time
 				// the 'handle' gets called, we know that 1/60th of a second has
 				// passed.
-// Instead of running each update individually, we can use a Lambda Expression to
-// the method on each object as we iterate over the list.
-//				spaceship.update(1/60.0);
-//				asteroid.update(1/60.0);
+				// This is ordered from background to front 
+				// Instead of running each update individually, we can use a Lambda Expression to
+				// the method on each object as we iterate over the list.
+				//spaceship.update(1/60.0);
+				//asteroid.update(1/60.0);
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
 				
@@ -305,7 +350,14 @@ public class Asteroids extends Application {
 				background.render(context);
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.render(context));
+				
+				for (int i = 0; i < bulletArr.size(); i++) {
+					bulletArr.get(i).updatePosition(1/60.0);
+					bulletArr.get(i).render(context);
+				}
+
 			}
+
 		};
 		gameloop.start();
 
@@ -313,5 +365,14 @@ public class Asteroids extends Application {
 	}
 
 	/* GETTERS AND SETTERS */
+	private boolean removeActiveKey(String codeString) {
+        Boolean isActive = currentlyActiveKeys.get(codeString);
 
+        if (isActive != null && isActive) {
+            currentlyActiveKeys.put(codeString, false);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

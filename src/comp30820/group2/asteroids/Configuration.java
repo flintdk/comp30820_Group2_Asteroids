@@ -121,6 +121,7 @@ public class Configuration {
 	public static int SCENE_HEIGHT = 600;
 	public static int SPEED_MAX = 500;
 	public static int SPEED_INCREMENT = 10;
+	public static int SPEED_BULLET = 300;
 	public static int ASTEROID_LRG_SIZE = 60;
 	public static int ASTEROID_LRG_SPEED = 50;
 	public static int ASTEROID_MED_SIZE = 40;
@@ -129,7 +130,7 @@ public class Configuration {
 	public static int ASTEROID_SML_SPEED = 150;
 	public static int ASTEROID_RADIUS_VARIANCE = 30;  // Percent
 	public static int ASTEROID_GRANULARITY = 25;  // No. of Points to divide circle
-
+	
 	public static Result CONFIGURATION_LOADED = Result.FAILURE;
     
     // A Static Initialization Block in Java is a block that runs before the
@@ -266,19 +267,48 @@ public class Configuration {
 		// Populate our config variables:
 		// The properties are all just strings, so we need to cast them
 		// appropriately when evaluating them...
-		GRAPHICS_MODE = GraphicsMode.valueOf(configProps.getProperty("GRAPHICS_MODE").toString());
-		SCENE_WIDTH = Integer.parseInt(configProps.getProperty("SCENE_WIDTH"));
-		SCENE_HEIGHT = Integer.parseInt(configProps.getProperty("SCENE_HEIGHT"));
-		SPEED_MAX = Integer.parseInt(configProps.getProperty("SPEED_MAX"));
-		SPEED_INCREMENT = Integer.parseInt(configProps.getProperty("SPEED_INCREMENT"));
-		ASTEROID_LRG_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_LRG_SIZE"));
-		ASTEROID_LRG_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_LRG_SPEED"));
-		ASTEROID_MED_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_MED_SIZE"));
-		ASTEROID_MED_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_MED_SPEED"));
-		ASTEROID_SML_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_SML_SIZE"));
-		ASTEROID_SML_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_SML_SPEED"));
-		ASTEROID_RADIUS_VARIANCE = Integer.parseInt(configProps.getProperty("ASTEROID_RADIUS_VARIANCE"));
-		ASTEROID_GRANULARITY = Integer.parseInt(configProps.getProperty("ASTEROID_GRANULARITY"));
+		if (configProps.getProperty("GRAPHICS_MODE") != null) {
+			GRAPHICS_MODE = GraphicsMode.valueOf(configProps.getProperty("GRAPHICS_MODE").toString());
+		}
+		if (configProps.getProperty("SCENE_WIDTH") != null) {
+			SCENE_WIDTH = Integer.parseInt(configProps.getProperty("SCENE_WIDTH"));
+		}
+		if (configProps.getProperty("SCENE_HEIGHT") != null) {
+			SCENE_HEIGHT = Integer.parseInt(configProps.getProperty("SCENE_HEIGHT"));
+		}
+		if (configProps.getProperty("SPEED_MAX") != null) {
+			SPEED_MAX = Integer.parseInt(configProps.getProperty("SPEED_MAX"));
+		}
+		if (configProps.getProperty("SPEED_INCREMENT") != null) {
+			SPEED_INCREMENT = Integer.parseInt(configProps.getProperty("SPEED_INCREMENT"));
+		}
+		if (configProps.getProperty("SPEED_BULLET") != null) {
+			SPEED_BULLET = Integer.parseInt(configProps.getProperty("SPEED_BULLET"));
+		}
+		if (configProps.getProperty("ASTEROID_LRG_SIZE") != null) {
+			ASTEROID_LRG_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_LRG_SIZE"));
+		}
+		if (configProps.getProperty("ASTEROID_LRG_SPEED") != null) {
+			ASTEROID_LRG_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_LRG_SPEED"));
+		}
+		if (configProps.getProperty("ASTEROID_MED_SIZE") != null) {
+			ASTEROID_MED_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_MED_SIZE"));
+		}
+		if (configProps.getProperty("ASTEROID_MED_SPEED") != null) {
+			ASTEROID_MED_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_MED_SPEED"));
+		}
+		if (configProps.getProperty("ASTEROID_SML_SIZE") != null) {
+			ASTEROID_SML_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_SML_SIZE"));
+		}
+		if (configProps.getProperty("ASTEROID_SML_SPEED") != null) {
+			ASTEROID_SML_SPEED = Integer.parseInt(configProps.getProperty("ASTEROID_SML_SPEED"));
+		}
+		if (configProps.getProperty("ASTEROID_RADIUS_VARIANCE") != null) {
+			ASTEROID_RADIUS_VARIANCE = Integer.parseInt(configProps.getProperty("ASTEROID_RADIUS_VARIANCE"));
+		}
+		if (configProps.getProperty("ASTEROID_GRANULARITY") != null) {
+			ASTEROID_GRANULARITY = Integer.parseInt(configProps.getProperty("ASTEROID_GRANULARITY"));
+		}
 	}
     
     /** Save the User-specific Asteroids application configuration
@@ -328,6 +358,7 @@ public class Configuration {
 		configProps.setProperty("SCENE_HEIGHT", String.valueOf(SCENE_HEIGHT));
 		configProps.setProperty("SPEED_MAX", String.valueOf(SPEED_MAX));
 		configProps.setProperty("SPEED_INCREMENT",  String.valueOf(SPEED_INCREMENT));
+		configProps.setProperty("SPEED_BULLET",  String.valueOf(SPEED_BULLET));
 		configProps.setProperty("ASTEROID_LRG_SIZE",  String.valueOf(ASTEROID_LRG_SIZE));
 		configProps.setProperty("ASTEROID_LRG_SPEED",  String.valueOf(ASTEROID_LRG_SPEED));
 		configProps.setProperty("ASTEROID_MED_SIZE",  String.valueOf(ASTEROID_MED_SIZE));
