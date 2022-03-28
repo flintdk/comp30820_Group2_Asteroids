@@ -196,7 +196,7 @@ public class Configuration {
         // own configuration.  So -
     	
     	boolean configLoaded = false;
-    	String propsFileName = Asteroids.APP_NAME.concat(".properties");
+    	String propsFileName = Main.APP_NAME.concat(".properties");
     	Properties configProps = new Properties();
 
     	// First see if a user-specific file exists...
@@ -224,7 +224,7 @@ public class Configuration {
 				// of a .zip archive (not actual files).
 
             	// We use Asteroids as our resource-anchor class...
-		        InputStream in = Asteroids.class.getResourceAsStream(Resource.CONFIG.path + propsFileName);
+		        InputStream in = Main.class.getResourceAsStream(Resource.CONFIG.path + propsFileName);
 		        if (in != null) {
 			        configProps.load(in);
 		
@@ -316,7 +316,7 @@ public class Configuration {
      */
     public static void saveConfig() {
     	
-    	String propsFileName = Asteroids.APP_NAME.concat(".properties");
+    	String propsFileName = Main.APP_NAME.concat(".properties");
 
     	// First see if a user-specific file exists...
         try

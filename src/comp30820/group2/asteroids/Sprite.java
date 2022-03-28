@@ -81,14 +81,14 @@ public class Sprite extends GameObject {
 			if (requiredWidth != null && requiredHeight != null ) {
 				// We use Asteroids as our resource-anchor class...
 				this.image = new Image(
-						Asteroids.class.getResource(imageFileName).toURI().toString(),
+						Main.class.getResource(imageFileName).toURI().toString(),
 						requiredWidth, requiredHeight,
 						false, true
 						);
 			}
 			else {
 				// No dimensions specified...
-				this.image = new Image( Asteroids.class.getResource(imageFileName).toURI().toString() );
+				this.image = new Image( Main.class.getResource(imageFileName).toURI().toString() );
 			}
 		}
 		catch (URISyntaxException USE) {

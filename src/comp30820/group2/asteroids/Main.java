@@ -33,7 +33,7 @@ import javafx.stage.Stage;
  * 22/03/nn ??; 
  * 
  */
-public class Asteroids extends Application {
+public class Main extends Application {
 	
 	// Define a constant for our Application Name
 	public static final String APP_NAME = "COMP30820_Group2_Asteroids";
@@ -171,20 +171,20 @@ public class Asteroids extends Application {
 
 		// Create on-screen objects at the very start of the game:
 		GameObject spaceship;
-		GameObject asteroid1;
-		GameObject asteroid2;
-		GameObject asteroid3;
+		GameObject initialAsteroid1;
+		GameObject initialAsteroid2;
+		GameObject initialAsteroid3;
 
 		// Initialise the startup objects...
 		if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
 			spaceship = new Sprite(Graphics.SPACESHIP.path);
-			asteroid1  = new Sprite(Graphics.ASTEROID.path,
+			initialAsteroid1  = new Sprite(Graphics.ASTEROID.path,
 							Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
 							Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
-			asteroid2  = new Sprite(Graphics.ASTEROID.path,
+			initialAsteroid2  = new Sprite(Graphics.ASTEROID.path,
 					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
 					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
-			asteroid3  = new Sprite(Graphics.ASTEROID.path,
+			initialAsteroid3  = new Sprite(Graphics.ASTEROID.path,
 					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
 					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
 		}
@@ -196,25 +196,25 @@ public class Asteroids extends Application {
 			// Configuration.GraphicsMode.CLASSIC
 			// Default to 'Classic' mode where the game objects are Polygons..
 			spaceship = new AsteroidsShape(AsteroidsShape.InGameShape.SPACESHIP);
-			asteroid1  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_LARGE);
-			asteroid2  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_MEDIUM);
-			asteroid3  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_SMALL);
+			initialAsteroid1  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_LARGE);
+			initialAsteroid2  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_MEDIUM);
+			initialAsteroid3  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_SMALL);
 		}
 		spaceship.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
-		asteroid1.randomInit();
-		asteroid2.randomInit();
-		asteroid3.randomInit();
+		initialAsteroid1.randomInit();
+		initialAsteroid2.randomInit();
+		initialAsteroid3.randomInit();
 		//spaceship.velocity.set(50,0);
 		//spaceship.render(context);
 		
 		movingObjectsOnScreen.add(spaceship);
-		movingObjectsOnScreen.add(asteroid1);
-		movingObjectsOnScreen.add(asteroid2);
-		movingObjectsOnScreen.add(asteroid3);
+		movingObjectsOnScreen.add(initialAsteroid1);
+		movingObjectsOnScreen.add(initialAsteroid2);
+		movingObjectsOnScreen.add(initialAsteroid3);
 		
 		// Create an empty array of bullets 
 		//GameObject[] bulletArr = new AsteroidsShape(AsteroidsShape.InGameShape.BULLET)[];
-		ArrayList<GameObject> bulletArr = new ArrayList<>();
+		List<GameObject> bulletArr = new ArrayList<>();
 		
 		//######################################################################
 		//                         THE ANIMATION / RUNNING GAME
@@ -249,7 +249,7 @@ public class Asteroids extends Application {
 					try {
 						// Fire thrusters!!
 						// We use Asteroids as our resource-anchor class...
-						Media sound = new Media(Asteroids.class.getResource(SoundEffects.THRUST.path).toURI().toString());
+						Media sound = new Media(Main.class.getResource(SoundEffects.THRUST.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
 						//mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 						mediaPlayer.play();
@@ -280,23 +280,22 @@ public class Asteroids extends Application {
 				    
 				    // Don't violate maximum speed limit
 				    GameVector newVelocity = spaceship.velocity.add(changeX, changeY);
-				    if (newVelocity.getLength() < Configuration.SPEED_MAX) {
-						// Now we want to add those velocity increments to the current velocity!
-					    spaceship.velocity = newVelocity;
+				    if (newVelocity.getLength() > Configuration.SPEED_MAX) {
+				    	newVelocity.lengthSetTo(Configuration.SPEED_MAX);
 				    }
+				    // Now we want to add those velocity increments to the current velocity!
+				    spaceship.velocity = newVelocity;
 				}
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
 				if (removeActiveKey("SPACE")) {
 					try {
 						System.out.println("Size of the array, number of bullet " + bulletArr.size() + " "+ spaceship.position.getX() + "  " + spaceship.rotation);
-						// Fire lasers!!
+						// Fire!!
 						//add a bullet to the array of bullets on the screen
 						//get the initial position of the bullet based on the spaceship position 
 						double bulletIniX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
 						double bulletIniY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
-
-
 						bulletArr.add(new AsteroidsShape(AsteroidsShape.InGameShape.BULLET));
 						bulletArr.get(bulletArr.size()-1).position = new GameVector( bulletIniX,bulletIniY);
 						bulletArr.get(bulletArr.size()-1).rotation = spaceship.rotation;
@@ -309,11 +308,11 @@ public class Asteroids extends Application {
 					    
 					    // Don't violate maximum speed limit
 					    GameVector newVelocity = bulletArr.get(bulletArr.size()-1).velocity.add(changeX, changeY);
-					    if (newVelocity.getLength() < Configuration.SPEED_MAX) {
-							// Now we want to add those velocity increments to the current velocity!
-					    	bulletArr.get(bulletArr.size()-1).velocity = new GameVector( changeX,changeY);
+					    if (newVelocity.getLength() > Configuration.SPEED_MAX) {
+					    	newVelocity.lengthSetTo(Configuration.SPEED_MAX);
 					    }
-						
+					    // Now we want to add those velocity increments to the current velocity!
+					    bulletArr.get(bulletArr.size()-1).velocity = newVelocity;
 
 						//est ce que toutes les bullet on la meme vitesse ? et la vitesse est constante right ? 
 						// creer la bullet a la fin du vaisceau ?  DONE
@@ -321,7 +320,7 @@ public class Asteroids extends Application {
 					    //est ce que la vitesse dela bullet depend de la vitess du vaisceau ? 
 					    //ajouter une fonction pour supprimer la bullet once it's out of the screen 
 						// We use Asteroids as our resource-anchor class...
-						Media sound = new Media(Asteroids.class.getResource(SoundEffects.FIRE.path).toURI().toString());
+						Media sound = new Media(Main.class.getResource(SoundEffects.FIRE.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
 						mediaPlayer.play();
 					}
@@ -362,9 +361,9 @@ public class Asteroids extends Application {
 				//##############################################################
 
 				//for(int i = 1;i<movingObjectsOnScreen.size();i++) {
-				if(Shape.intersect(spaceship.hitModel(),asteroid1.hitModel()).getBoundsInLocal().getWidth() !=-1) {
+				if(Shape.intersect(spaceship.hitModel(),initialAsteroid1.hitModel()).getBoundsInLocal().getWidth() !=-1) {
 					stop();
-					}
+				}
 
 				//System.out.println("square"+asteroid1.hitModel().getBoundsInLocal());
 				//System.out.println("spaceship"+spaceship.hitModel().getBoundsInLocal());

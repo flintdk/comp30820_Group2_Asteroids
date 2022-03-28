@@ -24,6 +24,13 @@ public abstract class GameObject {
 	public Shape hitModel;  // A polygon describing our game objects on screen
 	public boolean wrap ;  // Some objects 'wrap' around the screen (spaceship, asteroids)
 	                       // ... and some do not (bullets, alien ships)
+	
+	// We require two separate arrays, the set of x-coordinates and the set of 
+    // y-coordinates for each vertex in the Polygon used for the hitModel for
+    // this GameObject, so we can draw it on-screen.  See 'drawObject()' method
+    // below...
+    protected double[] xpoints;
+    protected double[] ypoints;
 
 	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
 	 * 0-angled, minimum-HitBox 'game object').

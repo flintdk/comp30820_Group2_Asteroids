@@ -37,13 +37,6 @@ public class AsteroidsShape extends GameObject {
         }
     };
 	
-	// We require two seperate arrays, the set of x-coordinates and the set of 
-    // y-coordinates for each vertex in the Polygon used for the hitModel for
-    // this GameObject, so we can draw it on-screen.  See 'drawObject()' method
-    // below...
-    private double[] xpoints;
-	private double[] ypoints;
-	
 	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
 	 * 0-angled, minimum-HitBox polygon).
 	 * 
