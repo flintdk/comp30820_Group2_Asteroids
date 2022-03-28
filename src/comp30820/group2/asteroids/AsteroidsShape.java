@@ -1,7 +1,5 @@
 package comp30820.group2.asteroids;
 
-import java.util.Random;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -23,12 +21,10 @@ public class AsteroidsShape extends GameObject {
 	
     // Polygons Supported by the game
     public enum InGameShape {
-    	SPACESHIP("Triangular spaceship"),
-        ASTEROID_LARGE("Irregular shaped Asteroid, Large!"),
-        ASTEROID_MEDIUM("Irregular shaped Asteroid, Medium!"),
-        ASTEROID_SMALL("Irregular shaped Asteroid, Small!"),
+    	SPACEHIP("Triangular spaceship"),
+        ASTEROID("Irregular shaped Asteroid!"),
     	FIRE("Muzzle flare for when our cannon fires"),
-        LASER("The laser beam shot out by our cannon");
+        BULLET("The bullet shot out by our cannon");
         
         public final String description;
 
@@ -66,44 +62,46 @@ public class AsteroidsShape extends GameObject {
 	 * @param InGameShape
 	 */
 	public void setAsteroidsShape(InGameShape shapeName) {
-		if (shapeName == InGameShape.SPACESHIP) {
+		if (shapeName == InGameShape.SPACEHIP) {
 			// We're using a graphics context to draw our shape, rather than a layout
 			// pane, so as well as the Shape we store a the list of vertices for this
 			// shape as a pair of lists of x-points and y-points....
 			xpoints = new double[]{0,21,0};
 			ypoints = new double[]{0,7,14};
 		}
-		else if (shapeName == InGameShape.ASTEROID_LARGE) {
-			// To generate an asteroid we want to generate an irregular shaped
-			// polygon. Our team decided to generate the irregular shaped polygon
-			// inside squares of different sizes.  That way we have one method
-			// to generate the shape, and just call it with different sizes to
-			// create asteroids of different sizes.
-			generateAsteroidPolygon(Configuration.ASTEROID_LRG_SIZE);
-		}
-		else if (shapeName == InGameShape.ASTEROID_MEDIUM) {
-			// To generate an asteroid we want to generate an irregular shaped
-			// polygon. Our team decided to generate the irregular shaped polygon
-			// inside squares of different sizes.  That way we have one method
-			// to generate the shape, and just call it with different sizes to
-			// create asteroids of different sizes.
-			generateAsteroidPolygon(Configuration.ASTEROID_MED_SIZE);
-		}
-		else if (shapeName == InGameShape.ASTEROID_SMALL) {
-			// To generate an asteroid we want to generate an irregular shaped
-			// polygon. Our team decided to generate the irregular shaped polygon
-			// inside squares of different sizes.  That way we have one method
-			// to generate the shape, and just call it with different sizes to
-			// create asteroids of different sizes.
-			generateAsteroidPolygon(Configuration.ASTEROID_SML_SIZE);
+		else if (shapeName == InGameShape.ASTEROID) {
+//			https://stackoverflow.com/questions/61403966/random-x-y-coordinate-within-an-irregular-polygon-given-a-list-of-x-y-points-wi
+//			// The resulting x,y-coordinate, starting uninitialized
+//			double x,y;
+//			// Flag to indicate whether the random x,y-coordinate is on a corner or edge, starting truthy
+//			boolean flag;
+//			// Do-while the Path2D polygon does not contain the random x,y-coordinate:
+//			do{
+//			  // Select a random x,y-coordinate within the Rectangle
+//			  x = rect.getX() + Math.random()*rect.getWidht();
+//			  y = rect.getY() + Math.random()*rect.getHeight();
+//			  // Set the flag to false:
+//			  flag = false;
+//			  // Loop over the pair of x,y-coordinates of the input:
+//			  for(int j=0; j<X.length; )
+//			    // Create a Line2D using the current pair of x,y-coordinates:
+//			    if(new java.awt.geom.Line2D.Double(X[j],Y[j++], X[j],Y[j])
+//			    // And if it contains the random x,y-coordinate:
+//			       .contains(x,y))
+//			      // Change the flag to true
+//			      flag = true;
+//			}while(!path.contains(x,y) || flag);
+			xpoints = new double[]{0,1,1,0};
+			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
 		}
 		else if (shapeName == InGameShape.FIRE) {
 			xpoints = new double[]{0,1,1,0};
-			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
+			ypoints = new double[]{0,0,1,1};  //create a square of 1 by 1
 		}
-		else if (shapeName == InGameShape.LASER) {
+		else if (shapeName == InGameShape.BULLET) {
 			xpoints = new double[]{0,1,1,0};
 			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
+			wrap = false ;
 		}
 		else {
 			// Boring old 1x1 square for a default!!
@@ -113,48 +111,6 @@ public class AsteroidsShape extends GameObject {
 
 		this.hitModel = new Polygon(getPointsAsCoordinates());
 
-	}
-
-	/** Generate an irregular polygon inside a circle of a specified maximum size.  The
-	 * size parameter allows us to scale our polygon so the asteroids can be made
-	 * large, medium or small.
-	 * 
-	 * @param size
-	 */
-	private void generateAsteroidPolygon(double maxRadius) {
-		// The approach we take in our project is pretty much entirely based on
-		// a visualisation we came across here:
-		//   https://codepen.io/radu_gaspar/pen/xRgjMq
-		// ... just customised to suit our needs (i.e. to generate our xpoints and
-		// ypoints arrays) and - obviously - implemented in java.
-
-		// We receive the maxRadius, 
-		double minRadius=maxRadius * (100 - Configuration.ASTEROID_RADIUS_VARIANCE) / 100.0 ;
-		
-		// We are going to go around the outside of our circle and generate one
-		// coordinate for every 360/granularity degrees.  So we know how big to
-		// make our arrays:
-		xpoints = new double[Configuration.ASTEROID_GRANULARITY];
-		ypoints = new double[Configuration.ASTEROID_GRANULARITY];
-
-		Random r = new Random();
-
-		// Do-while the Path2D polygon does not contain the random x,y-coordinate:
-		double wholeCircle = Math.PI*2;  // Number of radians in a circle, equivalent to 360 degreess
-		double increment = wholeCircle / Configuration.ASTEROID_GRANULARITY;  // we choose an new random dimension every 'increment' radians
-		// We want a polygon fully in the positive space, not centered on zero
-		// (so all our maths is the same for every object).
-		double offset = maxRadius;
-
-	    // We want to iterate around the outside of the circle, generating points
-		// in between our two bounding circles as we go.
-		int index = 0;
-		for (double angle = 0; angle < wholeCircle; angle += increment) {
-			double radius = (r.nextDouble() * (maxRadius-minRadius)) + minRadius;
-			xpoints[index] = offset + Math.sin(angle) * radius;
-			ypoints[index] = offset + Math.cos(angle) * radius;
-			index += 1;
-	    }
 	}
 	
 	/** Helper method to take the xpoints and ypoints lists and return them as

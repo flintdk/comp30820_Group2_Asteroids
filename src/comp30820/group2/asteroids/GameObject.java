@@ -1,7 +1,5 @@
 package comp30820.group2.asteroids;
 
-import java.util.Random;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
@@ -20,9 +18,9 @@ import javafx.scene.shape.Shape;
 public abstract class GameObject {
 	public GameVector position;
 	public GameVector velocity;
-	public double rotation;  // degrees
+	public double rotation;  // degrees it's just the angle of the orientation right ? 
 	public Shape hitModel;  // A polygon describing our game objects on screen
-	
+	public boolean wrap ;
 	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
 	 * 0-angled, minimum-HitBox 'game object').
 	 * 
@@ -33,24 +31,8 @@ public abstract class GameObject {
 		this.rotation = 0;
 		// The default hitModel is just a 1 x 1 square!
 		this.hitModel = new Polygon(0, 0, 1, 0, 1, 1, 0, 1);
+		this.wrap = true ;
 	}
-	
-	/** Helper method to set a random initial screen position and velocity for
-	 * game objects.  
-	 * 
-	 */
-	// ################################################ Can we use this for hyperspace as well as asteroids?
-	public void randomInit() {
-		Random r = new Random();
-		this.position = new GameVector((Configuration.SCENE_WIDTH * r.nextDouble()),(Configuration.SCENE_HEIGHT * r.nextDouble()));
-		this.rotation = r.nextDouble() * 360.0;
-		double initialX
-			= Math.cos(Math.toRadians(this.rotation)) * Configuration.ASTEROID_LRG_SPEED;
-		double initialY
-    		= Math.sin(Math.toRadians(this.rotation)) * Configuration.ASTEROID_LRG_SPEED;
-		this.velocity = new GameVector(initialX, initialY);
-		
-	};
 	
 	/** Access the hitModel for this 'game object'.  The expectation is that
 	 * this is the only method that will be used to access the hitModel of this object.
@@ -117,7 +99,7 @@ public abstract class GameObject {
 	 * @param deltaTime
 	 * @return
 	 */
-	public void updatePosition(double deltaTime) {
+	public void update(double deltaTime) {
 		// Update the position according to velocity
 		this.position
 			= new GameVector(
@@ -125,9 +107,11 @@ public abstract class GameObject {
 						this.velocity.getX() * deltaTime, this.velocity.getY() * deltaTime
 						)
 				);
-		// Wrap around screen..
-		this.wrap(Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
+		if (this.wrap) {
+			this.wrap(Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
+		}
 	}
+	
 	
 	/** Draw our object on the screen.  In order to draw an object onto a canvas
 	 * in JavaFX we use a graphics context object
@@ -182,5 +166,4 @@ public abstract class GameObject {
 	 * @param context
 	 */
 	public abstract void drawObject(GraphicsContext context);
-
 }
