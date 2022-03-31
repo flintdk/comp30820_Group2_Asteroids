@@ -1,5 +1,6 @@
 package comp30820.group2.asteroids;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -18,6 +19,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Shape;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class AsteroidsFXMLController implements Initializable {
     
@@ -139,6 +146,16 @@ public class AsteroidsFXMLController implements Initializable {
 				if (keys.getKeyPressedList().contains("LEFT")) {
 					spaceship.rotation -= 3;
 				}
+				
+				
+				if (keys.getKeyPressedList().contains("Q")) {
+					
+		
+				 System.out.print("Here");
+				
+				}
+				
+				
 				if (keys.getKeyPressedList().contains("RIGHT")) {
 					spaceship.rotation += 3;
 				}
@@ -300,5 +317,53 @@ public class AsteroidsFXMLController implements Initializable {
 	private void initialiseCanvas() {
 		asteroidsGameCanvas.setWidth(Configuration.SCENE_WIDTH);
 		asteroidsGameCanvas.setHeight(Configuration.SCENE_HEIGHT);
+		System.out.print("In the canvas");
+		
+		
     }
+	
+
+	
+	//@Bryan
+	
+	// This is where the magic happens...between scenes. these methods are trigger from within the FXML objects and this class is set as the controller for the scenes
+	// Any queries about what anything does, drop me a line, pretty straightforward code once it works
+	
+
+	 private Stage stage;
+	 private Scene scene;
+	 private Parent root;
+	 
+	 public void switchToScene1(ActionEvent event) throws IOException {
+//	  root = FXMLLoader.load(getClass().getResource("Scene1.fxml"));
+//	  stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+//	  scene = new Scene(root);
+//	  stage.setScene(scene);
+//	  stage.show();
+		 root = FXMLLoader.load(getClass().getResource("asteroidsBorderPane.fxml"));
+		 stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+		 scene = new Scene(root);
+		 initialiseCanvas();
+		 KeyStrokeManager.getInstance().manageThisScene(scene);
+		 scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+		 stage.setScene(scene);
+		 stage.show();
+		 System.out.print("Here");
+		 
+		  
+	 }
+	 public void switchToScene2(ActionEvent event) throws IOException {
+//		  root = FXMLLoader.load(getClass().getResource("Scene1.fxml"));
+//		  stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+//		  scene = new Scene(root);
+//		  stage.setScene(scene);
+//		  stage.show();
+			 root = FXMLLoader.load(getClass().getResource("first.fxml"));
+			 stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			 scene = new Scene(root);
+			 stage.setScene(scene);
+			 stage.show();
+			 System.out.print("Here");
+		 }
+	
 }

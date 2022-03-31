@@ -77,14 +77,22 @@ public class Main extends Application {
     	
     	// Code for access to everything relating to JavaFX.  This might not be
     	// necessary - but for an abundance of caution...
-    	FXMLLoader loader = new FXMLLoader(getClass().getResource("asteroidsBorderPane.fxml"));
+    	
+    	
+    	// @Bryan
+    	// Uncomment below to see the 3 screens directly, Both home and end menu have buttons for switching but need to fix the game screen, issue with ship and adding clickable feature
+    	
+    	//FXMLLoader loader = new FXMLLoader(getClass().getResource("asteroidsBorderPane.fxml"));
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("first.fxml"));
+    	//FXMLLoader loader = new FXMLLoader(getClass().getResource("endmenu.fxml"));
+
     	Parent root = (Parent) loader.load();
     	//AsteroidsFXMLController controller = loader.<AsteroidsFXMLController>getController();
 
     	// Then we create a scene based on the FXML root...
     	Scene mainScene = new Scene(root);
     	mainScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-
+    	
 		// The 'stage' is essentially the 'window' in which your application
 		// will run.  JFX doesn't use terms like 'window' as it's designed to
 		// support desktop, mobile and web applications.
