@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
+   <center>
+      <Pane prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+         <children>
+            <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutX="1.0" width="800.0" />
+            <ImageView fitHeight="620.0" fitWidth="857.0" layoutX="-21.0" layoutY="-11.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/space.png" />
+               </image>
+            </ImageView>
+            <Button layoutX="433.0" layoutY="319.0" mnemonicParsing="false" onAction="#mainGame" prefHeight="24.0" prefWidth="114.0" text="PRESS TO START" textAlignment="CENTER">
+               <font>
+                  <Font size="11.0" />
+               </font></Button>
+            <Label blendMode="DIFFERENCE" contentDisplay="CENTER" layoutX="229.0" layoutY="112.0" text="ASTEROIDS" textFill="#f27373">
+               <font>
+                  <Font name="Impact" size="84.0" />
+               </font>
+            </Label>
+            <ProgressIndicator layoutX="377.0" layoutY="414.0" prefHeight="193.0" prefWidth="255.0" />
+            <TextField fx:id="nameTextField" layoutX="248.0" layoutY="310.0" prefHeight="43.0" prefWidth="135.0" promptText="Enter your name" />
+            <Label fx:id="nameLabel" layoutX="73.0" layoutY="42.0" text=" " textFill="RED" />
+         </children>
+      </Pane>
+   </center>
+</BorderPane>
