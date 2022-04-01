@@ -3,9 +3,7 @@ package comp30820.group2.asteroids;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -69,7 +67,7 @@ public class AsteroidsFXMLController implements Initializable {
 		// **** The background is a special case, we make sure it's scaled to the
 		// size of our background (as per the config file!) and IT DOES NOT MOVE
 		GameObject background
-			= new Sprite(Graphics.SPACE.path,
+			= new Sprite(Graphics.BACKGROUND,
 					Double.valueOf(Configuration.SCENE_WIDTH),
 					Double.valueOf(Configuration.SCENE_HEIGHT) );
 		background.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
@@ -89,20 +87,20 @@ public class AsteroidsFXMLController implements Initializable {
 
 		// Initialise the startup objects...
 		if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
-			spaceship = new Sprite(Graphics.SPACESHIP.path);
-			initialAsteroid1  = new Sprite(Graphics.ASTEROID.path,
+			spaceship = new Sprite(Graphics.SPACESHIP);
+			initialAsteroid1  = new Sprite(Graphics.ASTEROID,
 							Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
 							Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
-			initialAsteroid2  = new Sprite(Graphics.ASTEROID.path,
+			initialAsteroid2  = new Sprite(Graphics.ASTEROID,
 					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
 					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
-			initialAsteroid3  = new Sprite(Graphics.ASTEROID.path,
+			initialAsteroid3  = new Sprite(Graphics.ASTEROID,
 					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
 					Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? NO IDEA??
 		}
 //		else if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.EASTER_EGG) {
-//			spaceship = new Sprite(Graphics.SPACESHIP.path);
-//			asteroid1  = new Sprite(Graphics.ASTEROID.path);
+//			spaceship = new Sprite(Graphics.SPACESHIP);
+//			asteroid1  = new Sprite(Graphics.ASTEROID);
 //		}
 		else {
 			// Configuration.GraphicsMode.CLASSIC
@@ -284,6 +282,10 @@ public class AsteroidsFXMLController implements Initializable {
 				
 				for (int i = 0; i < bulletArr.size(); i++) {
 					bulletArr.get(i).updatePosition(1/60.0);
+					
+					System.out.println("Spaceship" + spaceship.position.toString());
+					System.out.println("\tBullet" + bulletArr.get(i).position.toString());
+					
 					bulletArr.get(i).render(context);
 				}
 
@@ -293,7 +295,7 @@ public class AsteroidsFXMLController implements Initializable {
 				//for(int i = 1;i<movingObjectsOnScreen.size();i++) {
 				if(Shape.intersect(spaceship.hitModel(),initialAsteroid1.hitModel()).getBoundsInLocal().getWidth() !=-1) {
 					// TODO Print out the coordinates of everything to see what's up!!
-					System.out.println("Collision detected!!!" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+					//System.out.println("Collision detected!!!" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 				}
 
 				//System.out.println("square"+asteroid1.hitModel().getBoundsInLocal());
@@ -315,11 +317,9 @@ public class AsteroidsFXMLController implements Initializable {
 	 * 
 	 */
 	private void initialiseCanvas() {
+		System.out.println("initialiseCanvas: In the canvas");
 		asteroidsGameCanvas.setWidth(Configuration.SCENE_WIDTH);
 		asteroidsGameCanvas.setHeight(Configuration.SCENE_HEIGHT);
-		System.out.print("In the canvas");
-		
-		
     }
 	
 
@@ -348,7 +348,7 @@ public class AsteroidsFXMLController implements Initializable {
 		 scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 		 stage.setScene(scene);
 		 stage.show();
-		 System.out.print("Here");
+		 System.out.println("switchToScene1: Here");
 		 
 		  
 	 }
@@ -363,7 +363,7 @@ public class AsteroidsFXMLController implements Initializable {
 			 scene = new Scene(root);
 			 stage.setScene(scene);
 			 stage.show();
-			 System.out.print("Here");
+			 System.out.print("switchToScene2: Here");
 		 }
 	
 }

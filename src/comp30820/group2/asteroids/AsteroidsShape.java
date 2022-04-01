@@ -36,6 +36,8 @@ public class AsteroidsShape extends GameObject {
             this.description = description;
         }
     };
+    // This AsteroidsShape will have an assigned type.
+    public InGameShape type;
 	
 	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
 	 * 0-angled, minimum-HitBox polygon).
@@ -51,6 +53,7 @@ public class AsteroidsShape extends GameObject {
 	public AsteroidsShape(InGameShape shapeName) {
 		// Call the no arguments constructor...
 		this();
+		this.type = shapeName;
 		setAsteroidsShape(shapeName);
 	}
 	
@@ -95,8 +98,8 @@ public class AsteroidsShape extends GameObject {
 			ypoints = new double[]{0,0,1,1};  //create a square of 1 by 1
 		}
 		else if (shapeName == InGameShape.BULLET) {
-			xpoints = new double[]{0,1,1,0};
-			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
+			xpoints = new double[]{0,5,5,0};
+			ypoints = new double[]{0,0,5,5};  //########################### FIX ME
 			wrap = false ;
 		}
 		else {

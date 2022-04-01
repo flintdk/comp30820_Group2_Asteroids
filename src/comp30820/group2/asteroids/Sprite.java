@@ -26,12 +26,15 @@ public class Sprite extends GameObject {
 	
     // Graphics resources
     public enum Graphics {
+    	// Following two Asteroids pictures are just logo images...
     	ASTEROIDS_LARGE(Resource.IMG.path + "asteroids_large.png"),
     	ASTEROIDS_SMALL(Resource.IMG.path + "asteroids_small.png"),
-        SPACE(Resource.IMG.path + "space.png"),
-        SPACESHIP(Resource.IMG.path + "spaceship.png"),
+    	// The default background for the game..
+    	BACKGROUND(Resource.IMG.path + "space.png"),
+    	// Following are in-game objects...
+    	SPACESHIP(Resource.IMG.path + "spaceship.png"),
         ASTEROID(Resource.IMG.path + "asteroid.png"),
-    	FIRE(Resource.IMG.path + "fire.png"),
+    	MUZZLE_FLARE(Resource.IMG.path + "fire.png"),
         LASER(Resource.IMG.path + "laser.png");
         
         public final String path;
@@ -40,6 +43,8 @@ public class Sprite extends GameObject {
             this.path = path;
         }
     };
+    // This Sprite will have an assigned type.
+    public Graphics type;
 
 	public Image image;
 	
@@ -54,41 +59,42 @@ public class Sprite extends GameObject {
 	/** Parameterised constructor.
 	 * 
 	 */
-	public Sprite(String imageFileName) {
+	public Sprite(Graphics graphics) {
 		// Call the no arguments constructor...
 		this();
-		this.setImage(imageFileName, null, null);
+		this.type = graphics;
+		this.setImage(graphics, null, null);
 	}
 	
 	/** Parameterised constructor.
 	 * 
 	 */
-	public Sprite(String imageFileName, Double requiredWidth, Double requiredHeight) {
+	public Sprite(Graphics graphics, Double requiredWidth, Double requiredHeight) {
 		// Call the no arguments constructor...
 		this();
-		this.setImage(imageFileName, requiredWidth, requiredHeight);
+		this.setImage(graphics, requiredWidth, requiredHeight);
 	}
 	
 	/** Set the image attribute for this Sprite
 	 * 
 	 * NOTE: The image file name is relative to the classloader!!
-	 * @param imageFileName
+	 * @param graphics
 	 */
-	private void setImage(String imageFileName, Double requiredWidth, Double requiredHeight) {
+	private void setImage(Graphics graphics, Double requiredWidth, Double requiredHeight) {
 		try {
 			// First attempt loaded a file from the filesystem...
 			//this.image = new Image(imageFileName);
 			if (requiredWidth != null && requiredHeight != null ) {
 				// We use Asteroids as our resource-anchor class...
 				this.image = new Image(
-						Main.class.getResource(imageFileName).toURI().toString(),
+						Main.class.getResource(graphics.path).toURI().toString(),
 						requiredWidth, requiredHeight,
 						false, true
 						);
 			}
 			else {
 				// No dimensions specified...
-				this.image = new Image( Main.class.getResource(imageFileName).toURI().toString() );
+				this.image = new Image( Main.class.getResource(graphics.path).toURI().toString() );
 			}
 		}
 		catch (URISyntaxException USE) {
