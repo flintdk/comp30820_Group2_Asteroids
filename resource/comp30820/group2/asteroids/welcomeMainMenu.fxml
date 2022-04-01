@@ -20,7 +20,7 @@
                   <Image url="@../../../img/space.png" />
                </image>
             </ImageView>
-            <Button layoutX="286.0" layoutY="346.0" mnemonicParsing="false" onAction="#switchToScene1" text="PRESS TO START">
+            <Button layoutX="286.0" layoutY="346.0" mnemonicParsing="false" onAction="#mainGame" text="PRESS TO START">
                <font>
                   <Font size="28.0" />
                </font></Button>

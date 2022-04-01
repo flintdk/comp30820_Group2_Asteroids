@@ -90,6 +90,18 @@ public class Configuration {
         }
     };
     // Sound effect resources
+    public enum GameWindows {
+        WELCOME_MAIN_MENU("welcomeMainMenu.fxml"),
+        MAIN_GAME("mainGame.fxml"),
+        END_OF_GAME("endOfGame.fxml");
+        
+        public final String fxmlResource;
+
+        private GameWindows(String fxmlResource) {
+            this.fxmlResource = fxmlResource;
+        }
+    };
+    // Sound effect resources
     public enum SoundEffects {
         BANG_LARGE(Resource.SND.path + "bangLarge.wav"),
         BANG_MEDIUM(Resource.SND.path + "bangMedium.wav"),

@@ -23,7 +23,7 @@
                   <Image url="@../../../img/space.png" />
                </image>
             </ImageView>
-            <Button layoutX="311.0" layoutY="450.0" mnemonicParsing="false" onAction="#switchToScene1" text="NEW GAME?">
+            <Button layoutX="311.0" layoutY="450.0" mnemonicParsing="false" onAction="#welcome" text="NEW GAME?">
                <font>
                   <Font size="27.0" />
                </font></Button>
@@ -45,7 +45,7 @@
                <font>
                   <Font name="Impact" size="76.0" />
                </font></Label>
-            <Button layoutX="350.0" layoutY="359.0" mnemonicParsing="false" onAction="#switchToScene2" text="MENU">
+            <Button layoutX="350.0" layoutY="359.0" mnemonicParsing="false" onAction="#mainGame" text="MENU">
                <font>
                   <Font size="27.0" />
                </font>

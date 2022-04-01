@@ -3,8 +3,6 @@ package comp30820.group2.asteroids;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /** Asteroids - the Classic Arcade Game.
@@ -75,41 +73,13 @@ public class Main extends Application {
     	// it maintains an internal model of all graphical objects in your application.
     	// A 'Parent' is the root node of the JavaFX Scene Graph
     	
-    	// Code for access to everything relating to JavaFX.  This might not be
-    	// necessary - but for an abundance of caution...
-    	
-    	
-    	// @Bryan
-    	// Uncomment below to see the 3 screens directly, Both home and end menu have buttons for switching but need to fix the game screen, issue with ship and adding clickable feature
-    	
-    	//FXMLLoader loader = new FXMLLoader(getClass().getResource("asteroidsBorderPane.fxml"));
-    	FXMLLoader loader = new FXMLLoader(getClass().getResource("first.fxml"));
-    	//FXMLLoader loader = new FXMLLoader(getClass().getResource("endmenu.fxml"));
-
-    	Parent root = (Parent) loader.load();
-    	//AsteroidsFXMLController controller = loader.<AsteroidsFXMLController>getController();
-
-    	// Then we create a scene based on the FXML root...
-    	Scene mainScene = new Scene(root);
-    	mainScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-    	
-		// The 'stage' is essentially the 'window' in which your application
-		// will run.  JFX doesn't use terms like 'window' as it's designed to
-		// support desktop, mobile and web applications.
-		mainStage.setTitle("Asteroids");
-		
-		// Each stage has a scene (or scenes) and each scene requires a layout
-		// manager.  The JavaFX SDK provides several layout panes for the easy
-		// setup and management of classic layouts such as rows, columns, stacks,
-		// tiles, and others.  Read more about the various options here:
-		//   -> https://docs.oracle.com/javafx/2/layout/builtin_layouts.htm
-
-		// Next we attach this scene to the stage (ours is 'mainStage'...)
-		mainStage.setScene(mainScene);
-
-		KeyStrokeManager.getInstance().manageThisScene(mainScene);
-		
-		mainStage.show();
+    	// Here in this 'start' method we start out with a 'mainStage' which is
+    	// provided magically by JavaFX
+    	FXMLLoader loader =
+    			new FXMLLoader(getClass().getResource(Configuration.GameWindows.WELCOME_MAIN_MENU.fxmlResource));
+    	loader.load();
+    	AsteroidsFXMLController controller = loader.<AsteroidsFXMLController>getController();
+    	controller.activateSceneFromStage(mainStage, Configuration.GameWindows.WELCOME_MAIN_MENU);
 	}
 
 	/* GETTERS AND SETTERS */
