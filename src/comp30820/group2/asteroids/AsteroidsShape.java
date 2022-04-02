@@ -98,8 +98,8 @@ public class AsteroidsShape extends GameObject {
 			ypoints = new double[]{0,0,1,1};  //create a square of 1 by 1
 		}
 		else if (shapeName == InGameShape.BULLET) {
-			xpoints = new double[]{0,5,5,0};
-			ypoints = new double[]{0,0,5,5};  //########################### FIX ME
+			xpoints = new double[]{0,1,1,0};
+			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
 			wrap = false ;
 		}
 		else {
@@ -175,6 +175,9 @@ public class AsteroidsShape extends GameObject {
 	 * @param context
 	 */
 	public void drawObject(GraphicsContext context) {
+//		if (this.type == InGameShape.BULLET) {
+//			System.out.println("Drawing a bullet");
+//		}
 		context.setStroke(Color.WHITE);
 		context.setLineWidth(2);
 		context.strokePolygon(xpoints,ypoints,xpoints.length);

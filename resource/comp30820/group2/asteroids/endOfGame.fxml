@@ -13,7 +13,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
    <center>
       <Pane prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <children>
@@ -23,7 +23,7 @@
                   <Image url="@../../../img/space.png" />
                </image>
             </ImageView>
-            <Button layoutX="311.0" layoutY="450.0" mnemonicParsing="false" onAction="#welcome" text="NEW GAME?">
+            <Button id="endGameNewGame" layoutX="311.0" layoutY="450.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" text="NEW GAME?">
                <font>
                   <Font size="27.0" />
                </font></Button>
@@ -45,7 +45,7 @@
                <font>
                   <Font name="Impact" size="76.0" />
                </font></Label>
-            <Button layoutX="350.0" layoutY="359.0" mnemonicParsing="false" onAction="#mainGame" text="MENU">
+            <Button id="endGameGoToMenu" layoutX="350.0" layoutY="359.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" text="MENU">
                <font>
                   <Font size="27.0" />
                </font>
