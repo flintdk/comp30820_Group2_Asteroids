@@ -10,6 +10,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,7 +23,9 @@ public class AsteroidsFXMLController implements Initializable {
 	// Our canvas is magically provided by JavaFX/FXML as long, of course, as
 	// the .fxml has a canvas element whose fx:id matches the name!
 	@FXML private Canvas asteroidsGameCanvas;
-
+	@FXML private TextField playerNameTextField;
+	@FXML private Label playerNameLabel;
+	
 	/** The initialize() method is called once on an implementing controller when
 	 * the contents of its associated document have been completely loaded.  This
 	 * allows the implementing class to perform any necessary post-processing on
@@ -28,11 +33,11 @@ public class AsteroidsFXMLController implements Initializable {
 	 *
 	 */
 	public void initialize(URL url, ResourceBundle rb) {
-		String javaVersion = System.getProperty("java.version");
-		String javafxVersion = System.getProperty("javafx.version");
-		System.out.println("Environment: Java -> " + javaVersion + ", JavaFX -> " + javafxVersion);
+//		String javaVersion = System.getProperty("java.version");
+//		String javafxVersion = System.getProperty("javafx.version");
+//		System.out.println("Environment: Java -> " + javaVersion + ", JavaFX -> " + javafxVersion);
 
-		System.out.println("initialiseCanvas: In the canvas");
+		//System.out.println("initialiseCanvas: In the canvas");
 		asteroidsGameCanvas.setWidth(Configuration.SCENE_WIDTH);
 		asteroidsGameCanvas.setHeight(Configuration.SCENE_HEIGHT);
 	}
@@ -57,18 +62,53 @@ public class AsteroidsFXMLController implements Initializable {
 		// of the element clicked to determine what to do...
 		// ########################################################## Is there a better/proper way??
 		String buttonId = ((Control)event.getSource()).getId();
-		if (buttonId.equals("welcomeStartGame")
-			||
-			buttonId.equals("endGameNewGame"))
+		if (buttonId.equals("welcomeStartGame"))
 		{
+			// PICK UP TEXT FROM TEXT BOX AND STORE SOMEWHERE FOR LATER
 			Main.setCtrlResetGameState(true);
 			activateScene(stage, Configuration.GameWindows.MAIN_GAME);
+			
 		}
-		if (buttonId.equals("endGameGoToMenu")) {
+		else if (buttonId.equals("endGameNewGame"))
+		{
+				Main.setCtrlResetGameState(true);
+				activateScene(stage, Configuration.GameWindows.MAIN_GAME);
+		}
+		else if (buttonId.equals("endGameGoToMenu")) {
 			activateScene(stage, Configuration.GameWindows.WELCOME_MAIN_MENU);			
 		}
 		//activateScene(Configuration.GameWindows.END_OF_GAME);
 	}
+	
+	/**
+	 * @param event
+	 * @throws IOException
+	 */
+	public void playerNameTextField(KeyEvent event)
+	throws IOException
+	{
+		String playerName = playerNameTextField.getText();
+
+		//System.out.println(playerNameTextField.getText());
+		String keyName = event.getCode().toString();
+		if (keyName == "ENTER") {
+			GameState gameState = GameState.getInstance();
+			gameState.setPlayername(playerName);
+			
+			playerNameTextField.setVisible(false);
+			
+			playerNameLabel.setText(playerName);
+			
+		}
+
+	}
+	
+	
+	//#################################################################################
+//	String username = nameTextField.getText();
+//	String x = username.toString();
+//	System.out.print(x);
+	
 
 	// We need access to the stage for changing scenes etc..
 	// Our application only has one stage (window) and this will never change.
@@ -136,3 +176,10 @@ public class AsteroidsFXMLController implements Initializable {
 	}
 
 }
+
+//@Bryan
+//GameState gameState = GameState.getInstance();
+//String playerName = gameState.getPlayername();
+//if (!playerName.isEmpty()) {
+//	playerNameLabel.setText(playerName);				
+//}

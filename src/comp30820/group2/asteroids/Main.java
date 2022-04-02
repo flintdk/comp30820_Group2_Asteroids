@@ -136,6 +136,8 @@ public class Main extends Application {
         welcomeScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         // Attach the KeyStrokeManager singleton to this scene...
         KeyStrokeManager.getInstance().manageThisScene(welcomeScene);
+        // Create the GameState singleton for things like Player Name etc...
+        GameState.getInstance();
         
         mainStage.setScene(welcomeScene);
         mainStage.show();

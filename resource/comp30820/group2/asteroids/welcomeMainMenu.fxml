@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -30,6 +31,8 @@
                </font>
             </Label>
             <ProgressIndicator layoutX="382.0" layoutY="441.0" prefHeight="193.0" prefWidth="255.0" />
+            <TextField fx:id="playerNameTextField" layoutX="535.0" layoutY="494.0" prefHeight="43.0" prefWidth="135.0" onKeyPressed="#playerNameTextField" promptText="Enter your name..." />
+            <Label fx:id="playerNameLabel" layoutX="73.0" layoutY="42.0" text=" " textFill="RED" />
          </children>
       </Pane>
    </center>
