@@ -24,6 +24,7 @@ public abstract class GameObject {
 	public Shape hitModel;  // A polygon describing our game objects on screen
 	public boolean wrap ;  // Some objects 'wrap' around the screen (spaceship, asteroids)
 	                       // ... and some do not (bullets, alien ships)
+							//it's more :  do we need to know if the object is at the end of the screen 
 	
 	// We require two separate arrays, the set of x-coordinates and the set of 
     // y-coordinates for each vertex in the Polygon used for the hitModel for
@@ -88,11 +89,12 @@ public abstract class GameObject {
 	}
 	
 	/** Check if the object has gone completely off the screen.
-	 * 
+	 * how about it returns a boolean, if boolean is true than the object is at the end oh the screen ? 
 	 */
 	public void wrap (double screenWidth, double screenHeight) {
 		double halfShipWidth  = this.hitModel.getLayoutBounds().getWidth() / 2;
 		double halfShipHeight = this.hitModel.getLayoutBounds().getHeight() / 2;
+		boolean exitScreen = false ;
 		
 		// If we go off screen to the left (i.e. if the right edge of our sprite
 		// goes all the way past the left edge of our scene)...
@@ -118,17 +120,18 @@ public abstract class GameObject {
 			// it should appear on the right side of the screen!
 			this.position = this.position.yMovedTo(-halfShipHeight);
 		}
-		
 	}
 	
 	/** Method to update our 'game object'.  We want to track how much
 	 * time has passed. Usually, if our game is running at 60 frames per second,
 	 * our deltaTime will simply be 1/60th of a second.
+	 * returns a boolean to know if the element should be removed from the array of moving object
 	 * @param deltaTime
 	 * @return
 	 */
 	public void updatePosition(double deltaTime) {
 		// Update the position according to velocity
+		boolean edgeScreen = false ;
 		this.position
 			= new GameVector(
 				this.position.add(
@@ -136,7 +139,8 @@ public abstract class GameObject {
 						)
 				);
 
-		if (this.wrap) {
+		if (this.wrap) {//boolean if true then wrap the object so bullet and space shit, because we need to know
+						//when they arrive at the edge of the screen 
 			// Wrap around screen..
 			this.wrap(Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
 		}
