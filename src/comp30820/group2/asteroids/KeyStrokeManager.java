@@ -6,24 +6,24 @@ import java.util.HashMap;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 
-/** One of the many great things about JavaFX is its powerful events system. It’s
- * powerful, but it’s based on events rather than polling. That means if we need
- * to catch it as it’s happening.
+/** One of the many great things about JavaFX is its powerful events system. Itï¿½s
+ * powerful, but itï¿½s based on events rather than polling. That means if we need
+ * to catch it as itï¿½s happening.
  * 
  * It seems more intuitive to use to give the developer the functionality to check
- * when they want whether a chosen key is ‘down’.  To create that functionality
+ * when they want whether a chosen key is ï¿½downï¿½.  To create that functionality
  * we have wrapped the JavaFX event management in a management class. To give us
  * constant access to key state, we have set up a listener to run every time a key
  * is pressed and keep track of the keys.
  * 
- * We have no need to maintain more than one set of keys, so we’ll make our KeyStrokeManager class a Singleton. 
+ * We have no need to maintain more than one set of keys, so weï¿½ll make our KeyStrokeManager class a Singleton. 
  *
  * @author B. Agar Cox, E. Brard, T. Kelly, W. Song
  *
  */
 // The idea for using a Singleton to manage our input/output came from an online
 // article about creating/managing GameLoops in Java, see here:
-//   -> https://edencoding.com/game-loop-javafx/
+  //   -> https://edencoding.com/game-loop-javafx/
 // Of course our implementation - essentially what we thought would make for a
 // a game-friendly key system - ended up being quite different.
 public class KeyStrokeManager {
@@ -34,8 +34,10 @@ public class KeyStrokeManager {
     private static KeyStrokeManager INSTANCE;
 
 	// Create an ArrayList to store the keys that are currently being pressed
-    private static ArrayList<String> keyPressedList = new ArrayList<String>();
+    //private static ArrayList<String> keyPressedList = new ArrayList<String>();
 	// Use for space enfocer juste une fois 
+    
+    //create an HashMap, if the value is false then no need to know for how long the key was pressed
     private static HashMap<String, Boolean> currentlyActiveKeys = new HashMap<String, Boolean>();
     
     // Singleton - so it has a private constructor that no-one except this class
@@ -71,7 +73,7 @@ public class KeyStrokeManager {
      * 
      */
     private void clearKeys() {
-    	keyPressedList.clear();
+    	//keyPressedList.clear();
     	currentlyActiveKeys.clear();
     }
     /** If we were managing an old scene, make sure to destroy those even listeners
@@ -108,41 +110,41 @@ public class KeyStrokeManager {
 				{
 					String keyName = event.getCode().toString();
 					// Avoid adding duplicates to list
-					if (!keyPressedList.contains(keyName)) {
-						keyPressedList.add(keyName);
-					}
-					if (keyName == "SPACE") {
+					if (keyName == "SPACE") { //first check if it's a space,  because we only want it to count 1 time
 						if (!currentlyActiveKeys.containsKey(keyName)) {
 							currentlyActiveKeys.put(keyName, true);
 			            }
 					}
-					
+					else if (!currentlyActiveKeys.containsKey(keyName)) {
+						currentlyActiveKeys.put(keyName, false);
+					}
+					//System.out.println("list of key pressed : " + currentlyActiveKeys);
+
 				}
+				
 		);
         KeyStrokeManager.scene.setOnKeyReleased(
 				(KeyEvent event) ->
 				{
-					String keyName = event.getCode().toString();
-					// Avoid removing keys not list - should never happen!!!
-					if (keyPressedList.contains(keyName)) {
-						keyPressedList.remove(keyName);
+					String keyName = event.getCode().toString();	
+					if(currentlyActiveKeys.get(keyName) == false) {
+						currentlyActiveKeys.remove(keyName);
 					}
-					currentlyActiveKeys.remove(event.getCode().toString());
 				}
 		);
     }
     
 	/** @Elise?
-	 * 
+	 * method allowing us to distinct if a key has been pressed only once, no matter how long it has been pressed on
 	 * @param codeString
 	 * @return
 	 */
     // @Elise Suggestion: rename this to "markKeyPressAsProcessed" or some such
     // really descriptive thing that explains what it does?
-	protected boolean removeActiveKey(String codeString) {
-        Boolean isActive = currentlyActiveKeys.get(codeString);
+	protected boolean markKeyPressAsProcessed(String codeString) {
+        Boolean isActive = currentlyActiveKeys.get(codeString);//returns the value from the 
 
-        if (isActive != null && isActive) {
+        if (isActive != null && isActive) {//there is a space pressed and it's value is true 
         	currentlyActiveKeys.put(codeString, false);
             return true;
         } else {
@@ -159,9 +161,9 @@ public class KeyStrokeManager {
 //        return keysDown.toString();
 //    }
     
-	public ArrayList<String> getKeyPressedList() {
-		return keyPressedList;
-	}
+//	public ArrayList<String> getKeyPressedList() {
+//		return keyPressedList;
+//	}
 	public HashMap<String, Boolean> getCurrentlyActiveKeys() {
 		return currentlyActiveKeys;
 	}

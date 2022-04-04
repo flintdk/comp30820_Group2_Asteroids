@@ -203,8 +203,7 @@ public class Main extends Application {
 			GameObject spaceship = null;
 			// We keep track of all the objects on screen.
 			List<GameObject> movingObjectsOnScreen = null;
-			// Create an empty array of bullets 
-			List<GameObject> bulletArr = null;
+  			List<GameObject> bulletOnScreen = null;
 
 			public void handle(long nanotime) {
 				// Code we want to run goes here...
@@ -219,8 +218,7 @@ public class Main extends Application {
 					movingObjectsOnScreen = setGameToInitialState();
 					// Get the reference for the spaceship so we can steer it.
 					spaceship = findSpaceshipInList(movingObjectsOnScreen);
-					// Create an empty array of bullets 
-					bulletArr = new ArrayList<GameObject>();
+					
 					
 					Main.ctrlResetGameState = false;
 				}
@@ -229,10 +227,10 @@ public class Main extends Application {
 				// FOR CONSIDERATION: Should we extract our keystrokes and make
 				//                    them part of the configuration file so users
 				//                    can choose/save their own.
-				if (keys.getKeyPressedList().contains("LEFT")) {
+				if (keys.getCurrentlyActiveKeys().containsKey("LEFT")) {
 					spaceship.rotation -= 3;
 				}
-				if (keys.getKeyPressedList().contains("Q")) {
+				if (keys.getCurrentlyActiveKeys().containsKey("Q")) {
 					try {
 						controller.activateScene(mainStage, Configuration.GameWindows.END_OF_GAME);
 					}
@@ -240,12 +238,12 @@ public class Main extends Application {
 						IOe.printStackTrace();
 					}
 				}
-				if (keys.getKeyPressedList().contains("RIGHT")) {
+				if (keys.getCurrentlyActiveKeys().containsKey("RIGHT")) {
 					spaceship.rotation += 3;
 				}
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
-				if (keys.getKeyPressedList().contains("UP")) {
+				if (keys.getCurrentlyActiveKeys().containsKey("UP")) {
 					// The animation timer runs 60 times a second.  If a player presses a button
 					// that triggers a sound to play (like say the ships thrusters) then - if the
 					// player holds the button down - you can get an audio distortion as the media
@@ -300,40 +298,49 @@ public class Main extends Application {
 				}
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
-				if (keys.removeActiveKey("SPACE")) {
+				if (keys.markKeyPressAsProcessed("SPACE")) {
 					try {
-						//System.out.println("Size of the array, number of bullet " + bulletArr.size() + " "+ spaceship.position.getX() + "  " + spaceship.rotation);
-
+						
 						// @Elise all the bullet stuff here now...
 						// Fire!!
 						//add a bullet to the array of bullets on the screen
 						//get the initial position of the bullet based on the spaceship position 
 						double bulletIniX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
 						double bulletIniY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
-						bulletArr.add(new AsteroidsShape(AsteroidsShape.InGameShape.BULLET));
-						bulletArr.get(bulletArr.size()-1).position = new GameVector( bulletIniX,bulletIniY);
-						bulletArr.get(bulletArr.size()-1).rotation = spaceship.rotation;
-
+						movingObjectsOnScreen.add(new AsteroidsShape(AsteroidsShape.InGameShape.BULLET));
+						movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).position = new GameVector( bulletIniX,bulletIniY);
+						movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation = spaceship.rotation;
 
 						double changeX
-						= Math.cos(Math.toRadians(bulletArr.get(bulletArr.size()-1).rotation)) * Configuration.SPEED_BULLET;
+						= Math.cos(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.SPEED_BULLET;
 						double changeY
-						= Math.sin(Math.toRadians(bulletArr.get(bulletArr.size()-1).rotation)) * Configuration.SPEED_BULLET;
+						= Math.sin(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.SPEED_BULLET;
 
 						// Don't violate maximum speed limit
-						GameVector newVelocity = bulletArr.get(bulletArr.size()-1).velocity.add(changeX, changeY);
-						if (newVelocity.getLength() > Configuration.SPEED_MAX) {
-							newVelocity.lengthSetTo(Configuration.SPEED_MAX);
-						}
+						GameVector newVelocity = movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).velocity.add(changeX, changeY);
+				//		if (newVelocity.getLength() > Configuration.SPEED_MAX) {
+					//		newVelocity.lengthSetTo(Configuration.SPEED_MAX);
+						//}
 						// Now we want to add those velocity increments to the current velocity!
-						bulletArr.get(bulletArr.size()-1).velocity = newVelocity;
+						movingObjectsOnScreen.get(movingObjectsOnScreen .size()-1).velocity = newVelocity;
 
+						
+					//	System.out.println("Size of the array, number of bullet " + movingObjectsOnScreen);
+						//System.out.println("legnth : " + bulletList.size());
+
+		//				for (int i = 0; i < bulletList.size(); i++) {
+			//				System.out.println("object : " + bulletList.get(i));
+
+//						}
+						
+	
 						//est ce que toutes les bullet on la meme vitesse ? et la vitesse est constante right ? 
 						// creer la bullet a la fin du vaisceau ?  DONE
-						//mm c'est pas encore ca hein ? 
-						//est ce que la vitesse dela bullet depend de la vitess du vaisceau ? 
+						//
+						//
 						//ajouter une fonction pour supprimer la bullet once it's out of the screen 
 						// We use Asteroids as our resource-anchor class...
+						//coment faire pour wrap and remove sans connaitre le type de='élément ?
 						Media sound = new Media(Main.class.getResource(SoundEffects.FIRE.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
 						mediaPlayer.play();
@@ -357,6 +364,45 @@ public class Main extends Application {
 				// the method on each object as we iterate over the list.
 				//spaceship.update(1/60.0);
 				//asteroid.update(1/60.0);
+				
+				
+				// how about i just check the coordinate of each bullet and remove it if it's outiside the bounderies
+				
+				
+				// Get a list of the reference of the bullets
+				bulletOnScreen = findBulletInList(movingObjectsOnScreen); //find all the bullet of screen 
+				//int indexBullet ;
+
+				if( bulletOnScreen != null) { //avoid error if no bullet on screen 
+					//System.out.println("num bullet  :  " + bulletList.size());
+					for(int i = 0;i<bulletOnScreen.size();i++) { 
+						//check if the bullet coordinates if outside the screen boundaries
+						if(bulletOnScreen.get(i).position.getX() > Configuration.SCENE_WIDTH || 
+								bulletOnScreen.get(i).position.getX() < 0 ||
+								bulletOnScreen.get(i).position.getX() > Configuration.SCENE_HEIGHT ||
+								bulletOnScreen.get(i).position.getX() < 0) {
+							int indexBullet = movingObjectsOnScreen.indexOf(bulletOnScreen.get(i)) ;
+							movingObjectsOnScreen.remove(indexBullet);
+						}
+					}
+				}
+				//System.out.println("num object : " + movingObjectsOnScreen.size());
+				//boolean edgeScreen = false ;
+				//for(int i = 1;i<movingObjectsOnScreen.size();i++) {
+					//movingObjectsOnScreen.get(i).updatePosition(1/60.0);
+					//edgeScreen = movingObjectsOnScreen.get(i).updatePosition(1/60.0);//update tous les elements mais le ship ne bouge pas 
+					//if( movingObjectsOnScreen.get(i).updatePosition(1/60.0) ) {//the element is at the end on screen
+						//System.out.println("one element at the end of the screen");
+					//if (bulletList != null) {//avoid an error if no bullets on screen
+						//if( bulletList.contains(movingObjectsOnScreen.get(i)) ) {//check if the element is a bullet
+							//	System.out.println("this a bullet " + i +" lenght of object before removing bullet" + movingObjectsOnScreen.size());
+							//	movingObjectsOnScreen.remove(i);//remove the bullet that's at th end 
+								//System.out.println("lenght of object after removing bullet  " + movingObjectsOnScreen.size());
+							//}
+					//	}
+				//	}
+				//}
+				
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
 
@@ -367,18 +413,18 @@ public class Main extends Application {
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.render(context));
 
-				for (int i = 0; i < bulletArr.size(); i++) {
+		//		for (int i = 0; i < bulletArr.size(); i++) {
 //					GameObject bullet;
 //					bullet  = new AsteroidsShape(AsteroidsShape.InGameShape.BULLET);
 //					bullet.randomInit();
 //					bullet.updatePosition(1/60.0);
 //					bullet.render(context);
 					
-					bulletArr.get(i).updatePosition(1/60.0);
+	//				bulletArr.get(i).updatePosition(1/60.0);
 					//					System.out.println("Spaceship" + spaceship.position.toString());
 					//					System.out.println("\tBullet" + bulletArr.get(i).position.toString());
-					bulletArr.get(i).render(context);
-				}
+	//				bulletArr.get(i).render(context);
+	//			}
 
 				//##############################################################
 				//##############################################################
@@ -497,6 +543,37 @@ public class Main extends Application {
 			}
 		}
 		return spaceship;
+	}
+	
+	private List<GameObject> findBulletInList(List<GameObject> movingObjectsOnScreen)
+	{
+		List<GameObject> bulletList = null ;
+
+		// One of the objects we've just created is the spaceship.
+		// We need to be able to reference this object directly so
+		// we can control it's position.
+		for (GameObject newGameObject: movingObjectsOnScreen) {
+			// The spaceship is in the list... and it's either a 
+			// Sprite or an 'AsteroidsShape' (wish we had a better
+			// name for these).  So search for it and assign it's
+			// reference to the spaceship object.
+			if ((newGameObject instanceof Sprite
+					&& ((Sprite) newGameObject).type == Sprite.Graphics.LASER)
+				||
+				(newGameObject instanceof AsteroidsShape
+						&& ((AsteroidsShape) newGameObject).type == AsteroidsShape.InGameShape.BULLET))
+			{
+				if (bulletList==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
+					bulletList = new ArrayList<>();
+					bulletList.add(newGameObject);
+				  }
+				else{
+					bulletList.add(newGameObject);
+				}
+			}
+		}
+		
+		return bulletList;
 	}
 
 	/* GETTERS AND SETTERS */
