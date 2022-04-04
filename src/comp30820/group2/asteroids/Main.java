@@ -3,7 +3,9 @@ package comp30820.group2.asteroids;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import comp30820.group2.asteroids.Configuration.SoundEffects;
@@ -16,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 /** Asteroids - the Classic Arcade Game.
@@ -380,11 +383,14 @@ public class Main extends Application {
 				//##############################################################
 				//##############################################################
 
-				//for(int i = 1;i<movingObjectsOnScreen.size();i++) {
-//				if(Shape.intersect(spaceship.hitModel(),initialAsteroid1.hitModel()).getBoundsInLocal().getWidth() !=-1) {
-//					// TODO Print out the coordinates of everything to see what's up!!
-//					//System.out.println("Collision detected!!!" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
-//				}
+				for(int i = 1;i<movingObjectsOnScreen.size();i++) {
+					GameObject object = movingObjectsOnScreen.get(i);
+					if(spaceship.isHitting(object)) {
+						// TODO Print out the coordinates of everything to see what's up!!
+						System.out.println("Collision detected!!!"
+								+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+					}
+				}
 
 				//System.out.println("square"+asteroid1.hitModel().getBoundsInLocal());
 				//System.out.println("spaceship"+spaceship.hitModel().getBoundsInLocal());

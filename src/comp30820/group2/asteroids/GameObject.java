@@ -66,8 +66,10 @@ public abstract class GameObject {
 	 * this is the only method that will be used to access the hitModel of this object.
 	 * @return
 	 */
-	public Shape hitModel() {
+	public Shape getHitModel() {
 		// Before we return the hitModel, make sure it is up to date!
+		
+		// ########  TK Looking at this are we off by half a ship width/height??
 		this.hitModel.setTranslateX(this.position.getX());
 		this.hitModel.setTranslateY(this.position.getY());
 		this.hitModel.setRotate(this.rotation);
@@ -84,7 +86,10 @@ public abstract class GameObject {
 	 * @return
 	 */
 	public boolean isHitting(GameObject other ) {
-		return this.hitModel.intersects(other.hitModel.getBoundsInLocal());
+		// Make sure to call the 'getHitModel()' method so the positions, rotation
+		// etc. are up to date.
+		//return this.hitModel.intersects(other.hitModel.getBoundsInLocal());
+		return getHitModel().intersects(other.getHitModel().getBoundsInLocal());
 	}
 	
 	/** Check if the object has gone completely off the screen.
@@ -179,8 +184,11 @@ public abstract class GameObject {
 		// screen)! We want to rotate about the center of the sprite. So we slide
 		// the image to the left and up (note the negative numbers)
 		context.translate(
-				-(this.hitModel.getLayoutBounds().getWidth() / 2),
-				-(this.hitModel.getLayoutBounds().getHeight() / 2) );
+				-(getHitModel().getLayoutBounds().getWidth() / 2),
+				-(getHitModel().getLayoutBounds().getHeight() / 2) );
+//		context.translate(
+//				-(this.hitModel.getLayoutBounds().getWidth() / 2),
+//				-(this.hitModel.getLayoutBounds().getHeight() / 2) );
 		// Draw the image at the origin...
 		drawObject(context);
 
