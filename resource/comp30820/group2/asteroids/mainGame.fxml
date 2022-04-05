@@ -6,25 +6,27 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
+<BorderPane maxHeight="768" maxWidth="1024" minHeight="768" minWidth="1024" prefHeight="768" prefWidth="1024" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
    <center>
-      <Pane prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+      <Pane prefHeight="768" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
-            <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutX="1.0" width="800.0" />
+            <Canvas fx:id="asteroidsGameCanvas" height="716.0" layoutX="1.0" width="1024.0" />
          </children>
       </Pane>
    </center>
    <top>
-      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <Pane prefHeight="84" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
-            <Label prefHeight="17.0" prefWidth="196.0" text="POINTS : " textFill="#fc4753">
+            <Label layoutX="21.0" layoutY="17.0" prefHeight="17.0" prefWidth="196.0" text="POINTS : " textFill="#fc4753">
+            <Label fx:id="playerNameLabel" layoutX="73.0" layoutY="42.0" text=" " textFill="RED" />
                <font>
-                  <Font name="Georgia" size="13.0" />
+                  <Font name="Georgia" size="21.0" />
                </font>
             </Label>
-            <Label fx:id="playerNameLabel" layoutX="258.0" layoutY="9.0" prefHeight="88.0" prefWidth="306.0" text="NAME" textFill="#ff0404">
-               <font>
-                  <Font size="71.0" />
+            <Label fx:id="playerNameLabel" layoutX="158.0" layoutY="-18.0" prefHeight="88.0" prefWidth="881.0" textFill="#ff0404">
+  
+                     <font>
+                  <Font size="37.0" />
                </font>
             </Label>
          </children>
