@@ -39,8 +39,13 @@ public class GameState {
 	// Getters and Setters
 
 	public String getPlayername() {
+		if (playername == null) {
+			playername = "Player1";
+			return playername;
+		}
+		else {
 		return playername;
-	}
+		}	}
 	public void setPlayername(String playername) {
 		this.playername = playername;
 	}

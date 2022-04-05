@@ -38,6 +38,30 @@ public class AsteroidsFXMLController implements Initializable {
 //		System.out.println("Environment: Java -> " + javaVersion + ", JavaFX -> " + javafxVersion);
 
 		//System.out.println("initialiseCanvas: In the canvas");
+				
+		GameState gameState = GameState.getInstance();
+		String playerName = gameState.getPlayername();
+		System.out.print(playerName);
+		
+		
+//		if (!playerName.isEmpty()) {
+//			playerNameLabel.setText(playerName);				
+//		}
+		
+		
+		
+		
+		
+//		if (playerName == null) {
+//			
+//		playerName = "Test";
+//		playerNameLabel.setText(playerName);
+//		System.out.print(playerName);
+//		
+//		}
+//		else {
+//			playerNameLabel.setText(playerName);
+//		}
 		asteroidsGameCanvas.setWidth(Configuration.SCENE_WIDTH);
 		asteroidsGameCanvas.setHeight(Configuration.SCENE_HEIGHT);
 	}
@@ -65,6 +89,9 @@ public class AsteroidsFXMLController implements Initializable {
 		if (buttonId.equals("welcomeStartGame"))
 		{
 			// PICK UP TEXT FROM TEXT BOX AND STORE SOMEWHERE FOR LATER
+						
+			// Should the code be commented to allow the name to be passed through?
+			
 			Main.setCtrlResetGameState(true);
 			activateScene(stage, Configuration.GameWindows.MAIN_GAME);
 			
@@ -96,9 +123,10 @@ public class AsteroidsFXMLController implements Initializable {
 			gameState.setPlayername(playerName);
 			
 			playerNameTextField.setVisible(false);
-			
-			playerNameLabel.setText(playerName);
-			
+			playerNameLabel.setVisible(true);
+			// Start scene
+			playerNameLabel.setText("WELCOME " + playerName.toString());
+						
 		}
 
 	}
@@ -146,6 +174,18 @@ public class AsteroidsFXMLController implements Initializable {
 		// which is created on application startup.
 		Scene scene;
 		if (window == Configuration.GameWindows.MAIN_GAME) {
+			//			String x1 = playerNameLabel.getText();
+//			
+//			System.out.print(x1);
+//			playerNameLabel.setText(x1);
+			
+			
+			
+			GameState gameState = GameState.getInstance();
+			String playerName = gameState.getPlayername();
+//			playerNameLabel.setText(playerName.toString());
+			System.out.print(playerName);
+			
 			scene = Main.getMainGameScene();
 		}
 		else {

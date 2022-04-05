@@ -50,6 +50,31 @@
                   <Font size="27.0" />
                </font>
             </Button>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="644.0" layoutY="475.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/asteroids-WALogo.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="68.0" fitWidth="32.0" layoutX="63.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/asteroid.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="37.0" fitWidth="27.0" layoutX="696.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/asteroid.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="51.0" fitWidth="56.0" layoutX="144.0" layoutY="387.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/asteroid.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="34.0" fitWidth="18.0" layoutX="690.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/asteroid.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
    </center>
