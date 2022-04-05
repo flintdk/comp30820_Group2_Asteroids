@@ -216,17 +216,17 @@ public class Configuration {
         {
         	Path userConfigPath = config.resolve(propsFileName);
         	File userConfigFile = userConfigPath.toFile();
-        	if (userConfigFile.exists()) {
-	        	FileInputStream fis = new FileInputStream(userConfigFile);
-	            configProps.load(fis); // load asteroids .properties file
-	
-	            setConfigFromProperties(configProps);
-	                       
-	            fis.close();
-	            
-	            System.out.println("Asteroid: Configuration loaded from User file.");
-	            configLoaded = true;
-        	}
+//        	if (userConfigFile.exists()) {
+//	        	FileInputStream fis = new FileInputStream(userConfigFile);
+//	            configProps.load(fis); // load asteroids .properties file
+//	
+//	            setConfigFromProperties(configProps);
+//	                       
+//	            fis.close();
+//	            
+//	            System.out.println("Asteroid: Configuration loaded from User file.");
+//	            configLoaded = true;
+//        	}
             
             // Next - attempt to load the default configuration file
             if (!configLoaded) {

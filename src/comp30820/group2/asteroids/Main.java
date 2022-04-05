@@ -7,15 +7,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import comp30820.group2.asteroids.Configuration.SoundEffects;
 import comp30820.group2.asteroids.Sprite.Graphics;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Shape;
@@ -138,7 +143,7 @@ public class Main extends Application {
         Scene welcomeScene = new Scene(root);
         welcomeScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         // Attach the KeyStrokeManager singleton to this scene...
-        KeyStrokeManager.getInstance().manageThisScene(welcomeScene);
+        //KeyStrokeManager.getInstance().manageThisScene(welcomeScene);
         // Create the GameState singleton for things like Player Name etc...
         GameState.getInstance();
         
@@ -154,6 +159,8 @@ public class Main extends Application {
         
         FXMLLoader mainGameLoader =
     			new FXMLLoader(getClass().getResource(Configuration.GameWindows.MAIN_GAME.fxmlResource));
+        // In the following line the 'mainGameRoot corresponds to the BorderLayout
+        // in our Java FX scene (it is of class BorderLayout)
     	Parent mainGameRoot = (Parent) mainGameLoader.load();
     	// Create our mainGameScene.  We want to use this scene over and over
     	// so it gets created once as the game starts up and then we draw to the
@@ -161,6 +168,7 @@ public class Main extends Application {
         Main.mainGameScene = new Scene(mainGameRoot);
         Main.mainGameScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         AsteroidsFXMLController controller = mainGameLoader.<AsteroidsFXMLController>getController();
+		Map<String, Object> controlsInMainGameNamespace = mainGameLoader.getNamespace();
 
 		// We want to display some graphics, so we use the Canvas that is configured
 		// in our FXML.  We can display our graphics on and set it's size. The Canvas
@@ -192,12 +200,15 @@ public class Main extends Application {
 		// The first time we enter the animation timer, we definitely want to 
 		// set the game state to initial settings.
 		Main.ctrlResetGameState = true;
+		
+		// Grab a handle on the gamestate singlton
+		GameState gameState = GameState.getInstance();
 
 		// The AnimationTimer is a way you can create a set of code that will run
 		// 60 times per second in JavaFX
 		// Anonymous inner class????????
 		AnimationTimer gameloop = new AnimationTimer() {
-
+			
 			// The players spaceship is a special object as it's motion is controlled
 			// reacting to input from the keyboard (from the user)
 			GameObject spaceship = null;
@@ -206,6 +217,11 @@ public class Main extends Application {
   			List<GameObject> bulletOnScreen = null;
 
 			public void handle(long nanotime) {
+				
+				//  Update the labels in the main game layout:
+				Label label = (Label) controlsInMainGameNamespace.get("playerNameLabel");
+				label.setText(gameState.getPlayername());
+
 				// Code we want to run goes here...
 
 				// The animation loop runs all the time.  If a process sets the
@@ -429,14 +445,14 @@ public class Main extends Application {
 				//##############################################################
 				//##############################################################
 
-				for(int i = 1;i<movingObjectsOnScreen.size();i++) {
-					GameObject object = movingObjectsOnScreen.get(i);
-					if(spaceship.isHitting(object)) {
-						// TODO Print out the coordinates of everything to see what's up!!
-						System.out.println("Collision detected!!!"
-								+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
-					}
-				}
+//				for(int i = 1;i<movingObjectsOnScreen.size();i++) {
+//					GameObject object = movingObjectsOnScreen.get(i);
+//					if(spaceship.isHitting(object)) {
+//						// TODO Print out the coordinates of everything to see what's up!!
+//						System.out.println("Collision detected!!!"
+//								+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+//					}
+//				}
 
 				//System.out.println("square"+asteroid1.hitModel().getBoundsInLocal());
 				//System.out.println("spaceship"+spaceship.hitModel().getBoundsInLocal());
