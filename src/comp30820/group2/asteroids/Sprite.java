@@ -35,8 +35,8 @@ public class Sprite extends GameObject {
     	SPACESHIP(Resource.IMG.path + "spaceship.png"),
         ASTEROID(Resource.IMG.path + "asteroid.png"),
     	MUZZLE_FLARE(Resource.IMG.path + "fire.png"),
-        LASER(Resource.IMG.path + "laser.png");
-        
+        LASER(Resource.IMG.path + "laser.png"),
+        ALIEN("ALIEN");
         public final String path;
 
         private Graphics(String path) {

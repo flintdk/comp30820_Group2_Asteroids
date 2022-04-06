@@ -24,7 +24,7 @@ public abstract class GameObject {
 	public GameVector position;
 	public GameVector velocity;
 	public double rotation;  // degrees - it's the angle of the orientation!
-
+	
 	public Shape hitModel;  // A polygon describing our game objects on screen
 	// JavaFX rotates the coordinate space of the node (Polygon) about a specified
 	// "pivot" point. The pivot point about which the rotation occurs is "the center
@@ -35,6 +35,9 @@ public abstract class GameObject {
 	// same pivot offsets when rotating.
 	public double rotationPivotOffsetX;
 	public double rotationPivotOffsetY;
+	
+	public double initialX;
+	public double initialY;
 
 	public boolean wrap ;  // Some objects 'wrap' around the screen (spaceship, asteroids)
 	                       // ... and some do not (bullets, alien ships)
@@ -55,6 +58,8 @@ public abstract class GameObject {
 		this.position = new GameVector();
 		this.velocity = new GameVector();
 		this.rotation = 0;
+		this.initialX=0;
+		this.initialY=0;
 		// The default hitModel is just a 1 x 1 square!
 		this.hitModel = new Polygon(0, 0, 1, 0, 1, 1, 0, 1);
 		setRotationPivotOffsets();
@@ -79,14 +84,16 @@ public abstract class GameObject {
 	};
 	
 	// @Wendy
+	//set the initial position randomly for alien and set the speed
 	public void randomInitAlien() {
 		Random r = new Random();
 		this.position = new GameVector(0,Configuration.SCENE_HEIGHT * r.nextDouble());
-		double initialX = Configuration.SPEED_ALIEN;
-		this.velocity = new GameVector(initialX, 0);
+		double initialSpeed = Configuration.SPEED_ALIEN;
+		this.velocity = new GameVector(initialSpeed, 0);
 	}
 	
 	// @Wendy
+	//set the Alien path randomly
 	public void changePathAlien() {
 		Random r = new Random();
 		float m=r.nextFloat();

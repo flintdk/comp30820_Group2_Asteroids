@@ -2,47 +2,47 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resource"/>
-	<classpathentry kind="lib" path="lib/javafx.base.jar">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Zulu 16.30.19 [16.0.1]">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/javafx.controls.jar">
+	<classpathentry kind="lib" path="/Users/songwendi/Downloads/javafx-sdk-17.0.2/lib/javafx-swt.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/javafx.fxml.jar">
+	<classpathentry kind="lib" path="/Users/songwendi/Downloads/javafx-sdk-17.0.2/lib/javafx.base.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/javafx.graphics.jar">
+	<classpathentry kind="lib" path="/Users/songwendi/Downloads/javafx-sdk-17.0.2/lib/javafx.controls.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/javafx.media.jar">
+	<classpathentry kind="lib" path="/Users/songwendi/Downloads/javafx-sdk-17.0.2/lib/javafx.fxml.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/javafx.swing.jar">
+	<classpathentry kind="lib" path="/Users/songwendi/Downloads/javafx-sdk-17.0.2/lib/javafx.graphics.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/javafx.web.jar">
+	<classpathentry kind="lib" path="/Users/songwendi/Downloads/javafx-sdk-17.0.2/lib/javafx.media.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/javafx-swt.jar">
+	<classpathentry kind="lib" path="/Users/songwendi/Downloads/javafx-sdk-17.0.2/lib/javafx.swing.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry kind="lib" path="/Users/songwendi/Downloads/javafx-sdk-17.0.2/lib/javafx.web.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

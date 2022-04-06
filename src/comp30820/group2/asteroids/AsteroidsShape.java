@@ -28,7 +28,9 @@ public class AsteroidsShape extends GameObject {
         ASTEROID_MEDIUM("Irregular shaped Asteroid, Medium!"),
         ASTEROID_SMALL("Irregular shaped Asteroid, Small!"),
     	MUZZLE_FLARE("Muzzle flare for when our cannon fires"),
-        BULLET("The bullet shot out by our cannon");
+        BULLET("The bullet shot out by our cannon"),
+    	ALIEN("Alien Spaceship"),
+    	ALIEN_BULLET("Alien Bullet");
         
         public final String description;
 
@@ -101,8 +103,15 @@ public class AsteroidsShape extends GameObject {
 			xpoints = new double[]{0,1,1,0};
 			ypoints = new double[]{0,0,1,1};  //########################### FIX ME
 			wrap = false ;
+		}else if(shapeName == InGameShape.ALIEN) {
+			xpoints = new double[]{5,-5,-10,-20,-10,10,20,10};
+			ypoints = new double[]{-10,-10,-5,0,10,10,0,-5};
+		}else if(shapeName == InGameShape.ALIEN_BULLET) {
+			xpoints = new double[]{0,1,1,0};
+			ypoints = new double[]{0,0,1,1};
+			wrap = false;
 		}
-		else {
+		else{
 			// Boring old 1x1 square for a default!!
 			xpoints = new double[]{0,1,1,0};
 			ypoints = new double[]{0,0,1,1};  
@@ -112,7 +121,6 @@ public class AsteroidsShape extends GameObject {
 		// Once we have a polygon - make sure to populate or PivotOffsets so we
 		// can keep our hit model / displayed objects in sync.
 		setRotationPivotOffsets();
-
 	}
 
 	/** Generate an irregular polygon inside a circle of a specified maximum size.  The
