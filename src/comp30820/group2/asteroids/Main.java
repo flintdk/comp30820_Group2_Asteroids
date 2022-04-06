@@ -241,6 +241,21 @@ public class Main extends Application {
 				//  Update the labels in the main game layout:
 				Label label = (Label) mainGameNamespace.get("playerNameLabel");
 				label.setText(gameState.getPlayername());
+				
+				
+				//########################################################3
+				/// TO BE UPDATED WITH SCORES VARIABLE
+				//########################################################3
+
+				
+				Label labelPoints= (Label) mainGameNamespace.get("Points");
+				//########################################################3
+				//########################################################3
+				//########################################################3
+				//########################################################3
+
+				// Further investigation needed for int to string, only can setText to string value
+//				labelPoints.setText(gameState.getScore());
 
 				// Code we want to run goes here...
 

@@ -21,7 +21,19 @@ public class GameState {
     private GameState() {
     }
     
-    // Singleton - There can be ONLY One!!
+    
+    private int score = 0;
+    
+    
+    public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	// Singleton - There can be ONLY One!!
     public static GameState getInstance() {
     	if(INSTANCE == null) {
             INSTANCE = new GameState();

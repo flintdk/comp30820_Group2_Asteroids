@@ -8,19 +8,28 @@
 
 <BorderPane maxHeight="768" maxWidth="1024" minHeight="768" minWidth="1024" prefHeight="768" prefWidth="1024" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
    <center>
-      <Pane fx:id="mainGamePane" minHeight="600.0" minWidth="1024.0" prefHeight="600" prefWidth="1024" BorderPane.alignment="CENTER">
+      <Pane minHeight="768.0" minWidth="1024.0" prefHeight="768" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
-            <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutX="0" layoutY="0" width="1024.0" />
+            <Canvas fx:id="asteroidsGameCanvas" height="609.0" layoutX="-1.0" layoutY="86.0" width="1030.0" />
          </children>
       </Pane>
    </center>
    <top>
       <Pane prefHeight="84" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="21.0" layoutY="17.0" prefHeight="17.0" prefWidth="196.0" text="POINTS : " textFill="#fc4753" />
-            <Label fx:id="playerNameLabel" layoutX="158.0" layoutY="-18.0" prefHeight="88.0" prefWidth="881.0" textFill="#ff0404">
+            <Label layoutX="42.0" layoutY="24.0" prefHeight="17.0" prefWidth="196.0" text="POINTS : " textFill="#fc4753">
                <font>
-                  <Font size="37.0" />
+                  <Font size="34.0" />
+               </font></Label>
+            <Label fx:id="playerNameLabel" layoutX="599.0" layoutY="-5.0" prefHeight="87.0" prefWidth="457.0" textAlignment="CENTER" textFill="#ff0404">
+  
+                     <font>
+                  <Font size="34.0" />
+               </font>
+            </Label>
+            <Label fx:id="Points" layoutX="194.0" layoutY="34.0" prefHeight="17.0" prefWidth="196.0" textFill="#fc4753">
+               <font>
+                  <Font size="20.0" />
                </font>
             </Label>
          </children>

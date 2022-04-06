@@ -38,7 +38,7 @@
             </Label>
             <ProgressIndicator layoutX="403.0" layoutY="438.0" prefHeight="193.0" prefWidth="255.0" />
             <TextField fx:id="playerNameTextField" layoutX="214.0" layoutY="328.0" onKeyPressed="#playerNameTextField" prefHeight="49.0" prefWidth="163.0" promptText="Enter your name..." />
-            <Label fx:id="playerNameLabel" layoutX="343.0" layoutY="520.0" prefHeight="54.0" prefWidth="129.0" text=" " textAlignment="CENTER" textFill="RED">
+            <Label fx:id="playerNameLabel" layoutX="294.0" layoutY="505.0" prefHeight="69.0" prefWidth="310.0" text=" " textAlignment="CENTER" textFill="RED">
                <font>
                   <Font name="Impact" size="20.0" />
                </font></Label>
