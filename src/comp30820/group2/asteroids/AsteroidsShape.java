@@ -109,6 +109,9 @@ public class AsteroidsShape extends GameObject {
 		}
 
 		this.hitModel = new Polygon(getPointsAsCoordinates());
+		// Once we have a polygon - make sure to populate or PivotOffsets so we
+		// can keep our hit model / displayed objects in sync.
+		setRotationPivotOffsets();
 
 	}
 

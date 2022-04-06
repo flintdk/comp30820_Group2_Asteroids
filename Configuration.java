@@ -90,18 +90,6 @@ public class Configuration {
         }
     };
     // Sound effect resources
-    public enum GameWindows {
-        WELCOME_MAIN_MENU("welcomeMainMenu.fxml"),
-        MAIN_GAME("mainGame.fxml"),
-        END_OF_GAME("endOfGame.fxml");
-        
-        public final String fxmlResource;
-
-        private GameWindows(String fxmlResource) {
-            this.fxmlResource = fxmlResource;
-        }
-    };
-    // Sound effect resources
     public enum SoundEffects {
         BANG_LARGE(Resource.SND.path + "bangLarge.wav"),
         BANG_MEDIUM(Resource.SND.path + "bangMedium.wav"),
@@ -131,7 +119,7 @@ public class Configuration {
 	public static GraphicsMode GRAPHICS_MODE = GraphicsMode.CLASSIC;
 	public static int SCENE_WIDTH = 800;
 	public static int SCENE_HEIGHT = 600;
-	public static int SPEED_MAX = 500;
+	public static int SPEED_MAX = 200;
 	public static int SPEED_INCREMENT = 10;
 	public static int SPEED_BULLET = 300;
 	public static int ASTEROID_LRG_SIZE = 60;
@@ -142,8 +130,8 @@ public class Configuration {
 	public static int ASTEROID_SML_SPEED = 150;
 	public static int ASTEROID_RADIUS_VARIANCE = 30;  // Percent
 	public static int ASTEROID_GRANULARITY = 25;  // No. of Points to divide circle
-	public static int SPEED_ALIEN = 150;
-
+	public static int SPEED_AlIEN = 150;
+	
 	public static Result CONFIGURATION_LOADED = Result.FAILURE;
     
     // A Static Initialization Block in Java is a block that runs before the
@@ -217,17 +205,17 @@ public class Configuration {
         {
         	Path userConfigPath = config.resolve(propsFileName);
         	File userConfigFile = userConfigPath.toFile();
-//        	if (userConfigFile.exists()) {
-//	        	FileInputStream fis = new FileInputStream(userConfigFile);
-//	            configProps.load(fis); // load asteroids .properties file
-//	
-//	            setConfigFromProperties(configProps);
-//	                       
-//	            fis.close();
-//	            
-//	            System.out.println("Asteroid: Configuration loaded from User file.");
-//	            configLoaded = true;
-//        	}
+        	if (userConfigFile.exists()) {
+	        	FileInputStream fis = new FileInputStream(userConfigFile);
+	            configProps.load(fis); // load asteroids .properties file
+	
+	            setConfigFromProperties(configProps);
+	                       
+	            fis.close();
+	            
+	            System.out.println("Asteroid: Configuration loaded from User file.");
+	            configLoaded = true;
+        	}
             
             // Next - attempt to load the default configuration file
             if (!configLoaded) {
@@ -322,10 +310,6 @@ public class Configuration {
 		if (configProps.getProperty("ASTEROID_GRANULARITY") != null) {
 			ASTEROID_GRANULARITY = Integer.parseInt(configProps.getProperty("ASTEROID_GRANULARITY"));
 		}
-		if (configProps.getProperty("SPEED_ALIEN") != null) {
-			SPEED_ALIEN = Integer.parseInt(configProps.getProperty("SPEED_ALIEN"));
-		}
-		
 	}
     
     /** Save the User-specific Asteroids application configuration
@@ -385,7 +369,6 @@ public class Configuration {
 		configProps.setProperty("ASTEROID_SML_SPEED",  String.valueOf(ASTEROID_SML_SPEED));
 		configProps.setProperty("ASTEROID_RADIUS_VARIANCE",  String.valueOf(ASTEROID_RADIUS_VARIANCE));
 		configProps.setProperty("ASTEROID_GRANULARITY",  String.valueOf(ASTEROID_GRANULARITY));
-		configProps.setProperty("SPEED_ALIEN",  String.valueOf(SPEED_ALIEN));
 	}
     
     /** Get the Host Operating System.

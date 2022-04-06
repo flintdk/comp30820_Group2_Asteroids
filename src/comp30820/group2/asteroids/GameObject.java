@@ -1,7 +1,10 @@
 package comp30820.group2.asteroids;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
@@ -20,8 +23,19 @@ import javafx.scene.shape.Shape;
 public abstract class GameObject {
 	public GameVector position;
 	public GameVector velocity;
-	public double rotation;  // degrees - it's the angle of the orientation! 
+	public double rotation;  // degrees - it's the angle of the orientation!
+
 	public Shape hitModel;  // A polygon describing our game objects on screen
+	// JavaFX rotates the coordinate space of the node (Polygon) about a specified
+	// "pivot" point. The pivot point about which the rotation occurs is "the center
+	// of the untransformed layoutBounds."  See:
+	//   -> https://docs.oracle.com/javase/8/javafx/api/javafx/scene/Node.html
+	// We're using a graphical context (a canvas).  To ensure our hitmodel is
+	// located in exactly the same place as the drawn object, we need to use the
+	// same pivot offsets when rotating.
+	public double rotationPivotOffsetX;
+	public double rotationPivotOffsetY;
+
 	public boolean wrap ;  // Some objects 'wrap' around the screen (spaceship, asteroids)
 	                       // ... and some do not (bullets, alien ships)
 							//it's more :  do we need to know if the object is at the end of the screen 
@@ -43,6 +57,7 @@ public abstract class GameObject {
 		this.rotation = 0;
 		// The default hitModel is just a 1 x 1 square!
 		this.hitModel = new Polygon(0, 0, 1, 0, 1, 1, 0, 1);
+		setRotationPivotOffsets();
 		this.wrap = true ;
 	}
 	
@@ -51,30 +66,54 @@ public abstract class GameObject {
 	 * 
 	 */
 	// ################################################ Can we use this for hyperspace as well as asteroids?
-	public void randomInit() {
+	public void randomPosRotVelInit() {
 		Random r = new Random();
 		this.position = new GameVector((Configuration.SCENE_WIDTH * r.nextDouble()),(Configuration.SCENE_HEIGHT * r.nextDouble()));
 		this.rotation = r.nextDouble() * 360.0;
+		//this.rotation = 0;
 		double initialX
 			= Math.cos(Math.toRadians(this.rotation)) * Configuration.ASTEROID_LRG_SPEED;
 		double initialY
     		= Math.sin(Math.toRadians(this.rotation)) * Configuration.ASTEROID_LRG_SPEED;
 		this.velocity = new GameVector(initialX, initialY);
-		
 	};
+	
+	// @Wendy
+	public void randomInitAlien() {
+		Random r = new Random();
+		this.position = new GameVector(0,Configuration.SCENE_HEIGHT * r.nextDouble());
+		double initialX = Configuration.SPEED_ALIEN;
+		this.velocity = new GameVector(initialX, 0);
+	}
+	
+	// @Wendy
+	public void changePathAlien() {
+		Random r = new Random();
+		float m=r.nextFloat();
+		double initialY = Configuration.SPEED_ALIEN;
+		List<Double> list = new ArrayList<>();
+		list.add(initialY);
+		list.add(-initialY);
+		int i = Math.round(m);
+		double pointChage = Configuration.SCENE_WIDTH*r.nextDouble();
+		//System.out.println(pointChage);
+		if(this.position.getX() > pointChage && this.velocity.getY() == 0) {
+			this.velocity = this.velocity.add(0 , list.get(i));
+		}
+		if(this.position.getX()>Configuration.SCENE_HEIGHT/4*3.5 && this.velocity.getY() != 0) {
+			this.velocity =  new GameVector(initialY, 0);
+		}
+	}
 
 	/** Access the hitModel for this 'game object'.  The expectation is that
 	 * this is the only method that will be used to access the hitModel of this object.
 	 * @return
 	 */
 	public Shape getHitModel() {
-		// Before we return the hitModel, make sure it is up to date!
-		
-		// ########  TK Looking at this are we off by half a ship width/height??
-		this.hitModel.setTranslateX(this.position.getX());
-		this.hitModel.setTranslateY(this.position.getY());
 		this.hitModel.setRotate(this.rotation);
-		
+		this.hitModel.setTranslateX(this.position.getX()-rotationPivotOffsetX);
+		this.hitModel.setTranslateY(this.position.getY()-rotationPivotOffsetY);
+
 		return this.hitModel;
 	}
 	
@@ -86,19 +125,16 @@ public abstract class GameObject {
 	 * @param other The other 'game object'.
 	 * @return
 	 */
-	public boolean isHitting(GameObject other ) {
-		// Make sure to call the 'getHitModel()' method so the positions, rotation
-		// etc. are up to date.
-		//return this.hitModel.intersects(other.hitModel.getBoundsInLocal());
-		return getHitModel().intersects(other.getHitModel().getBoundsInLocal());
+	public boolean isHitting(GameObject other) {
+		return Shape.intersect(getHitModel(),other.getHitModel()).getBoundsInLocal().getWidth()!= -1;
 	}
 	
 	/** Check if the object has gone completely off the screen.
 	 * how about it returns a boolean, if boolean is true than the object is at the end oh the screen ? 
 	 */
 	public void wrap (double screenWidth, double screenHeight) {
-		double halfShipWidth  = this.hitModel.getLayoutBounds().getWidth() / 2;
-		double halfShipHeight = this.hitModel.getLayoutBounds().getHeight() / 2;
+		double halfShipWidth  = getHitModel().getLayoutBounds().getWidth() / 2;
+		double halfShipHeight = getHitModel().getLayoutBounds().getHeight() / 2;
 		boolean exitScreen = false ;
 		
 		// If we go off screen to the left (i.e. if the right edge of our sprite
@@ -136,7 +172,7 @@ public abstract class GameObject {
 	 */
 	public void updatePosition(double deltaTime) {
 		// Update the position according to velocity
-		boolean edgeScreen = false ;
+		boolean edgeScreen = false;
 		this.position
 			= new GameVector(
 				this.position.add(
@@ -144,8 +180,11 @@ public abstract class GameObject {
 						)
 				);
 
-		if (this.wrap) {//boolean if true then wrap the object so bullet and space shit, because we need to know
-						//when they arrive at the edge of the screen 
+		// boolean if true then wrap the object
+		//   -> some objects 'wrap' when they move past the edge of the screen (e.g. spaceship, asteroid)
+		//   -> some objects disappear (e.g. bullet)
+		// ... so we need to know how to behave when they arrive at the edge of the screen 
+		if (this.wrap) {
 			// Wrap around screen..
 			this.wrap(Configuration.SCENE_WIDTH,Configuration.SCENE_HEIGHT);
 		}
@@ -187,12 +226,8 @@ public abstract class GameObject {
 		// The default pivot point is '0,0' or the origin (top left corner of the
 		// screen)! We want to rotate about the center of the sprite. So we slide
 		// the image to the left and up (note the negative numbers)
-		context.translate(
-				-(getHitModel().getLayoutBounds().getWidth() / 2),
-				-(getHitModel().getLayoutBounds().getHeight() / 2) );
-//		context.translate(
-//				-(this.hitModel.getLayoutBounds().getWidth() / 2),
-//				-(this.hitModel.getLayoutBounds().getHeight() / 2) );
+		context.translate(-rotationPivotOffsetX, -rotationPivotOffsetY);
+
 		// Draw the image at the origin...
 		drawObject(context);
 
@@ -208,5 +243,20 @@ public abstract class GameObject {
 	 * @param context
 	 */
 	public abstract void drawObject(GraphicsContext context);
+	
+	/** Each game object has a hitmodel (a polygon).  We move the polygon around
+	 * the screen - this involves rotation, transalation etc..  But we also draw
+	 * the polygon on a canvas.  It's vital that the hitmodel and the canvas are
+	 * in perfect synchronisation so collisions detected by the game match exactly
+	 * what's on screen.
+	 * To do this we need to know the pivot point that JavaFX uses.  So we work
+	 * it out and store it.
+	 */
+	protected void setRotationPivotOffsets()
+	{
+		Bounds b = this.hitModel.layoutBoundsProperty().get();
+		this.rotationPivotOffsetX = (b.getMinX() + b.getMaxX()) / 2.0;
+		this.rotationPivotOffsetY = (b.getMinY() + b.getMaxY()) / 2.0;
+	}
 
 }

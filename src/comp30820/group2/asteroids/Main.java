@@ -3,9 +3,8 @@ package comp30820.group2.asteroids;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +63,11 @@ public class Main extends Application {
 	KeyStrokeManager keys = KeyStrokeManager.getInstance();
 	
 	private static Scene mainGameScene;
+	// If you want to see the raw Hit Model drawn on the game pane (i.e.
+	// not using the graphics context - all we have to do is rab the main
+	// game pane from the .fxml.  Then below we can add children etc..
+	// This is quite useful for debugging...
+	private static Pane mainGamePane;
 	private static boolean ctrlResetGameState;
 	
 	public static void main(String[] args)
@@ -168,7 +172,13 @@ public class Main extends Application {
         Main.mainGameScene = new Scene(mainGameRoot);
         Main.mainGameScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         AsteroidsFXMLController controller = mainGameLoader.<AsteroidsFXMLController>getController();
-		Map<String, Object> controlsInMainGameNamespace = mainGameLoader.getNamespace();
+		Map<String, Object> mainGameNamespace = mainGameLoader.getNamespace();
+		// Store a ref to the main game pane - useful for debugging...
+		Main.mainGamePane = (Pane) mainGameNamespace.get("mainGamePane");
+		
+//		GameObject initialAsteroid1;
+//		Pane pane = new Pane();
+//	    pane.setPrefSize(1024, 600);
 
 		// We want to display some graphics, so we use the Canvas that is configured
 		// in our FXML.  We can display our graphics on and set it's size. The Canvas
@@ -191,7 +201,8 @@ public class Main extends Application {
 			= new Sprite(Graphics.BACKGROUND,
 					Double.valueOf(Configuration.SCENE_WIDTH),
 					Double.valueOf(Configuration.SCENE_HEIGHT) );
-		background.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
+		//background.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
+		background.position = new GameVector(0,0);
 
 		//######################################################################
 		//                         THE ANIMATION / RUNNING GAME
@@ -215,11 +226,11 @@ public class Main extends Application {
 			// We keep track of all the objects on screen.
 			List<GameObject> movingObjectsOnScreen = null;
   			List<GameObject> bulletOnScreen = null;
-
+  			
 			public void handle(long nanotime) {
-				
+
 				//  Update the labels in the main game layout:
-				Label label = (Label) controlsInMainGameNamespace.get("playerNameLabel");
+				Label label = (Label) mainGameNamespace.get("playerNameLabel");
 				label.setText(gameState.getPlayername());
 
 				// Code we want to run goes here...
@@ -232,6 +243,7 @@ public class Main extends Application {
 					// First, create and initialise the list of moving game objects
 					// #################### TODO MIGHT THIS CHANGE IF WE INTRODUCE LEVELS????
 					movingObjectsOnScreen = setGameToInitialState();
+					
 					// Get the reference for the spaceship so we can steer it.
 					spaceship = findSpaceshipInList(movingObjectsOnScreen);
 					
@@ -283,14 +295,7 @@ public class Main extends Application {
 					}
 					// Think of the length of the velocity vector as 'speed'
 
-					// @Wendy should the following be a method in GameObject perhaps???  spacheship.fireEngines??????????
 					//---------------------------------------------------------------------------------------
-					// from here....
-					// First crude attempt:  Just start the spaceship moving
-					// instantly in the direction it's facing, at a fixed speed:
-					// spaceship.velocity = spaceship.velocity.lengthSetTo(100);
-					// spaceship.velocity = spaceship.velocity.angleSetTo(spaceship.rotation);
-
 					// If the user is pointing the spaceship and firing thrusters
 					// then we want to increment  our speed based on the direction
 					// we're facing.
@@ -334,22 +339,10 @@ public class Main extends Application {
 
 						// Don't violate maximum speed limit
 						GameVector newVelocity = movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).velocity.add(changeX, changeY);
-				//		if (newVelocity.getLength() > Configuration.SPEED_MAX) {
-					//		newVelocity.lengthSetTo(Configuration.SPEED_MAX);
-						//}
+
 						// Now we want to add those velocity increments to the current velocity!
 						movingObjectsOnScreen.get(movingObjectsOnScreen .size()-1).velocity = newVelocity;
 
-						
-					//	System.out.println("Size of the array, number of bullet " + movingObjectsOnScreen);
-						//System.out.println("legnth : " + bulletList.size());
-
-		//				for (int i = 0; i < bulletList.size(); i++) {
-			//				System.out.println("object : " + bulletList.get(i));
-
-//						}
-						
-	
 						//est ce que toutes les bullet on la meme vitesse ? et la vitesse est constante right ? 
 						// creer la bullet a la fin du vaisceau ?  DONE
 						//
@@ -387,7 +380,6 @@ public class Main extends Application {
 				
 				// Get a list of the reference of the bullets
 				bulletOnScreen = findBulletInList(movingObjectsOnScreen); //find all the bullet of screen 
-				//int indexBullet ;
 
 				if( bulletOnScreen != null) { //avoid error if no bullet on screen 
 					//System.out.println("num bullet  :  " + bulletList.size());
@@ -395,29 +387,13 @@ public class Main extends Application {
 						//check if the bullet coordinates if outside the screen boundaries
 						if(bulletOnScreen.get(i).position.getX() > Configuration.SCENE_WIDTH || 
 								bulletOnScreen.get(i).position.getX() < 0 ||
-								bulletOnScreen.get(i).position.getX() > Configuration.SCENE_HEIGHT ||
-								bulletOnScreen.get(i).position.getX() < 0) {
+								bulletOnScreen.get(i).position.getY() > Configuration.SCENE_HEIGHT ||
+								bulletOnScreen.get(i).position.getY() < 0) {
 							int indexBullet = movingObjectsOnScreen.indexOf(bulletOnScreen.get(i)) ;
 							movingObjectsOnScreen.remove(indexBullet);
 						}
 					}
 				}
-				//System.out.println("num object : " + movingObjectsOnScreen.size());
-				//boolean edgeScreen = false ;
-				//for(int i = 1;i<movingObjectsOnScreen.size();i++) {
-					//movingObjectsOnScreen.get(i).updatePosition(1/60.0);
-					//edgeScreen = movingObjectsOnScreen.get(i).updatePosition(1/60.0);//update tous les elements mais le ship ne bouge pas 
-					//if( movingObjectsOnScreen.get(i).updatePosition(1/60.0) ) {//the element is at the end on screen
-						//System.out.println("one element at the end of the screen");
-					//if (bulletList != null) {//avoid an error if no bullets on screen
-						//if( bulletList.contains(movingObjectsOnScreen.get(i)) ) {//check if the element is a bullet
-							//	System.out.println("this a bullet " + i +" lenght of object before removing bullet" + movingObjectsOnScreen.size());
-							//	movingObjectsOnScreen.remove(i);//remove the bullet that's at th end 
-								//System.out.println("lenght of object after removing bullet  " + movingObjectsOnScreen.size());
-							//}
-					//	}
-				//	}
-				//}
 				
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
@@ -428,37 +404,38 @@ public class Main extends Application {
 
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.render(context));
+				
+//  EXAMPLE OF HOW TO SET TEXT FOR CONTROLS ON SCREEN
+				
+//				//  Update the labels in the main game layout:
+//				DecimalFormat df = new DecimalFormat("0.0");
+				GameObject asteroid = null;
+				for (GameObject go: movingObjectsOnScreen) {
+					if ((go instanceof AsteroidsShape
+								&& ((AsteroidsShape) go).type == AsteroidsShape.InGameShape.ASTEROID_LARGE))
+					{
+						asteroid = go;
+					}
+				}
+//				Label status1 = (Label) mainGameNamespace.get("status1");
+//				status1.setText("SpSh_Pos: " + df.format(spaceship.position.getX()) + "\t,\t" + df.format(spaceship.position.getY()));
+//				Label status2 = (Label) mainGameNamespace.get("status2");
+//				status2.setText("HtMdl_TrXY: " + df.format(spaceship.hitModel.getTranslateX()) + "\t,\t" + df.format(spaceship.hitModel.getTranslateY()));
+//				
+//				Label status3 = (Label) mainGameNamespace.get("status3");
+//				status3.setText("Astr_Pos: " + df.format(asteroid.position.getX()) + "\t,\t" + df.format(asteroid.position.getY()));
+//				Label status4 = (Label) mainGameNamespace.get("status4");
+//				status4.setText("HtMdl_TrXY: " + df.format(asteroid.hitModel.getTranslateX()) + "\t,\t" + df.format(asteroid.hitModel.getTranslateY()));
+//				
+//				Label status5 = (Label) mainGameNamespace.get("status5");
+//				status5.setText("SpSh_Rot: " + df.format(spaceship.position.getX()));
+//				Label status6 = (Label) mainGameNamespace.get("status6");
+//				status6.setText("Astr_Rot: " + df.format(asteroid.rotation));
+				
+				if(spaceship.isHitting(asteroid)) {
+					stop();
+				}
 
-		//		for (int i = 0; i < bulletArr.size(); i++) {
-//					GameObject bullet;
-//					bullet  = new AsteroidsShape(AsteroidsShape.InGameShape.BULLET);
-//					bullet.randomInit();
-//					bullet.updatePosition(1/60.0);
-//					bullet.render(context);
-					
-	//				bulletArr.get(i).updatePosition(1/60.0);
-					//					System.out.println("Spaceship" + spaceship.position.toString());
-					//					System.out.println("\tBullet" + bulletArr.get(i).position.toString());
-	//				bulletArr.get(i).render(context);
-	//			}
-
-				//##############################################################
-				//##############################################################
-
-//				for(int i = 1;i<movingObjectsOnScreen.size();i++) {
-//					GameObject object = movingObjectsOnScreen.get(i);
-//					if(spaceship.isHitting(object)) {
-//						// TODO Print out the coordinates of everything to see what's up!!
-//						System.out.println("Collision detected!!!"
-//								+ new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
-//					}
-//				}
-
-				//System.out.println("square"+asteroid1.hitModel().getBoundsInLocal());
-				//System.out.println("spaceship"+spaceship.hitModel().getBoundsInLocal());
-				//System.out.println("inter"+Shape.intersect(spaceship.hitModel(),asteroid1.hitModel()).getBoundsInLocal());
-				//##############################################################
-				//##############################################################
 
 			}
 
@@ -473,7 +450,7 @@ public class Main extends Application {
      * @return
      */
     public List<GameObject> setGameToInitialState() {
-
+    	
 		// We keep track of all the objects on screen.
 		List<GameObject> movingObjectsOnScreen = new ArrayList<GameObject>();
 
@@ -514,14 +491,17 @@ public class Main extends Application {
 			initialAsteroid3  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_SMALL);
 		}
 		spaceship.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
-		initialAsteroid1.randomInit();
-		initialAsteroid2.randomInit();
-		initialAsteroid3.randomInit();
+		initialAsteroid1.randomPosRotVelInit();
+		initialAsteroid2.randomPosRotVelInit();
+		initialAsteroid3.randomPosRotVelInit();
 
 		movingObjectsOnScreen.add(spaceship);
 		movingObjectsOnScreen.add(initialAsteroid1);
 		movingObjectsOnScreen.add(initialAsteroid2);
 		movingObjectsOnScreen.add(initialAsteroid3);
+		
+//		mainGamePane.getChildren().add(spaceship.hitModel);
+//		mainGamePane.getChildren().add(initialAsteroid1.hitModel);
 
 		return movingObjectsOnScreen;
     }

@@ -8,33 +8,34 @@
 
 <BorderPane maxHeight="768" maxWidth="1024" minHeight="768" minWidth="1024" prefHeight="768" prefWidth="1024" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
    <center>
-      <Pane minHeight="768.0" minWidth="1024.0" prefHeight="768" prefWidth="1024" BorderPane.alignment="CENTER">
+      <Pane fx:id="mainGamePane" minHeight="600.0" minWidth="1024.0" prefHeight="600" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
-            <Canvas fx:id="asteroidsGameCanvas" height="723.0" layoutX="0" layoutY="0" width="1024.0" />
-            <Label layoutX="833.0" layoutY="248.0" text="RIGHT SIDE">
-               <font>
-                  <Font size="55.0" />
-               </font>
-            </Label>
+            <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutX="0" layoutY="0" width="1024.0" />
          </children>
       </Pane>
    </center>
    <top>
       <Pane prefHeight="84" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="21.0" layoutY="17.0" prefHeight="17.0" prefWidth="196.0" text="POINTS : " textFill="#fc4753">
-            <Label fx:id="playerNameLabel" layoutX="73.0" layoutY="42.0" text=" " textFill="RED" />
-               <font>
-                  <Font name="Georgia" size="21.0" />
-               </font>
-            </Label>
+            <Label layoutX="21.0" layoutY="17.0" prefHeight="17.0" prefWidth="196.0" text="POINTS : " textFill="#fc4753" />
             <Label fx:id="playerNameLabel" layoutX="158.0" layoutY="-18.0" prefHeight="88.0" prefWidth="881.0" textFill="#ff0404">
-  
-                     <font>
+               <font>
                   <Font size="37.0" />
                </font>
             </Label>
          </children>
       </Pane>
    </top>
+   <bottom>
+      <Pane prefHeight="84" prefWidth="1024" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="status1" layoutX="28.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+            <Label fx:id="status2" layoutX="592.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+            <Label fx:id="status3" layoutX="28.0" layoutY="32.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+            <Label fx:id="status4" layoutX="592.0" layoutY="32.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+            <Label fx:id="status5" layoutX="28.0" layoutY="59.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+            <Label fx:id="status6" layoutX="592.0" layoutY="59.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+         </children>
+      </Pane>
+   </bottom>
 </BorderPane>
