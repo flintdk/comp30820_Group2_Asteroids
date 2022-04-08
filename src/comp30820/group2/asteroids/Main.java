@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import comp30820.group2.asteroids.AsteroidsShape.InGameShape;
 import comp30820.group2.asteroids.Configuration.SoundEffects;
 import comp30820.group2.asteroids.Sprite.Graphics;
 import javafx.animation.AnimationTimer;
@@ -269,8 +270,8 @@ public class Main extends Application {
 					movingObjectsOnScreen = setGameToInitialState();
 					
 					// Get the reference for the spaceship so we can steer it.
-					spaceship = findSpaceshipInList(movingObjectsOnScreen);
-					
+					//spaceship = findSpaceshipInList(movingObjectsOnScreen);
+					spaceship = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.SPACESHIP).get(0);
 					
 					Main.ctrlResetGameState = false;
 				}
@@ -403,7 +404,7 @@ public class Main extends Application {
 				
 				
 				// Get a list of the reference of the bullets
-				bulletOnScreen = findBulletInList(movingObjectsOnScreen); //find all the bullet of screen 
+				bulletOnScreen = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.BULLET);
 
 				if( bulletOnScreen != null) { //avoid error if no bullet on screen 
 					//System.out.println("num bullet  :  " + bulletList.size());
@@ -492,8 +493,17 @@ public class Main extends Application {
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
 
+				
 				// COLLISION DETECTION?????????????????????????????
 
+				
+				
+				
+				
+				
+				
+				
+				
 				background.render(context);
 
 				// LAMBDA EXPRESSION
@@ -532,6 +542,8 @@ public class Main extends Application {
 
 
 			}
+
+
 
 		};
 		gameloop.start();
@@ -611,10 +623,34 @@ public class Main extends Application {
 	 * @param movingObjectsOnScreen
 	 * @return the spaceship!! (null if none found)
 	 */
-	private GameObject findSpaceshipInList(List<GameObject> movingObjectsOnScreen)
+//	private GameObject findSpaceshipInList(List<GameObject> movingObjectsOnScreen)
+//	{
+//		GameObject spaceship = null;
+//
+//		// One of the objects we've just created is the spaceship.
+//		// We need to be able to reference this object directly so
+//		// we can control it's position.
+//		for (GameObject newGameObject: movingObjectsOnScreen) {
+//			// The spaceship is in the list... and it's either a 
+//			// Sprite or an 'AsteroidsShape' (wish we had a better
+//			// name for these).  So search for it and assign it's
+//			// reference to the spaceship object.
+//			if ((newGameObject instanceof Sprite
+//					&& ((Sprite) newGameObject).type == Sprite.Graphics.SPACESHIP)
+//				||
+//				(newGameObject instanceof AsteroidsShape
+//						&& ((AsteroidsShape) newGameObject).type == AsteroidsShape.InGameShape.SPACESHIP))
+//			{
+//				spaceship = newGameObject;
+//			}
+//		}
+//		return spaceship;
+//	}
+	
+	private List<GameObject> findElementInList(List<GameObject> movingObjectsOnScreen, InGameShape nameElement)
 	{
-		GameObject spaceship = null;
-
+		List<GameObject> elementList = null ;
+		AsteroidsShape testShape = new AsteroidsShape(nameElement) ;
 		// One of the objects we've just created is the spaceship.
 		// We need to be able to reference this object directly so
 		// we can control it's position.
@@ -623,39 +659,50 @@ public class Main extends Application {
 			// Sprite or an 'AsteroidsShape' (wish we had a better
 			// name for these).  So search for it and assign it's
 			// reference to the spaceship object.
-			if ((newGameObject instanceof Sprite
-					&& ((Sprite) newGameObject).type == Sprite.Graphics.SPACESHIP)
-				||
-				(newGameObject instanceof AsteroidsShape
-						&& ((AsteroidsShape) newGameObject).type == AsteroidsShape.InGameShape.SPACESHIP))
+			
+			if ((newGameObject instanceof AsteroidsShape
+						&& ((AsteroidsShape) newGameObject).type == testShape.type))
 			{
-				spaceship = newGameObject;
-			}
-		}
-		return spaceship;
-	}
-	
-	private List<GameObject> findBulletInList(List<GameObject> movingObjectsOnScreen)
-	{
-		List<GameObject> bulletList = null;
-		for (GameObject newGameObject: movingObjectsOnScreen) {
-			if ((newGameObject instanceof Sprite
-					&& ((Sprite) newGameObject).type == Sprite.Graphics.LASER)
-				||
-				(newGameObject instanceof AsteroidsShape
-						&& ((AsteroidsShape) newGameObject).type == AsteroidsShape.InGameShape.BULLET))
-			{
-				if (bulletList==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
-					bulletList = new ArrayList<>();
-					bulletList.add(newGameObject);
+				if (elementList==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
+					elementList = new ArrayList<>();
+					elementList.add(newGameObject);
 				  }
 				else{
-					bulletList.add(newGameObject);
+					elementList.add(newGameObject);
 				}
 			}
 		}
 		
-		return bulletList;
+		return elementList;
+	}
+	//overload of the function for sprite type 
+	private List<GameObject> findElementInList(List<GameObject> movingObjectsOnScreen, Graphics nameElement)
+	{
+		List<GameObject> elementList = null ;
+		Sprite testShape = new Sprite(nameElement) ;
+		// One of the objects we've just created is the spaceship.
+		// We need to be able to reference this object directly so
+		// we can control it's position.
+		for (GameObject newGameObject: movingObjectsOnScreen) {
+			// The spaceship is in the list... and it's either a 
+			// Sprite or an 'AsteroidsShape' (wish we had a better
+			// name for these).  So search for it and assign it's
+			// reference to the spaceship object.
+			
+			if ((newGameObject instanceof Sprite
+					&& ((Sprite) newGameObject).type == testShape.type))
+			{
+				if (elementList==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
+					elementList = new ArrayList<>();
+					elementList.add(newGameObject);
+				  }
+				else{
+					elementList.add(newGameObject);
+				}
+			}
+		}
+		
+		return elementList;
 	}
 	
 	private GameObject findAlienInList(List<GameObject> movingObjectsOnScreen)
