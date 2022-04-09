@@ -6,6 +6,7 @@ import java.util.Random;
 
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
@@ -111,6 +112,7 @@ public abstract class GameObject {
 			this.velocity =  new GameVector(initialY, 0);
 		}
 	}
+	
 
 	/** Access the hitModel for this 'game object'.  The expectation is that
 	 * this is the only method that will be used to access the hitModel of this object.
@@ -134,6 +136,84 @@ public abstract class GameObject {
 	 */
 	public boolean isHitting(GameObject other) {
 		return Shape.intersect(getHitModel(),other.getHitModel()).getBoundsInLocal().getWidth()!= -1;
+	}
+	
+	/**
+	 * Jump the spaceship to a radius of 200 where there are no enemies
+	 * @param GameObject spaceship, List<GameObject> movingObjectsOnScreen
+	 * @return void
+	 */
+	public static void spaceshipHyperspace(GameObject spaceship, List<GameObject> movingObjectsOnScreen) {
+		boolean keepRunning = true;
+		while(keepRunning) {
+			Random r = new Random();
+			double a = Configuration.SCENE_WIDTH * r.nextDouble();
+			double b = Configuration.SCENE_HEIGHT * r.nextDouble();	
+		//GameVector position = new GameVector(Configuration.SCENE_WIDTH * r.nextDouble(),Configuration.SCENE_HEIGHT * r.nextDouble());
+			for(int i=0; i<=movingObjectsOnScreen.size()-1;i++) {
+				GameObject gameObject = movingObjectsOnScreen.get(i);
+				if(!(gameObject instanceof Sprite && ((Sprite) gameObject).type == Sprite.Graphics.SPACESHIP||(gameObject instanceof AsteroidsShape
+							&& ((AsteroidsShape) gameObject).type == AsteroidsShape.InGameShape.SPACESHIP))) 
+				{
+					double dx = gameObject.position.getX()-a;
+					double dy = gameObject.position.getY()-b;
+					if(Math.pow(dx, 2)+Math.pow(dy, 2) <= Math.pow(200, 2)) {
+						break;
+					}
+				}
+				if(i==movingObjectsOnScreen.size()-1) {
+					keepRunning=false;
+					spaceship.position = new GameVector(a,b);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * let the alien fire at regular intervals and also alien fire to the spaceship
+	 * @param GameObject alienOnScreen, int timerBullet,GameObject spaceship, List<GameObject> movingObjectsOnScreen
+	 * @return void
+	 */
+	public static void alienBulletFire(GameObject alienOnScreen, int timerBullet,GameObject spaceship, List<GameObject> movingObjectsOnScreen) {
+		if(timerBullet%40==0) {
+			double bulletAlienX = alienOnScreen.position.getX();
+			double bulletAlienY = alienOnScreen.position.getY();
+			GameObject alienBullet= new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN_BULLET);
+			movingObjectsOnScreen.add(alienBullet);
+			alienBullet.initialX = bulletAlienX;
+			alienBullet.initialY = bulletAlienY;
+			alienBullet.position = new GameVector(bulletAlienX,bulletAlienY);
+			
+			double velocityBullet = Configuration.SPEED_BULLET;
+			double spaceshipX = spaceship.position.getX();
+			double spaceshipY = spaceship.position.getY();
+			double dx = spaceshipX-bulletAlienX;
+			double dy = spaceshipY-bulletAlienY;
+			double d = Math.sqrt(Math.pow(dx,2)+ Math.pow(dy,2));
+			
+			alienBullet.velocity = new GameVector(dx/d * velocityBullet,dy/d * velocityBullet);
+		}
+	}
+	
+	/**
+	 * if the alien bullet out of range it should be removed
+	 * @param List<GameObject> movingObjectsOnScreen
+	 * @return void
+	 */
+	public static void setAlienBulletRange(List<GameObject> movingObjectsOnScreen) {
+		for(GameObject gameObject: movingObjectsOnScreen) {
+			if ((gameObject instanceof Sprite&& ((Sprite) gameObject).type == Sprite.Graphics.LASER)
+					||(gameObject instanceof AsteroidsShape && ((AsteroidsShape) gameObject).type == AsteroidsShape.InGameShape.ALIEN_BULLET))
+			{
+				double dx = gameObject.position.getX()-gameObject.initialX;
+				double dy = gameObject.position.getY()-gameObject.initialY;
+				double d = Math.sqrt(Math.pow(dx,2)+ Math.pow(dy,2));
+				if(d>400){
+					movingObjectsOnScreen.remove(gameObject);
+					break;
+				}
+			}
+		}
 	}
 	
 	/** Check if the object has gone completely off the screen.

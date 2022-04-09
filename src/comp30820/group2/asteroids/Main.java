@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import comp30820.group2.asteroids.AsteroidsShape.InGameShape;
 import comp30820.group2.asteroids.Configuration.SoundEffects;
@@ -24,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
@@ -222,8 +224,6 @@ public class Main extends Application {
 		
 		//create a hashmap to set times for the gameObjects
 		HashMap<Enum,Timer > timers = new HashMap<Enum, Timer>();
-		timers.put(Timer.TIMER_CLASS.ALIEN_TIMER, new Timer(0));
-		timers.put(Timer.TIMER_CLASS. ALIEN_BULLET_TIMER, new Timer(0));
 		
 		
 		AnimationTimer gameloop = new AnimationTimer() {
@@ -231,14 +231,14 @@ public class Main extends Application {
 			// The players spaceship is a special object as it's motion is controlled
 			// reacting to input from the keyboard (from the user)
 			GameObject spaceship = null;
-			GameObject alienOnScreen = null;
+			GameObject alienOnScreen;
 			
 			// We keep track of all the objects on screen.
 			List<GameObject> movingObjectsOnScreen = null;
   			List<GameObject> bulletOnScreen = null;
   			
 			public void handle(long nanotime) {
-
+				
 				//  Update the labels in the main game layout:
 				Label label = (Label) mainGameNamespace.get("playerNameLabel");
 				label.setText(gameState.getPlayername());
@@ -272,6 +272,13 @@ public class Main extends Application {
 					// Get the reference for the spaceship so we can steer it.
 					//spaceship = findSpaceshipInList(movingObjectsOnScreen);
 					spaceship = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.SPACESHIP).get(0);
+					
+					//set the timer for when alien should appear
+					timers.put(Timer.TIMER_CLASS.ALIEN_TIMER, new Timer(0));
+					//set the timer for when alien should fire
+					timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
+					timers.put(Timer.TIMER_CLASS.HYPERSPACE, new Timer(0));
+					
 					
 					Main.ctrlResetGameState = false;
 				}
@@ -384,6 +391,20 @@ public class Main extends Application {
 						System.out.println(USE.getStackTrace());
 					}
 				}
+				
+				//press keyboard H and Let the spaceship jump to a place where is no enemies
+				if (keys.getCurrentlyActiveKeys().containsKey("H")) {
+					//System.out.println("Hyperspace");
+					spaceship.hitModel.setStroke(Color.BLACK);
+					timers.get(Timer.TIMER_CLASS.HYPERSPACE).increment_timer();
+					//System.out.println(timers.get(Timer.TIMER_CLASS.HYPERSPACE).get_time());
+				}else if(timers.get(Timer.TIMER_CLASS.HYPERSPACE).get_time()>1){
+					timers.remove(Timer.TIMER_CLASS.HYPERSPACE);
+					timers.put(Timer.TIMER_CLASS. HYPERSPACE, new Timer(0));
+					GameObject.spaceshipHyperspace(spaceship,movingObjectsOnScreen);
+					spaceship.hitModel.setStroke(Color.WHITE);
+				}
+				
 
 				// #################################################################
 				// Deal with keyReleases? Set boolean flag on key press so that, for
@@ -422,10 +443,14 @@ public class Main extends Application {
 				
 				//set the timer for aliens
 				timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).increment_timer();
-				alienOnScreen = findAlienInList(movingObjectsOnScreen);
+				List<GameObject> alienOnScreeList = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ALIEN);
+				if(alienOnScreeList!=null) {
+					alienOnScreen = alienOnScreeList.get(0);
+				}
+				//System.out.println(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time());
 				//when alien timer = 800, alien appear
 				if(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time() == 800) {
-					 if(alienOnScreen == null) {
+					 if(alienOnScreeList==null) {
 						 alienOnScreen = new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN);
 						 alienOnScreen.randomInitAlien();
 						 movingObjectsOnScreen.add(alienOnScreen);					
@@ -437,59 +462,24 @@ public class Main extends Application {
 					alienOnScreen.changePathAlien();
 				}
 				//if alien out of screen, remove it and reset timer again
-				if(alienOnScreen!=null && (alienOnScreen.position.getX()<0)) {
+				
+				if(alienOnScreeList!=null && (alienOnScreen.position.getX()<0)) {
 					movingObjectsOnScreen.remove(alienOnScreen);	
 					timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).set_time(0);
 				}
+				
 				
 				//get the allien bullet timer
 				int timerBullet = timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).get_time();
 				if(alienOnScreen != null && spaceship != null && alienOnScreen.position.getX()>0 && alienOnScreen.position.getY()>0) {
 					timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment_timer();
-					if(timerBullet%40==0) {
-						double bulletAlienX = alienOnScreen.position.getX();
-						double bulletAlienY = alienOnScreen.position.getY();
-						//GameObject alienBullet= new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN_BULLET);
-//						movingObjectsOnScreen.add(new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN_BULLET));
-//						movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).initialX = bulletAlienX;
-//						movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).initialY = bulletAlienY;
-//						movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).position = new GameVector(bulletAlienX,bulletAlienY);
-						GameObject alienBullet= new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN_BULLET);
-						movingObjectsOnScreen.add(alienBullet);
-						alienBullet.initialX = bulletAlienX;
-						alienBullet.initialY = bulletAlienY;
-						//movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).position = new GameVector(bulletAlienX,bulletAlienY);
-						alienBullet.position = new GameVector(bulletAlienX,bulletAlienY);
-						
-						double velocityBullet = Configuration.SPEED_BULLET;
-						double spaceshipX = spaceship.position.getX();
-						double spaceshipY = spaceship.position.getY();
-						double dx = spaceshipX-bulletAlienX;
-						double dy = spaceshipY-bulletAlienY;
-						double d = Math.sqrt(Math.pow(dx,2)+ Math.pow(dy,2));
-						
-						alienBullet.velocity = new GameVector(dx/d * velocityBullet,dy/d * velocityBullet);
-						}
+					//alien Bullet fire At regular intervals
+					GameObject.alienBulletFire(alienOnScreen,timerBullet,spaceship, movingObjectsOnScreen);
+				}
 					
-					}
-					
-					//if the alien bullet out of fire range, it should be removed
-					for(GameObject gameObject: movingObjectsOnScreen) {
-						if ((gameObject instanceof Sprite&& ((Sprite) gameObject).type == Sprite.Graphics.LASER)
-								||(gameObject instanceof AsteroidsShape && ((AsteroidsShape) gameObject).type == AsteroidsShape.InGameShape.ALIEN_BULLET))
-						{
-							double dx = gameObject.position.getX()-gameObject.initialX;
-							double dy = gameObject.position.getY()-gameObject.initialY;
-							double d = Math.sqrt(Math.pow(dx,2)+ Math.pow(dy,2));
-							if(d>400){
-								movingObjectsOnScreen.remove(gameObject);
-								break;
-							}
-						}
-					}
-				
-				
-				
+				//if the alien bullet out of fire range, it should be removed
+				GameObject.setAlienBulletRange(movingObjectsOnScreen);
+						
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
 
@@ -705,22 +695,7 @@ public class Main extends Application {
 		return elementList;
 	}
 	
-	private GameObject findAlienInList(List<GameObject> movingObjectsOnScreen)
-	{
-		GameObject alien = null;
 
-		for (GameObject newGameObject: movingObjectsOnScreen) {
-			if ((newGameObject instanceof Sprite
-					&& ((Sprite) newGameObject).type == Sprite.Graphics.ALIEN)
-				||
-				(newGameObject instanceof AsteroidsShape
-						&& ((AsteroidsShape) newGameObject).type == AsteroidsShape.InGameShape.ALIEN))
-			{
-				alien = newGameObject;
-			}
-		}
-		return alien;
-	}
 
 	/* GETTERS AND SETTERS */
 	/** Get the reference to the main game scene.
