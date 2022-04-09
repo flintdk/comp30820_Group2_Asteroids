@@ -5,9 +5,16 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import comp30820.group2.asteroids.AsteroidsShape.InGameShape;
 import comp30820.group2.asteroids.Configuration.SoundEffects;
@@ -235,8 +242,11 @@ public class Main extends Application {
 			
 			// We keep track of all the objects on screen.
 			List<GameObject> movingObjectsOnScreen = null;
-  			List<GameObject> bulletOnScreen = null;
   			
+  			List<GameObject> alienBulletsOnScreen = null;
+  			List<GameObject> allBulletsOnScreen = null;
+  			
+			@SuppressWarnings("null")
 			public void handle(long nanotime) {
 
 				//  Update the labels in the main game layout:
@@ -404,21 +414,25 @@ public class Main extends Application {
 				
 				
 				// Get a list of the reference of the bullets
-				bulletOnScreen = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.BULLET);
-
-				if( bulletOnScreen != null) { //avoid error if no bullet on screen 
-					//System.out.println("num bullet  :  " + bulletList.size());
-					for(int i = 0;i<bulletOnScreen.size();i++) { 
-						//check if the bullet coordinates if outside the screen boundaries
-						if(bulletOnScreen.get(i).position.getX() > Configuration.SCENE_WIDTH || 
-								bulletOnScreen.get(i).position.getX() < 0 ||
-								bulletOnScreen.get(i).position.getY() > Configuration.SCENE_HEIGHT ||
-								bulletOnScreen.get(i).position.getY() < 0) {
-							int indexBullet = movingObjectsOnScreen.indexOf(bulletOnScreen.get(i)) ;
-							movingObjectsOnScreen.remove(indexBullet);
-						}
-					}
-				}
+//				alienBulletsOnScreen = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ALIEN_BULLET);
+//				
+//				List<GameObject> spaceshipBulletsOnScreen = null;
+//				spaceshipBulletsOnScreen = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.BULLET);
+//				
+//				allBulletsOnScreen = Stream.of(spaceshipBulletsOnScreen,alienBulletsOnScreen)
+//											.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
+//											.collect(Collectors.toList());
+				// Get one list with all the asteroids
+				
+								
+				////////////////////////////////////////////////////////////////////
+				///remove the bullet from that ar out of the screen 
+				
+				movingObjectsOnScreen = removeBulletOutScreen(movingObjectsOnScreen);
+				movingObjectsOnScreen = collisionBulletAsteroid(movingObjectsOnScreen);
+				//System.out.println("num objects  :  " + movingObjectsOnScreen.size());
+				////////////////////////////////////////////////////////////////////
+				
 				
 				//set the timer for aliens
 				timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).increment_timer();
@@ -433,7 +447,7 @@ public class Main extends Application {
 				}
 				
 				//if the alien object exist, set the path for alien
-				if(alienOnScreen!=null) {
+				if(alienOnScreen!=null){
 					alienOnScreen.changePathAlien();
 				}
 				//if alien out of screen, remove it and reset timer again
@@ -496,14 +510,7 @@ public class Main extends Application {
 				
 				// COLLISION DETECTION?????????????????????????????
 
-				
-				
-				
-				
-				
-				
-				
-				
+
 				background.render(context);
 
 				// LAMBDA EXPRESSION
@@ -622,31 +629,7 @@ public class Main extends Application {
 	 * 
 	 * @param movingObjectsOnScreen
 	 * @return the spaceship!! (null if none found)
-	 */
-//	private GameObject findSpaceshipInList(List<GameObject> movingObjectsOnScreen)
-//	{
-//		GameObject spaceship = null;
-//
-//		// One of the objects we've just created is the spaceship.
-//		// We need to be able to reference this object directly so
-//		// we can control it's position.
-//		for (GameObject newGameObject: movingObjectsOnScreen) {
-//			// The spaceship is in the list... and it's either a 
-//			// Sprite or an 'AsteroidsShape' (wish we had a better
-//			// name for these).  So search for it and assign it's
-//			// reference to the spaceship object.
-//			if ((newGameObject instanceof Sprite
-//					&& ((Sprite) newGameObject).type == Sprite.Graphics.SPACESHIP)
-//				||
-//				(newGameObject instanceof AsteroidsShape
-//						&& ((AsteroidsShape) newGameObject).type == AsteroidsShape.InGameShape.SPACESHIP))
-//			{
-//				spaceship = newGameObject;
-//			}
-//		}
-//		return spaceship;
-//	}
-	
+	 */	
 	private List<GameObject> findElementInList(List<GameObject> movingObjectsOnScreen, InGameShape nameElement)
 	{
 		List<GameObject> elementList = null ;
@@ -722,6 +705,135 @@ public class Main extends Application {
 		return alien;
 	}
 
+	
+	private List<GameObject> removeBulletOutScreen(List<GameObject> movingObjectsOnScreen)
+	{
+		List<GameObject> spaceshipBulletsOnScreen = null;
+		spaceshipBulletsOnScreen = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.BULLET);
+		if( spaceshipBulletsOnScreen != null) { //avoid error if no bullet on screen 
+			for(int i = 0;i<spaceshipBulletsOnScreen.size();i++) { 
+				//check if the bullet coordinates if outside the screen boundaries
+				int indexBullet = movingObjectsOnScreen.indexOf(spaceshipBulletsOnScreen.get(i)) ;
+				if(spaceshipBulletsOnScreen.get(i).position.getX() > Configuration.SCENE_WIDTH || 
+						spaceshipBulletsOnScreen.get(i).position.getX() < 0 ||
+						spaceshipBulletsOnScreen.get(i).position.getY() > Configuration.SCENE_HEIGHT ||
+						spaceshipBulletsOnScreen.get(i).position.getY() < 0) {
+					movingObjectsOnScreen.remove(indexBullet);
+				}						
+			}
+		}
+		return movingObjectsOnScreen;
+	}
+	
+	private List<GameObject> collisionBulletAsteroid(List<GameObject> movingObjectsOnScreen)
+	{
+		//dinf all the bullets 
+		List<GameObject> spaceshipBulletsOnScreen = null;
+		spaceshipBulletsOnScreen = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.BULLET);
+		
+		//find all the asteroids 
+		List<GameObject> asteroidsOnScreen = null;
+		asteroidsOnScreen = Stream.of(findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ASTEROID_SMALL),
+				findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ASTEROID_MEDIUM),
+				findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ASTEROID_LARGE))
+				.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
+				.collect(Collectors.toList());
+		
+		//collision all (alien and spaceship) bullets against all asteroids 
+		if( spaceshipBulletsOnScreen != null) { //avoid error if no bullet on screen 
+			//System.out.println("num bullet  :  " + bulletList.size());
+			for(int i = 0;i<spaceshipBulletsOnScreen.size();i++) {
+				for(int j = 0;j<asteroidsOnScreen.size();j++) {
+					if( spaceshipBulletsOnScreen.get(i).isHitting(asteroidsOnScreen.get(j)) ){
+						//create a list with elements that needs to be removed after a collision  
+			  			List<GameObject> removeElements = new ArrayList<GameObject>();
+			  			removeElements.add(spaceshipBulletsOnScreen.get(i));
+			  			removeElements.add(asteroidsOnScreen.get(j));
+			  			
+			  			//System.out.println("x  destroyed :  " + asteroidsOnScreen.get(j).position.getX() + "y  destroyed :  " + asteroidsOnScreen.get(j).position.getY());
+			  			//find the coordinated of the 'original'asteroids'
+			  			double xOriginalAsteroid = asteroidsOnScreen.get(j).position.getX();
+			  			double yOriginalAsteroid = asteroidsOnScreen.get(j).position.getY();
+			  			double rotationOriginalAsteroid = asteroidsOnScreen.get(j).rotation ;
+			  			movingObjectsOnScreen.removeAll(removeElements); // remove simultaneously both elements
+			  			
+			  			//create two new asteroids
+			  			for(int h = 0 ; h <2 ; h++) {
+			  				if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
+		  							&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_LARGE) {
+			  					movingObjectsOnScreen = createMediumAsteroid(movingObjectsOnScreen,xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+				  			}
+			  				if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
+		  							&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_MEDIUM) {
+			  					movingObjectsOnScreen = createSmallAsteroid(movingObjectsOnScreen,xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+				 
+				  			}
+			  			}										
+					}
+				}
+				
+			}
+		}
+		return movingObjectsOnScreen;
+	}
+	
+	private List<GameObject> createMediumAsteroid(List<GameObject> movingObjectsOnScreen, double xOriginalAsteroid , double yOriginalAsteroid , double rotationOriginalAsteroid){
+		GameObject newAsteroids;
+		newAsteroids  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_MEDIUM);
+			
+		double asteroidIniX = xOriginalAsteroid + Math.cos(Math.toRadians(rotationOriginalAsteroid)) * Configuration.ASTEROID_MED_SIZE ;
+		double asteroidIniY = yOriginalAsteroid + Math.sin(Math.toRadians(rotationOriginalAsteroid)) * Configuration.ASTEROID_MED_SIZE;
+		
+		movingObjectsOnScreen.add(new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_MEDIUM));
+		movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).position = new GameVector( asteroidIniX,asteroidIniY);
+		
+		Random r = new Random();
+		double randomRotation = 0 + (360 - 0) * r.nextDouble();
+		
+		movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation = randomRotation;
+
+		double changeXAsteroid
+		= Math.cos(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.ASTEROID_MED_SPEED;
+		double changeYAsteroid
+		= Math.sin(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.ASTEROID_MED_SPEED;
+		
+		// Don't violate maximum speed limit
+		GameVector newVelocity = movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).velocity.add(changeXAsteroid, changeYAsteroid);
+
+		// Now we want to add those velocity increments to the current velocity!
+		movingObjectsOnScreen.get(movingObjectsOnScreen .size()-1).velocity = newVelocity;
+		return movingObjectsOnScreen;
+	}
+	
+	private List<GameObject> createSmallAsteroid(List<GameObject> movingObjectsOnScreen, double xOriginalAsteroid , double yOriginalAsteroid , double rotationOriginalAsteroid){
+		GameObject newAsteroids;
+		newAsteroids  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_SMALL);
+			
+		double asteroidIniX = xOriginalAsteroid + Math.cos(Math.toRadians(rotationOriginalAsteroid)) * Configuration.ASTEROID_SML_SPEED;
+		double asteroidIniY = yOriginalAsteroid + Math.sin(Math.toRadians(rotationOriginalAsteroid)) * Configuration.ASTEROID_SML_SPEED;
+		
+		movingObjectsOnScreen.add(new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_SMALL));
+		movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).position = new GameVector( asteroidIniX,asteroidIniY);
+		
+		Random r = new Random();
+		double randomRotation = 0 + (360 - 0) * r.nextDouble();
+		
+		
+		movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation = randomRotation;
+
+		double changeXAsteroid
+		= Math.cos(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.ASTEROID_SML_SPEED;
+		double changeYAsteroid
+		= Math.sin(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.ASTEROID_SML_SPEED;
+		
+		// Don't violate maximum speed limit
+		GameVector newVelocity = movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).velocity.add(changeXAsteroid, changeYAsteroid);
+
+		// Now we want to add those velocity increments to the current velocity!
+		movingObjectsOnScreen.get(movingObjectsOnScreen .size()-1).velocity = newVelocity;
+		return movingObjectsOnScreen;
+	}
+	
 	/* GETTERS AND SETTERS */
 	/** Get the reference to the main game scene.
 	 * @return
