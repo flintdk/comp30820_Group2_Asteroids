@@ -356,10 +356,7 @@ public class Main extends Application {
 				// spaceship is facing!!
 				if (keys.markKeyPressAsProcessed("SPACE")) {
 					try {
-						
-						// @Elise all the bullet stuff here now...
 						// Fire!!
-						//add a bullet to the array of bullets on the screen
 						//get the initial position of the bullet based on the spaceship position 
 						double bulletIniX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
 						double bulletIniY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
@@ -378,13 +375,6 @@ public class Main extends Application {
 						// Now we want to add those velocity increments to the current velocity!
 						movingObjectsOnScreen.get(movingObjectsOnScreen .size()-1).velocity = newVelocity;
 
-						//est ce que toutes les bullet on la meme vitesse ? et la vitesse est constante right ? 
-						// creer la bullet a la fin du vaisceau ?  DONE
-						//
-						//
-						//ajouter une fonction pour supprimer la bullet once it's out of the screen 
-						// We use Asteroids as our resource-anchor class...
-						//coment faire pour wrap and remove sans connaitre le type de='élément ?
 						Media sound = new Media(Main.class.getResource(SoundEffects.FIRE.path).toURI().toString());
 						MediaPlayer mediaPlayer = new MediaPlayer(sound);
 						mediaPlayer.play();
@@ -395,44 +385,13 @@ public class Main extends Application {
 					}
 				}
 
-				// #################################################################
-				// Deal with keyReleases? Set boolean flag on key press so that, for
-				// example, we don't attempt to play a sound a second time until the
-				// key releases?  Can we detect if "the sound has ended"?? Address
-
 				// We know the frame rate of the AnimationTimer, so every time
 				// the 'handle' gets called, we know that 1/60th of a second has
 				// passed.
 				// This is ordered from background to front 
 				// Instead of running each update individually, we can use a Lambda Expression to
 				// the method on each object as we iterate over the list.
-				//spaceship.update(1/60.0);
-				//asteroid.update(1/60.0);
-				
-				
-				// how about i just check the coordinate of each bullet and remove it if it's outiside the bounderies
-				
-				
-				// Get a list of the reference of the bullets
-//				alienBulletsOnScreen = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ALIEN_BULLET);
-//				
-//				List<GameObject> spaceshipBulletsOnScreen = null;
-//				spaceshipBulletsOnScreen = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.BULLET);
-//				
-//				allBulletsOnScreen = Stream.of(spaceshipBulletsOnScreen,alienBulletsOnScreen)
-//											.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
-//											.collect(Collectors.toList());
-				// Get one list with all the asteroids
-				
-								
-				////////////////////////////////////////////////////////////////////
-				///remove the bullet from that ar out of the screen 
-				
-				movingObjectsOnScreen = removeBulletOutScreen(movingObjectsOnScreen);
-				movingObjectsOnScreen = collisionBulletAsteroid(movingObjectsOnScreen);
-				//System.out.println("num objects  :  " + movingObjectsOnScreen.size());
-				////////////////////////////////////////////////////////////////////
-				
+
 				
 				//set the timer for aliens
 				timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).increment_timer();
@@ -484,7 +443,6 @@ public class Main extends Application {
 						
 						alienBullet.velocity = new GameVector(dx/d * velocityBullet,dy/d * velocityBullet);
 						}
-					
 					}
 					
 					//if the alien bullet out of fire range, it should be removed
@@ -502,8 +460,18 @@ public class Main extends Application {
 						}
 					}
 				
+				//check if some bullet are out the screen bouderies and remove them for the moving object, no need to update them anymore 
+				movingObjectsOnScreen = removeBulletOutScreen(movingObjectsOnScreen);
 				
+				//check if any of the bullets on screen are hitting an asteroids, 
+				//if yes creates, depending on the type of the asteroids, create two new smaller asteroids
+				//method not finished : need to add points if collision ! 
+				movingObjectsOnScreen = collisionBulletAsteroid(movingObjectsOnScreen);
 				
+				//check if the ship is hitting an asteroids 
+				// this method is not finished need to remove a life, a place safely the spaceship again
+				collisionSpaceshipAsteroid(movingObjectsOnScreen);
+					
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
 
@@ -759,6 +727,7 @@ public class Main extends Application {
 			  			
 			  			//create two new asteroids
 			  			for(int h = 0 ; h <2 ; h++) {
+			  				//points ++ en fonction de la taille de l'astéroide ? 
 			  				if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
 		  							&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_LARGE) {
 			  					movingObjectsOnScreen = createMediumAsteroid(movingObjectsOnScreen,xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
@@ -832,6 +801,28 @@ public class Main extends Application {
 		// Now we want to add those velocity increments to the current velocity!
 		movingObjectsOnScreen.get(movingObjectsOnScreen .size()-1).velocity = newVelocity;
 		return movingObjectsOnScreen;
+	}
+	
+	private void collisionSpaceshipAsteroid(List<GameObject> movingObjectsOnScreen)
+	{
+		//find all the bullets 
+		GameObject spaceship = null;
+		spaceship = findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.SPACESHIP).get(0);		
+		//find all the asteroids 
+		List<GameObject> asteroidsOnScreen = null;
+		asteroidsOnScreen = Stream.of(findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ASTEROID_SMALL),
+				findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ASTEROID_MEDIUM),
+				findElementInList(movingObjectsOnScreen,AsteroidsShape.InGameShape.ASTEROID_LARGE))
+				.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
+				.collect(Collectors.toList());
+		
+		for(int i = 0;i<asteroidsOnScreen.size();i++) {
+			if( spaceship.isHitting(asteroidsOnScreen.get(i)) ){
+				
+				System.out.println("Collision spaceship asteroid LOOSE A LIFE ");
+				
+			}
+		}
 	}
 	
 	/* GETTERS AND SETTERS */
