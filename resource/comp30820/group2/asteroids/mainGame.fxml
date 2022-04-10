@@ -6,33 +6,33 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="768" maxWidth="1024" minHeight="768" minWidth="1024" prefHeight="768" prefWidth="1024" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
+<BorderPane maxHeight="768" maxWidth="1024" minHeight="768" minWidth="1024" prefHeight="768" prefWidth="1024" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
    <center>
       <Pane minHeight="768.0" minWidth="1024.0" prefHeight="768" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
-            <Canvas fx:id="asteroidsGameCanvas" height="609.0" layoutX="-1.0" layoutY="86.0" width="1030.0" />
+            <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutY="84.0" width="1024.0" />
          </children>
       </Pane>
    </center>
    <top>
-      <Pane prefHeight="84" prefWidth="1024" BorderPane.alignment="CENTER">
+      <Pane prefHeight="84" prefWidth="1024" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="42.0" layoutY="24.0" prefHeight="17.0" prefWidth="196.0" text="POINTS : " textFill="#fc4753">
+            <Label layoutX="50.0" layoutY="17.0" prefHeight="17.0" prefWidth="150.0" text="Score : " textFill="#fc4753">
                <font>
                   <Font size="34.0" />
                </font></Label>
-            <Label fx:id="playerNameLabel" layoutX="649.0" layoutY="3.0" prefHeight="87.0" prefWidth="457.0" textAlignment="CENTER" textFill="#ff0404">
+            <Label fx:id="mainGameScore" layoutX="200.0" layoutY="17.0" prefHeight="17.0" prefWidth="300.0" textAlignment="CENTER" textFill="#fc4753">
   
                      <font>
                   <Font size="34.0" />
                </font>
             </Label>
-            <Label fx:id="Points" layoutX="194.0" layoutY="25.0" prefHeight="17.0" prefWidth="196.0" textFill="#fc4753">
+            <Label fx:id="mainGamePlayerName" layoutX="562.0" layoutY="17.0" prefHeight="17.0" prefWidth="150.0" text="Name :" textFill="#fc4753">
                <font>
                   <Font size="34.0" />
                </font>
             </Label>
-            <Label layoutX="506.0" layoutY="25.0" prefHeight="17.0" prefWidth="196.0" text="Name :" textFill="#fc4753">
+            <Label fx:id="mainGamePlayerName" layoutX="712.0" layoutY="17.0" prefHeight="17.0" prefWidth="300.0" textFill="#fc4753">
                <font>
                   <Font size="34.0" />
                </font>
@@ -41,20 +41,24 @@
       </Pane>
    </top>
    <bottom>
-      <Pane prefHeight="84" prefWidth="1024" BorderPane.alignment="CENTER">
+      <Pane prefHeight="84" prefWidth="1024" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="status1" layoutX="156.0" layoutY="21.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED">
+            <Label fx:id="status1" layoutX="28.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text="Status1" textFill="RED" visible="false" />
+            <Label fx:id="status2" layoutX="592.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text="Status2" textFill="RED" visible="false" />
+            <Label fx:id="status3" layoutX="28.0" layoutY="32.0" prefHeight="25.0" prefWidth="420.0" text="Status3" textFill="RED" visible="false" />
+            <Label fx:id="status4" layoutX="592.0" layoutY="32.0" prefHeight="25.0" prefWidth="420.0" text="Status4" textFill="RED" visible="false" />
+            <Label fx:id="status5" layoutX="28.0" layoutY="59.0" prefHeight="25.0" prefWidth="420.0" text="Status5" textFill="RED" visible="false" />
+            <Label fx:id="status6" layoutX="592.0" layoutY="59.0" prefHeight="25.0" prefWidth="420.0" text="Status6" textFill="RED" visible="false" />
+            <Label layoutX="50.0" layoutY="17.0" prefHeight="17.0" prefWidth="150.0" text="Lives : " textFill="#fc4753">
                <font>
                   <Font size="34.0" />
-               </font></Label>
-            <Label fx:id="status2" layoutX="592.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
-            <Label fx:id="status3" layoutX="17.0" layoutY="22.0" prefHeight="25.0" prefWidth="420.0" text=" LIVES :" textFill="RED">
+               </font>
+            </Label>
+            <Label fx:id="mainGameLives" layoutX="200.0" layoutY="17.0" prefHeight="17.0" prefWidth="300.0" textAlignment="CENTER" textFill="#fc4753">
                <font>
                   <Font size="34.0" />
-               </font></Label>
-            <Label fx:id="status4" layoutX="592.0" layoutY="32.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
-            <Label fx:id="status5" layoutX="28.0" layoutY="59.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
-            <Label fx:id="status6" layoutX="592.0" layoutY="59.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </bottom>

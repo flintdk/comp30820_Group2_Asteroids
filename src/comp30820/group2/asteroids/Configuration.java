@@ -1,13 +1,13 @@
 package comp30820.group2.asteroids;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 // java.nio "NIO" = "Non-blocking IO"
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.PriorityQueue;
 import java.util.Properties;
 
 import comp30820.group2.asteroids.AsteroidsCodes.Result;
@@ -91,9 +91,10 @@ public class Configuration {
     };
     // Sound effect resources
     public enum GameWindows {
-        WELCOME_MAIN_MENU("welcomeMainMenu.fxml"),
+        END_OF_GAME("endOfGame.fxml"),
+    	HOW_TO_PLAY("howToPlay.fxml"),
         MAIN_GAME("mainGame.fxml"),
-        END_OF_GAME("endOfGame.fxml");
+    	WELCOME_MAIN_MENU("welcomeMenu.fxml");
         
         public final String fxmlResource;
 
@@ -110,6 +111,8 @@ public class Configuration {
         BEAT2(Resource.SND.path + "beat2.wav"),
         EXTRA_SHIP(Resource.SND.path + "extraShip.wav"),
         FIRE(Resource.SND.path + "fire.wav"),
+    	HYPERSPACE_ENTER(Resource.SND.path + "hyperspace-enter.wav"),
+    	HYPERSPACE_EXIT(Resource.SND.path + "hyperspace-exit.wav"),
         SAUCER_BIG(Resource.SND.path + "saucerBig.wav"),
         SAUCER_SMALL(Resource.SND.path + "saucerSmall.wav"),
         THRUST(Resource.SND.path + "thrust.wav");
@@ -129,11 +132,12 @@ public class Configuration {
 	// The following are set to 'minimum acceptable' values to get Asteroids to
 	// run...
 	public static GraphicsMode GRAPHICS_MODE = GraphicsMode.CLASSIC;
-	public static int SCENE_WIDTH = 800;
+	public static int SCENE_WIDTH = 1024;
 	public static int SCENE_HEIGHT = 600;
 	public static int SPEED_MAX = 500;
 	public static int SPEED_INCREMENT = 10;
 	public static int SPEED_BULLET = 300;
+	public static int SPEED_ALIEN = 150;
 	public static int ASTEROID_LRG_SIZE = 60;
 	public static int ASTEROID_LRG_SPEED = 50;
 	public static int ASTEROID_MED_SIZE = 40;
@@ -142,7 +146,7 @@ public class Configuration {
 	public static int ASTEROID_SML_SPEED = 150;
 	public static int ASTEROID_RADIUS_VARIANCE = 30;  // Percent
 	public static int ASTEROID_GRANULARITY = 25;  // No. of Points to divide circle
-	public static int SPEED_ALIEN = 150;
+	public static PriorityQueue<PlayerScore> HIGH_SCORES = new PriorityQueue<PlayerScore>();
 
 	public static Result CONFIGURATION_LOADED = Result.FAILURE;
     
@@ -215,20 +219,9 @@ public class Configuration {
     	// First see if a user-specific file exists...
         try
         {
-        	Path userConfigPath = config.resolve(propsFileName);
-        	File userConfigFile = userConfigPath.toFile();
-//        	if (userConfigFile.exists()) {
-//	        	FileInputStream fis = new FileInputStream(userConfigFile);
-//	            configProps.load(fis); // load asteroids .properties file
-//	
-//	            setConfigFromProperties(configProps);
-//	                       
-//	            fis.close();
-//	            
-//	            System.out.println("Asteroid: Configuration loaded from User file.");
-//	            configLoaded = true;
-//        	}
-            
+//        	Path userConfigPath = config.resolve(propsFileName);
+//        	File userConfigFile = userConfigPath.toFile();
+
             // Next - attempt to load the default configuration file
             if (!configLoaded) {
 		        // Files packaged inside a .jar file are referred to as resources and can
@@ -283,12 +276,6 @@ public class Configuration {
 		if (configProps.getProperty("GRAPHICS_MODE") != null) {
 			GRAPHICS_MODE = GraphicsMode.valueOf(configProps.getProperty("GRAPHICS_MODE").toString());
 		}
-		if (configProps.getProperty("SCENE_WIDTH") != null) {
-			SCENE_WIDTH = Integer.parseInt(configProps.getProperty("SCENE_WIDTH"));
-		}
-		if (configProps.getProperty("SCENE_HEIGHT") != null) {
-			SCENE_HEIGHT = Integer.parseInt(configProps.getProperty("SCENE_HEIGHT"));
-		}
 		if (configProps.getProperty("SPEED_MAX") != null) {
 			SPEED_MAX = Integer.parseInt(configProps.getProperty("SPEED_MAX"));
 		}
@@ -297,6 +284,9 @@ public class Configuration {
 		}
 		if (configProps.getProperty("SPEED_BULLET") != null) {
 			SPEED_BULLET = Integer.parseInt(configProps.getProperty("SPEED_BULLET"));
+		}
+		if (configProps.getProperty("SPEED_ALIEN") != null) {
+			SPEED_ALIEN = Integer.parseInt(configProps.getProperty("SPEED_ALIEN"));
 		}
 		if (configProps.getProperty("ASTEROID_LRG_SIZE") != null) {
 			ASTEROID_LRG_SIZE = Integer.parseInt(configProps.getProperty("ASTEROID_LRG_SIZE"));
@@ -322,11 +312,63 @@ public class Configuration {
 		if (configProps.getProperty("ASTEROID_GRANULARITY") != null) {
 			ASTEROID_GRANULARITY = Integer.parseInt(configProps.getProperty("ASTEROID_GRANULARITY"));
 		}
-		if (configProps.getProperty("SPEED_ALIEN") != null) {
-			SPEED_ALIEN = Integer.parseInt(configProps.getProperty("SPEED_ALIEN"));
+		if (configProps.getProperty("HIGH_SCORE1") != null && configProps.getProperty("HIGH_SCORE1_PLAYER") != null) {
+			PlayerScore highScore =
+					new PlayerScore(
+							configProps.getProperty("HIGH_SCORE1_PLAYER"),
+							Integer.parseInt(configProps.getProperty("HIGH_SCORE1")));
+			HIGH_SCORES.add(highScore);
 		}
-		
+		if (configProps.getProperty("HIGH_SCORE2") != null && configProps.getProperty("HIGH_SCORE2_PLAYER") != null) {
+			PlayerScore highScore =
+					new PlayerScore(
+							configProps.getProperty("HIGH_SCORE2_PLAYER"),
+							Integer.parseInt(configProps.getProperty("HIGH_SCORE2")));
+			HIGH_SCORES.add(highScore);
+		}
+		if (configProps.getProperty("HIGH_SCORE3") != null && configProps.getProperty("HIGH_SCORE3_PLAYER") != null) {
+			PlayerScore highScore =
+					new PlayerScore(
+							configProps.getProperty("HIGH_SCORE3_PLAYER"),
+							Integer.parseInt(configProps.getProperty("HIGH_SCORE3")));
+			HIGH_SCORES.add(highScore);
+		}
+		if (configProps.getProperty("HIGH_SCORE4") != null && configProps.getProperty("HIGH_SCORE4_PLAYER") != null) {
+			PlayerScore highScore =
+					new PlayerScore(
+							configProps.getProperty("HIGH_SCORE4_PLAYER"),
+							Integer.parseInt(configProps.getProperty("HIGH_SCORE4")));
+			HIGH_SCORES.add(highScore);
+		}
+		if (configProps.getProperty("HIGH_SCORE5") != null && configProps.getProperty("HIGH_SCORE5_PLAYER") != null) {
+			PlayerScore highScore =
+					new PlayerScore(
+							configProps.getProperty("HIGH_SCORE5_PLAYER"),
+							Integer.parseInt(configProps.getProperty("HIGH_SCORE5")));
+			HIGH_SCORES.add(highScore);
+		}
 	}
+	
+	/** <p>Insert Players Score into the Highest Scores Table...  if they have
+	 * earned it!</p?
+	 * <p>We take the view that the Player High Scores are part of the Application
+	 * Configuration (and not the "GameState" as they are saved and persist past
+	 * the end of the game.</p>
+	 * 
+	 */
+	public static void insertPlayerToLeaderTableIfHighEnough() {
+		GameState gameState = GameState.getInstance();
+		PlayerScore score = new PlayerScore(gameState.getPlayername(), gameState.getScore());
+		// First we add the players score to our HIGH_SCORES list.  The list now
+		// has too many (six) entries in it.
+		HIGH_SCORES.add(score);
+		// We can only store five high scores, so drop the smallest score!
+		HIGH_SCORES.poll();
+		
+		// ... and that's pretty much it.  A good choice of data structure can
+		// give you very small code!
+	}
+
     
     /** Save the User-specific Asteroids application configuration
      * 
@@ -371,11 +413,10 @@ public class Configuration {
 	private static void setPropertiesFromConfig(Properties configProps) {
 		// Populate our properties file from the current config variable settings
 		configProps.setProperty("GRAPHICS_MODE", GRAPHICS_MODE.toString());
-		configProps.setProperty("SCENE_WIDTH", String.valueOf(SCENE_WIDTH));
-		configProps.setProperty("SCENE_HEIGHT", String.valueOf(SCENE_HEIGHT));
 		configProps.setProperty("SPEED_MAX", String.valueOf(SPEED_MAX));
 		configProps.setProperty("SPEED_INCREMENT",  String.valueOf(SPEED_INCREMENT));
 		configProps.setProperty("SPEED_BULLET",  String.valueOf(SPEED_BULLET));
+		configProps.setProperty("SPEED_ALIEN",  String.valueOf(SPEED_ALIEN));
 		configProps.setProperty("ASTEROID_LRG_SIZE",  String.valueOf(ASTEROID_LRG_SIZE));
 		configProps.setProperty("ASTEROID_LRG_SPEED",  String.valueOf(ASTEROID_LRG_SPEED));
 		configProps.setProperty("ASTEROID_MED_SIZE",  String.valueOf(ASTEROID_MED_SIZE));
@@ -385,7 +426,16 @@ public class Configuration {
 		configProps.setProperty("ASTEROID_SML_SPEED",  String.valueOf(ASTEROID_SML_SPEED));
 		configProps.setProperty("ASTEROID_RADIUS_VARIANCE",  String.valueOf(ASTEROID_RADIUS_VARIANCE));
 		configProps.setProperty("ASTEROID_GRANULARITY",  String.valueOf(ASTEROID_GRANULARITY));
-		configProps.setProperty("SPEED_ALIEN",  String.valueOf(SPEED_ALIEN));
+		
+		int hsSize = HIGH_SCORES.size();
+		for (int i = hsSize; i > 0; i--) {
+			// TAKE the smallest item from the priority queue...
+			PlayerScore score = HIGH_SCORES.poll();
+			// ... then store the values for that score in our configuration file!
+			configProps.setProperty("HIGH_SCORE" + i,  String.valueOf(score.getScore()));
+			configProps.setProperty("HIGH_SCORE" + i + "_PLAYER",  score.getPlayerName());
+		}
+
 	}
     
     /** Get the Host Operating System.

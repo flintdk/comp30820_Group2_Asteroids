@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.Light.Distant?>
 <?import javafx.scene.effect.Lighting?>
@@ -12,17 +11,16 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
+<BorderPane fx:id="mainBorderPane" maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
    <center>
-      <Pane prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+      <Pane maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0" BorderPane.alignment="CENTER">
          <children>
-            <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutX="1.0" width="800.0" />
-            <ImageView fitHeight="605.0" fitWidth="857.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="768.0" fitWidth="1024.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/space.png" />
                </image>
             </ImageView>
-            <Label layoutX="226.0" layoutY="37.0" text="HOW TO PLAY" textFill="#f86262">
+            <Label layoutX="317.0" layoutY="115.0" text="HOW TO PLAY" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -40,7 +38,7 @@
                <font>
                   <Font name="Impact" size="76.0" />
                </font></Label>
-            <Label layoutX="134.0" layoutY="191.0" text="CONTROLS" textFill="#f86262">
+            <Label layoutX="200.0" layoutY="256.0" text="CONTROLS" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -59,7 +57,7 @@
                   <Font name="Impact" size="46.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="281.0" text="Press UP to move spaceship up" textFill="#f86262">
+            <Label layoutX="117.0" layoutY="346.0" text="Press UP to move spaceship up" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -78,7 +76,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="50.0" layoutY="320.0" text="Press DOWN to move spaceship down" textFill="#f86262">
+            <Label layoutX="116.0" layoutY="385.0" text="Press DOWN to move spaceship down" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -97,7 +95,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="358.0" text="Press LEFT to move spaceship left" textFill="#f86262">
+            <Label layoutX="117.0" layoutY="423.0" text="Press LEFT to move spaceship left" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -116,7 +114,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="397.0" text="Press RIGHT to move spaceship right" textFill="#f86262">
+            <Label layoutX="117.0" layoutY="462.0" text="Press RIGHT to move spaceship right" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -135,7 +133,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="478.0" text="Press Q to quit the game" textFill="#f86262">
+            <Label layoutX="117.0" layoutY="543.0" text="Press Q to quit the game" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -154,7 +152,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="438.0" text="Press SPACEBAR to to fire bullets" textFill="#f86262">
+            <Label layoutX="117.0" layoutY="503.0" text="Press SPACEBAR to to fire bullets" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -173,7 +171,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="707.0" layoutY="-70.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="881.0" layoutY="-6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroid.png" />
                </image>
@@ -183,12 +181,12 @@
                   <Image url="@../../../img/asteroid.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="91.0" fitWidth="105.0" layoutX="492.0" layoutY="469.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="91.0" fitWidth="105.0" layoutX="683.0" layoutY="516.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroid.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="55.0" fitWidth="155.0" layoutX="627.0" layoutY="511.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="55.0" fitWidth="155.0" layoutX="830.0" layoutY="654.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroids-large.png" />
                </image>

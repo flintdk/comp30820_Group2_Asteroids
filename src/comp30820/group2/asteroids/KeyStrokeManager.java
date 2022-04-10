@@ -1,6 +1,5 @@
 package comp30820.group2.asteroids;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.scene.Scene;
@@ -127,7 +126,7 @@ public class KeyStrokeManager {
 				(KeyEvent event) ->
 				{
 					String keyName = event.getCode().toString();	
-					if(currentlyActiveKeys.get(keyName) == false) {
+					if(currentlyActiveKeys.size() > 0 && currentlyActiveKeys.get(keyName) == false) {
 						currentlyActiveKeys.remove(keyName);
 					}
 				}

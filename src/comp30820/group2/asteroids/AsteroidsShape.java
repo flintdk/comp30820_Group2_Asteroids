@@ -23,19 +23,19 @@ public class AsteroidsShape extends GameObject {
 	
     // Polygons Supported by the game
     public enum InGameShape {
-    	SPACESHIP("Triangular spaceship"),
-    	ASTEROID_LARGE("Irregular shaped Asteroid, Large!"),
-        ASTEROID_MEDIUM("Irregular shaped Asteroid, Medium!"),
-        ASTEROID_SMALL("Irregular shaped Asteroid, Small!"),
-    	MUZZLE_FLARE("Muzzle flare for when our cannon fires"),
-        BULLET("The bullet shot out by our cannon"),
-    	ALIEN("Alien Spaceship"),
-    	ALIEN_BULLET("Alien Bullet");
+    	SPACESHIP(GO_CLASS.SPACESHIP),
+    	ASTEROID_LARGE(GO_CLASS.ASTEROID_LARGE),
+        ASTEROID_MEDIUM(GO_CLASS.ASTEROID_MEDIUM),
+        ASTEROID_SMALL(GO_CLASS.ASTEROID_SMALL),
+    	MUZZLE_FLARE(GO_CLASS.MUZZLE_FLARE),
+        BULLET(GO_CLASS.BULLET),
+    	ALIEN(GO_CLASS.ALIEN),
+    	ALIEN_BULLET(GO_CLASS.ALIEN_BULLET);
         
-        public final String description;
+        public final GO_CLASS goClass;
 
-        private InGameShape(String description) {
-            this.description = description;
+        private InGameShape(GO_CLASS goClass) {
+            this.goClass = goClass;
         }
     };
     // This AsteroidsShape will have an assigned type.

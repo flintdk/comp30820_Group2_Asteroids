@@ -6,7 +6,6 @@ import java.util.Random;
 
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
@@ -50,6 +49,25 @@ public abstract class GameObject {
     // below...
     protected double[] xpoints;
     protected double[] ypoints;
+    
+    // Polygons Supported by the game
+    public enum GO_CLASS {
+    	BACKGROUND("Game Board Background"),
+    	SPACESHIP("Triangular spaceship"),
+    	ASTEROID_LARGE("Irregular shaped Asteroid, Large!"),
+        ASTEROID_MEDIUM("Irregular shaped Asteroid, Medium!"),
+        ASTEROID_SMALL("Irregular shaped Asteroid, Small!"),
+    	MUZZLE_FLARE("Muzzle flare for when our cannon fires"),
+        BULLET("The bullet shot out by our cannon"),
+    	ALIEN("Alien Spaceship"),
+    	ALIEN_BULLET("Alien Bullet");
+        
+        public final String description;
+
+        private GO_CLASS(String description) {
+            this.description = description;
+        }
+    };
 
 	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
 	 * 0-angled, minimum-HitBox 'game object').
@@ -76,7 +94,6 @@ public abstract class GameObject {
 		Random r = new Random();
 		this.position = new GameVector((Configuration.SCENE_WIDTH * r.nextDouble()),(Configuration.SCENE_HEIGHT * r.nextDouble()));
 		this.rotation = r.nextDouble() * 360.0;
-		//this.rotation = 0;
 		double initialX
 			= Math.cos(Math.toRadians(this.rotation)) * Configuration.ASTEROID_LRG_SPEED;
 		double initialY
@@ -192,27 +209,6 @@ public abstract class GameObject {
 			double d = Math.sqrt(Math.pow(dx,2)+ Math.pow(dy,2));
 			
 			alienBullet.velocity = new GameVector(dx/d * velocityBullet,dy/d * velocityBullet);
-		}
-	}
-	
-	/**
-	 * if the alien bullet out of range it should be removed
-	 * @param List<GameObject> movingObjectsOnScreen
-	 * @return void
-	 */
-	public static void setAlienBulletRange(List<GameObject> movingObjectsOnScreen) {
-		for(GameObject gameObject: movingObjectsOnScreen) {
-			if ((gameObject instanceof Sprite&& ((Sprite) gameObject).type == Sprite.Graphics.LASER)
-					||(gameObject instanceof AsteroidsShape && ((AsteroidsShape) gameObject).type == AsteroidsShape.InGameShape.ALIEN_BULLET))
-			{
-				double dx = gameObject.position.getX()-gameObject.initialX;
-				double dy = gameObject.position.getY()-gameObject.initialY;
-				double d = Math.sqrt(Math.pow(dx,2)+ Math.pow(dy,2));
-				if(d>400){
-					movingObjectsOnScreen.remove(gameObject);
-					break;
-				}
-			}
 		}
 	}
 	

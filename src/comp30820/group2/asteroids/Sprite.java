@@ -26,21 +26,21 @@ public class Sprite extends GameObject {
 	
     // Graphics resources
     public enum Graphics {
-    	// Following two Asteroids pictures are just logo images...
-    	ASTEROIDS_LARGE(Resource.IMG.path + "asteroids_large.png"),
-    	ASTEROIDS_SMALL(Resource.IMG.path + "asteroids_small.png"),
     	// The default background for the game..
-    	BACKGROUND(Resource.IMG.path + "space.png"),
+    	BACKGROUND(GO_CLASS.BACKGROUND, Resource.IMG.path + "space.png"),
     	// Following are in-game objects...
-    	SPACESHIP(Resource.IMG.path + "spaceship.png"),
-        ASTEROID(Resource.IMG.path + "asteroid.png"),
-    	MUZZLE_FLARE(Resource.IMG.path + "fire.png"),
-        LASER(Resource.IMG.path + "laser.png"),
-        ALIEN("ALIEN"),
-    	ALIEN_BULLET(Resource.IMG.path + "fire.png");
-        public final String path;
+    	ASTEROID(GO_CLASS.ASTEROID_MEDIUM, Resource.IMG.path + "asteroid.png"),
+    	SPACESHIP(GO_CLASS.SPACESHIP, Resource.IMG.path + "spaceship.png"),
+    	MUZZLE_FLARE(GO_CLASS.MUZZLE_FLARE, Resource.IMG.path + "fire.png"),
+        LASER(GO_CLASS.BULLET, Resource.IMG.path + "laser.png"),
+        ALIEN(GO_CLASS.ALIEN, "ALIEN"),
+    	ALIEN_BULLET(GO_CLASS.ALIEN_BULLET, Resource.IMG.path + "fire.png");
+    	
+    	public final GO_CLASS goClass;
+    	public final String path;
 
-        private Graphics(String path) {
+        private Graphics(GO_CLASS goClass, String path) {
+        	this.goClass = goClass;
             this.path = path;
         }
     };

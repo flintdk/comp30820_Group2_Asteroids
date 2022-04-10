@@ -2,6 +2,7 @@ package comp30820.group2.asteroids;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.PriorityQueue;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -20,12 +21,33 @@ import javafx.stage.Stage;
 
 public class AsteroidsFXMLController implements Initializable {
 
+	// welcomeMenu Injectable Fields
+	@FXML private TextField welcomeMenuPlayerNameEntry;
+	@FXML private Label welcomeMenuPlayerNameDisplay;
+	
+	// mainGame Injectable Fields
 	// Our canvas is magically provided by JavaFX/FXML as long, of course, as
 	// the .fxml has a canvas element whose fx:id matches the name!
 	@FXML private Canvas asteroidsGameCanvas;
-	@FXML private TextField playerNameTextField;
-	@FXML private Label playerNameLabel;
+	@FXML private Label mainGameScore;
+	@FXML private Label mainGamePlayerName;
+	@FXML private Label mainGameLives;
+	
+	@FXML private Label endOfGameHS1;
+	@FXML private Label endOfGameHS2;
+	@FXML private Label endOfGameHS3;
+	@FXML private Label endOfGameHS4;
+	@FXML private Label endOfGameHS5;
+
+	// Following six labels are NOT used in the game.  However, when debugging
+	// collisions, etc. it's amazingly useful to have a couple of labels to write
+	// to...  so we left them here in case we decide to work on the game again.
 	@FXML private Label status1;
+	@FXML private Label status2;
+	@FXML private Label status3;
+	@FXML private Label status4;
+	@FXML private Label status5;
+	@FXML private Label status6;
 	
 	/** The initialize() method is called once on an implementing controller when
 	 * the contents of its associated document have been completely loaded.  This
@@ -38,33 +60,64 @@ public class AsteroidsFXMLController implements Initializable {
 //		String javafxVersion = System.getProperty("javafx.version");
 //		System.out.println("Environment: Java -> " + javaVersion + ", JavaFX -> " + javafxVersion);
 
-		//System.out.println("initialiseCanvas: In the canvas");
-				
-		GameState gameState = GameState.getInstance();
-		String playerName = gameState.getPlayername();
-		System.out.print(playerName);
+		//######################################################################
+		//                            WELCOME SCENE
+		//######################################################################
+		// If we're on the welcomeMenu screen *make sure* the welcomeMenuPlayerNameEntry
+		// is in front of the display label, so the user can access it.
+		if (welcomeMenuPlayerNameEntry != null) {
+			welcomeMenuPlayerNameDisplay.setVisible(false);
+			welcomeMenuPlayerNameEntry.toFront();
+			welcomeMenuPlayerNameEntry.setVisible(true);
+			GameState gameState = GameState.getInstance();
+			String playerName = gameState.getPlayername();
+			// If the player has already entered their name, the default it.
+			// They still have to press enter... but so what...
+			if (!playerName.equals("Player1")) {
+				welcomeMenuPlayerNameEntry.setText(playerName);
+			}
+		}
 		
+		//######################################################################
+		//                           MAIN GAME SCENE
+		//######################################################################
 		
-//		if (!playerName.isEmpty()) {
-//			playerNameLabel.setText(playerName);				
-//		}
+		if (mainGamePlayerName != null) {
+			GameState gameState = GameState.getInstance();
+			String playerName = gameState.getPlayername();
+			mainGamePlayerName.setText(playerName);
+		}
 		
+		//######################################################################
+		//                          END OF GAME SCENE
+		//######################################################################
 		
+		// We only check for the existence of one of the injectable controls. If
+		// it's there... we just assume we're on the endOfGame page.
+		if (endOfGameHS1 != null) {
+			// Copy the priority queue from the configuration (so we don't interfere
+			// with the 'original one'...)
+			PriorityQueue<PlayerScore> copyOfScores
+				= new PriorityQueue<PlayerScore>(Configuration.HIGH_SCORES);
+
+			endOfGameHS5.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS5.setVisible(true);
+			endOfGameHS4.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS4.setVisible(true);
+			endOfGameHS3.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS3.setVisible(true);
+			endOfGameHS2.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS2.setVisible(true);
+			endOfGameHS1.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS1.setVisible(true);
+		}
 		
+		//######################################################################
+		//                          HOW TO PLAY SCENE
+		//######################################################################
 		
+		// NOTHING TO INITIALISE YET
 		
-//		if (playerName == null) {
-//			
-//		playerName = "Test";
-//		playerNameLabel.setText(playerName);
-//		System.out.print(playerName);
-//		
-//		}
-//		else {
-//			playerNameLabel.setText(playerName);
-//		}
-		asteroidsGameCanvas.setWidth(Configuration.SCENE_WIDTH);
-		asteroidsGameCanvas.setHeight(Configuration.SCENE_HEIGHT);
 	}
 
 	//@Bryan
@@ -112,33 +165,25 @@ public class AsteroidsFXMLController implements Initializable {
 	 * @param event
 	 * @throws IOException
 	 */
-	public void playerNameTextField(KeyEvent event)
+	public void welcomeMenuPlayerNameEntryKeyPress(KeyEvent event)
 	throws IOException
 	{
-		String playerName = playerNameTextField.getText();
+		String playerName = welcomeMenuPlayerNameEntry.getText();
 
-		//System.out.println(playerNameTextField.getText());
+		//System.out.println(welcomeMenuPlayerNameEntry.getText());
 		String keyName = event.getCode().toString();
 		if (keyName == "ENTER") {
 			GameState gameState = GameState.getInstance();
 			gameState.setPlayername(playerName);
 			
-			playerNameTextField.setVisible(false);
-			playerNameLabel.setVisible(true);
-			// Start scene
-			playerNameLabel.setText("WELCOME " + playerName.toString());
+			welcomeMenuPlayerNameEntry.setVisible(false);
+			welcomeMenuPlayerNameDisplay.setText("WELCOME " + playerName.toString());
+			welcomeMenuPlayerNameDisplay.setVisible(true);
 						
 		}
 
 	}
 	
-	
-	//#################################################################################
-//	String username = nameTextField.getText();
-//	String x = username.toString();
-//	System.out.print(x);
-	
-
 	// We need access to the stage for changing scenes etc..
 	// Our application only has one stage (window) and this will never change.
 	// The stage (generated at application launch) is our main game window.
@@ -175,18 +220,6 @@ public class AsteroidsFXMLController implements Initializable {
 		// which is created on application startup.
 		Scene scene;
 		if (window == Configuration.GameWindows.MAIN_GAME) {
-			//			String x1 = playerNameLabel.getText();
-//			
-//			System.out.print(x1);
-//			playerNameLabel.setText(x1);
-			
-			
-			
-			GameState gameState = GameState.getInstance();
-			String playerName = gameState.getPlayername();
-//			playerNameLabel.setText(playerName.toString());
-			System.out.print(playerName);
-			
 			scene = Main.getMainGameScene();
 		}
 		else {
@@ -217,10 +250,3 @@ public class AsteroidsFXMLController implements Initializable {
 	}
 
 }
-
-//@Bryan
-//GameState gameState = GameState.getInstance();
-//String playerName = gameState.getPlayername();
-//if (!playerName.isEmpty()) {
-//	playerNameLabel.setText(playerName);				
-//}
