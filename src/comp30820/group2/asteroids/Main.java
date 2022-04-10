@@ -452,7 +452,7 @@ public class Main extends Application {
 				
 				//get the allien bullet timer
 				int timerBullet = timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).get_time();
-				if(alienOnScreen != null && spaceship != null && alienOnScreen.position.getX()>0 && alienOnScreen.position.getY()>0) {
+				if(alienOnScreeList != null && spaceship != null && alienOnScreen.position.getX()>0 && alienOnScreen.position.getY()>0 && alienOnScreen.position.getX()<850 && alienOnScreen.position.getY()<600) {
 					timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment_timer();
 					//alien Bullet fire At regular intervals
 					GameObject.alienBulletFire(alienOnScreen,timerBullet,spaceship, movingObjectsOnScreen);
