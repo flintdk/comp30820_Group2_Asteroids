@@ -259,6 +259,15 @@ public class Main extends Application {
 
 				
 				Label labelPoints= (Label) mainGameNamespace.get("Points");
+				labelPoints.setText(gameState.getScore());
+				
+				
+				
+				Label labellives = (Label) mainGameNamespace.get("status1");
+				labellives.setText(gameState.getLives());
+				
+				
+			
 				//########################################################3
 				//########################################################3
 				//########################################################3
@@ -696,6 +705,14 @@ public class Main extends Application {
 			  			removeElements.add(asteroidsOnScreen.get(j));
 			  			
 			  			//System.out.println("x  destroyed :  " + asteroidsOnScreen.get(j).position.getX() + "y  destroyed :  " + asteroidsOnScreen.get(j).position.getY());
+			  			
+			  			//@Bryan
+						// IDEA to alter the score if the spaceship hits the something...Need to call this adjust function within gamestate classs
+			  			
+			  			//GameState.adjustScore(5);
+			  			
+
+			  			
 			  			//find the coordinated of the 'original'asteroids'
 			  			double xOriginalAsteroid = asteroidsOnScreen.get(j).position.getX();
 			  			double yOriginalAsteroid = asteroidsOnScreen.get(j).position.getY();
@@ -796,6 +813,12 @@ public class Main extends Application {
 		for(int i = 0;i<asteroidsOnScreen.size();i++) {
 			if( spaceship.isHitting(asteroidsOnScreen.get(i)) ){
 				
+				
+				//@Bryan
+				// IDEA to alter the score if the spaceship hits the something...Need to call this adjust function within gamestate classs
+//				
+//				GameState.adjustScore(5);
+				//GameState.adjustLives();
 				System.out.println("Collision spaceship asteroid LOOSE A LIFE ");
 				
 			}

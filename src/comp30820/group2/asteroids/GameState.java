@@ -23,14 +23,20 @@ public class GameState {
     
     
     private int score = 0;
+    private int lives = 3;
     
     
-    public int getScore() {
-		return score;
+    
+    public String getScore() {
+    	String str1 = Integer.toString(score);
+		return str1;
 	}
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+	public void adjustScore(int pointsduc) {
+		score = score - pointsduc;
 	}
 
 	// Singleton - There can be ONLY One!!
@@ -60,6 +66,23 @@ public class GameState {
 		}	}
 	public void setPlayername(String playername) {
 		this.playername = playername;
+	}
+	
+	
+	
+	
+	
+	public String getLives() {
+		// TODO Auto-generated method stub
+		String livesstring = Integer.toString(lives);
+		return livesstring;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+	public void adjustLives() {
+		lives = lives - 1;
 	}
 
 }

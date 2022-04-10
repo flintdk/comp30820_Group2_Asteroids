@@ -25,6 +25,7 @@ public class AsteroidsFXMLController implements Initializable {
 	@FXML private Canvas asteroidsGameCanvas;
 	@FXML private TextField playerNameTextField;
 	@FXML private Label playerNameLabel;
+	@FXML private Label status1;
 	
 	/** The initialize() method is called once on an implementing controller when
 	 * the contents of its associated document have been completely loaded.  This

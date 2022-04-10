@@ -21,15 +21,20 @@
                <font>
                   <Font size="34.0" />
                </font></Label>
-            <Label fx:id="playerNameLabel" layoutX="599.0" layoutY="-5.0" prefHeight="87.0" prefWidth="457.0" textAlignment="CENTER" textFill="#ff0404">
+            <Label fx:id="playerNameLabel" layoutX="649.0" layoutY="3.0" prefHeight="87.0" prefWidth="457.0" textAlignment="CENTER" textFill="#ff0404">
   
                      <font>
                   <Font size="34.0" />
                </font>
             </Label>
-            <Label fx:id="Points" layoutX="194.0" layoutY="34.0" prefHeight="17.0" prefWidth="196.0" textFill="#fc4753">
+            <Label fx:id="Points" layoutX="194.0" layoutY="25.0" prefHeight="17.0" prefWidth="196.0" textFill="#fc4753">
                <font>
-                  <Font size="20.0" />
+                  <Font size="34.0" />
+               </font>
+            </Label>
+            <Label layoutX="506.0" layoutY="25.0" prefHeight="17.0" prefWidth="196.0" text="Name :" textFill="#fc4753">
+               <font>
+                  <Font size="34.0" />
                </font>
             </Label>
          </children>
@@ -38,9 +43,15 @@
    <bottom>
       <Pane prefHeight="84" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="status1" layoutX="28.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+            <Label fx:id="status1" layoutX="156.0" layoutY="21.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED">
+               <font>
+                  <Font size="34.0" />
+               </font></Label>
             <Label fx:id="status2" layoutX="592.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
-            <Label fx:id="status3" layoutX="28.0" layoutY="32.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
+            <Label fx:id="status3" layoutX="17.0" layoutY="22.0" prefHeight="25.0" prefWidth="420.0" text=" LIVES :" textFill="RED">
+               <font>
+                  <Font size="34.0" />
+               </font></Label>
             <Label fx:id="status4" layoutX="592.0" layoutY="32.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
             <Label fx:id="status5" layoutX="28.0" layoutY="59.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
             <Label fx:id="status6" layoutX="592.0" layoutY="59.0" prefHeight="25.0" prefWidth="420.0" text=" " textFill="RED" />
