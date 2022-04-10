@@ -27,19 +27,19 @@ public class Sprite extends GameObject {
     // Graphics resources
     public enum Graphics {
     	// The default background for the game..
-    	BACKGROUND(GO_CLASS.BACKGROUND, Resource.IMG.path + "space.png"),
+    	BACKGROUND(GoClass.BACKGROUND, Resource.IMG.path + "space.png"),
     	// Following are in-game objects...
-    	ASTEROID(GO_CLASS.ASTEROID_MEDIUM, Resource.IMG.path + "asteroid.png"),
-    	SPACESHIP(GO_CLASS.SPACESHIP, Resource.IMG.path + "spaceship.png"),
-    	MUZZLE_FLARE(GO_CLASS.MUZZLE_FLARE, Resource.IMG.path + "fire.png"),
-        LASER(GO_CLASS.BULLET, Resource.IMG.path + "laser.png"),
-        ALIEN(GO_CLASS.ALIEN, "ALIEN"),
-    	ALIEN_BULLET(GO_CLASS.ALIEN_BULLET, Resource.IMG.path + "fire.png");
+    	ASTEROID(GoClass.ASTEROID_MEDIUM, Resource.IMG.path + "asteroid.png"),
+    	SPACESHIP(GoClass.SPACESHIP, Resource.IMG.path + "spaceship.png"),
+    	MUZZLE_FLARE(GoClass.MUZZLE_FLARE, Resource.IMG.path + "fire.png"),
+        LASER(GoClass.BULLET, Resource.IMG.path + "laser.png"),
+        ALIEN(GoClass.ALIEN, "ALIEN"),
+    	ALIEN_BULLET(GoClass.ALIEN_BULLET, Resource.IMG.path + "fire.png");
     	
-    	public final GO_CLASS goClass;
+    	public final GoClass goClass;
     	public final String path;
 
-        private Graphics(GO_CLASS goClass, String path) {
+        private Graphics(GoClass goClass, String path) {
         	this.goClass = goClass;
             this.path = path;
         }
@@ -49,20 +49,12 @@ public class Sprite extends GameObject {
 
 	public Image image;
 	
-	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
-	 * 0-angled, minimum-HitBox sprite).
-	 * 
-	 */
-	public Sprite() {
-		super();
-	}
-	
 	/** Parameterised constructor.
 	 * 
 	 */
 	public Sprite(Graphics graphics) {
 		// Call the no arguments constructor...
-		this();
+		super(graphics.goClass);
 		this.type = graphics;
 		this.setImage(graphics, null, null);
 	}
@@ -72,7 +64,7 @@ public class Sprite extends GameObject {
 	 */
 	public Sprite(Graphics graphics, Double requiredWidth, Double requiredHeight) {
 		// Call the no arguments constructor...
-		this();
+		this(graphics);
 		this.setImage(graphics, requiredWidth, requiredHeight);
 	}
 	

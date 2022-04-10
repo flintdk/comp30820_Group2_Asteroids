@@ -23,38 +23,30 @@ public class AsteroidsShape extends GameObject {
 	
     // Polygons Supported by the game
     public enum InGameShape {
-    	SPACESHIP(GO_CLASS.SPACESHIP),
-    	ASTEROID_LARGE(GO_CLASS.ASTEROID_LARGE),
-        ASTEROID_MEDIUM(GO_CLASS.ASTEROID_MEDIUM),
-        ASTEROID_SMALL(GO_CLASS.ASTEROID_SMALL),
-    	MUZZLE_FLARE(GO_CLASS.MUZZLE_FLARE),
-        BULLET(GO_CLASS.BULLET),
-    	ALIEN(GO_CLASS.ALIEN),
-    	ALIEN_BULLET(GO_CLASS.ALIEN_BULLET);
+    	SPACESHIP(GoClass.SPACESHIP),
+    	ASTEROID_LARGE(GoClass.ASTEROID_LARGE),
+        ASTEROID_MEDIUM(GoClass.ASTEROID_MEDIUM),
+        ASTEROID_SMALL(GoClass.ASTEROID_SMALL),
+    	MUZZLE_FLARE(GoClass.MUZZLE_FLARE),
+        BULLET(GoClass.BULLET),
+    	ALIEN(GoClass.ALIEN),
+    	ALIEN_BULLET(GoClass.ALIEN_BULLET);
         
-        public final GO_CLASS goClass;
+        public final GoClass goClass;
 
-        private InGameShape(GO_CLASS goClass) {
+        private InGameShape(GoClass goClass) {
             this.goClass = goClass;
         }
     };
     // This AsteroidsShape will have an assigned type.
     public InGameShape type;
 	
-	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
-	 * 0-angled, minimum-HitBox polygon).
-	 * 
-	 */
-	public AsteroidsShape() {
-		super();
-	}
-	
 	/** Parameterised constructor.
 	 * 
 	 */
 	public AsteroidsShape(InGameShape shapeName) {
 		// Call the no arguments constructor...
-		this();
+		super(shapeName.goClass);
 		this.type = shapeName;
 		setAsteroidsShape(shapeName);
 	}

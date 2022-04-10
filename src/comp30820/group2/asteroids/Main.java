@@ -11,8 +11,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import comp30820.group2.asteroids.AsteroidsShape.InGameShape;
 import comp30820.group2.asteroids.Configuration.SoundEffects;
+import comp30820.group2.asteroids.GameObject.GoClass;
 import comp30820.group2.asteroids.Sprite.Graphics;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -24,7 +24,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /** Asteroids - the Classic Arcade Game.
@@ -220,7 +219,7 @@ public class Main extends Application {
 		// 60 times per second in JavaFX
 
 		//create a hashmap to store timers for the gameObjects
-		HashMap<Enum,Timer > timers = new HashMap<Enum, Timer>();
+		HashMap<Enum,Timer> timers = new HashMap<Enum, Timer>();
 
 		AnimationTimer gameloop = new AnimationTimer() {
 
@@ -236,7 +235,6 @@ public class Main extends Application {
 			//			List<GameObject> alienBulletsOnScreen = null;
 			//			List<GameObject> allBulletsOnScreen = null;
 
-			@SuppressWarnings("null")
 			public void handle(long nanotime) {
 
 				//#############################################################3
@@ -253,7 +251,7 @@ public class Main extends Application {
 				}
 
 				//########################################################3
-				/// TO BE UPDATED WITH SCORES VARIABLE
+				/// UPDATE GAME SCORE AND LIVES
 				//########################################################3
 
 				Label score= (Label) mainGameNamespace.get("mainGameScore");
@@ -265,7 +263,24 @@ public class Main extends Application {
 				// TODO:::: Configuration.insertPlayerToLeaderTableIfHighEnough();
 
 				//########################################################3
+				// DECREMENT ALL TIMERS
 				//########################################################3
+				
+				//THIS IS JUST HOW I THOUGHT THE TIMERS WOULD WORK.  WENDY CAN WE
+				// DISCUSS PLEASE?  
+				Timer timerToDecrement = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
+				if (timerToDecrement != null) {
+					timerToDecrement.decrement();
+				}
+				
+				// Now deal with specific events when timers run out...
+				Timer hyperspaceTimer = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
+				if (hyperspaceTimer != null && hyperspaceTimer.get_time() <= 0) {
+					// Our ship has done it's stint in hyperspace... bring us home!
+					timers.remove(Timer.TIMER_CLASS.HYPERSPACE);
+					returnFromHyperspace();
+				}
+				
 				//########################################################3
 				//########################################################3
 
@@ -305,28 +320,8 @@ public class Main extends Application {
 
 				//press keyboard H and Let the spaceship jump to a place where is no enemies
 				if (keys.getCurrentlyActiveKeys().containsKey("H")) {
-					try {
-						// Beep into hyperspace...
-						Media sound = new Media(Main.class.getResource(SoundEffects.HYPERSPACE_ENTER.path).toURI().toString());
-						MediaPlayer mediaPlayer = new MediaPlayer(sound);
-						mediaPlayer.play();
-					}
-					catch (URISyntaxException USE) {
-						// ####################################################### LOGGING??
-						System.out.println(USE.getStackTrace());
-					}
-
-					spaceship.hitModel.setStroke(Color.BLACK);
-					timers.get(Timer.TIMER_CLASS.HYPERSPACE).increment_timer();
-
+					goToHyperspace();
 				}
-				else if(timers.get(Timer.TIMER_CLASS.HYPERSPACE).get_time()>1){
-					timers.remove(Timer.TIMER_CLASS.HYPERSPACE);
-					timers.put(Timer.TIMER_CLASS. HYPERSPACE, new Timer(0));
-					GameObject.spaceshipHyperspace(spaceship,movingObjectsOnScreen);
-					spaceship.hitModel.setStroke(Color.WHITE);
-				}
-
 
 				// We know the frame rate of the AnimationTimer, so every time
 				// the 'handle' gets called, we know that 1/60th of a second has
@@ -337,8 +332,8 @@ public class Main extends Application {
 
 
 				//set the timer for aliens
-				timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).increment_timer();
-				List<GameObject> alienOnScreenList = findGameObjectsInList(AsteroidsShape.InGameShape.ALIEN);
+				timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).increment();
+				List<GameObject> alienOnScreenList = findGameObjectsInList(GameObject.GoClass.ALIEN);
 				if(alienOnScreenList!=null) {
 					alienOnScreen = alienOnScreenList.get(0);
 				}
@@ -370,7 +365,7 @@ public class Main extends Application {
 						&& alienOnScreen.position.getX()>0 && alienOnScreen.position.getY()>0
 						&& alienOnScreen.position.getX()<850 && alienOnScreen.position.getY()<600)
 				{
-					timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment_timer();
+					timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment();
 					//alien Bullet fire At regular intervals
 					GameObject.alienBulletFire(alienOnScreen,timerBullet,spaceship, movingObjectsOnScreen);
 				}
@@ -400,14 +395,15 @@ public class Main extends Application {
 
 				//  EXAMPLE OF HOW TO SET TEXT FOR CONTROLS ON SCREEN
 
-				GameObject asteroid = null;
-				for (GameObject go: movingObjectsOnScreen) {
-					if ((go instanceof AsteroidsShape
-							&& ((AsteroidsShape) go).type == AsteroidsShape.InGameShape.ASTEROID_LARGE))
-					{
-						asteroid = go;
-					}
-				}
+// DOES NOTHING???
+//				GameObject asteroid = null;
+//				for (GameObject go: movingObjectsOnScreen) {
+//					if ((go instanceof AsteroidsShape
+//							&& ((AsteroidsShape) go).type == AsteroidsShape.InGameShape.ASTEROID_LARGE))
+//					{
+//						asteroid = go;
+//					}
+//				}
 				//				Label status1 = (Label) mainGameNamespace.get("status1");
 				//				status1.setText("SpSh_Pos: " + df.format(spaceship.position.getX()) + "\t,\t" + df.format(spaceship.position.getY()));
 				//				Label status2 = (Label) mainGameNamespace.get("status2");
@@ -425,6 +421,62 @@ public class Main extends Application {
 
 
 			}
+
+			/** Take the ship to hyperspace! Play a sound and start a timer
+			 * (there should only ever really be one for 'being in hyperspace')
+			 * @param timers
+			 */
+			private void goToHyperspace() {
+				try {
+					// Beep into hyperspace...
+					Media sound = new Media(Main.class.getResource(SoundEffects.HYPERSPACE_ENTER.path).toURI().toString());
+					MediaPlayer mediaPlayer = new MediaPlayer(sound);
+					mediaPlayer.play();
+				}
+				catch (URISyntaxException USE) {
+					// ####################################################### LOGGING??
+					System.out.println(USE.getStackTrace());
+				}
+				
+				// We've gone into hyperspace - we want to stay there until the
+				// timer runs out!
+				timers.put(Timer.TIMER_CLASS.HYPERSPACE, new Timer(120));  // 120 = 2s
+				// Set the spaceship so it won't draw on screen and can't be hit
+				// until the timer runs out...
+				spaceship.willRender = false;
+				spaceship.canBeHit = false;
+			}
+			/** Return from hyperspace.
+			 *
+			 * @param GameObject spaceship, List<GameObject> movingObjectsOnScreen
+			 * @return void
+			 */
+			private void returnFromHyperspace()  {
+				try {
+					// Beep into hyperspace...
+					Media sound = new Media(Main.class.getResource(SoundEffects.HYPERSPACE_EXIT.path).toURI().toString());
+					MediaPlayer mediaPlayer = new MediaPlayer(sound);
+					mediaPlayer.play();
+				}
+				catch (URISyntaxException USE) {
+					// ####################################################### LOGGING??
+					System.out.println(USE.getStackTrace());
+				}
+				
+				Random r = new Random();
+				double a = Configuration.SCENE_WIDTH * r.nextDouble();
+				double b = Configuration.SCENE_HEIGHT * r.nextDouble();	
+//				double dx = spaceship.position.getX()-a;
+//				double dy = spaceship.position.getY()-b;
+//				if(Math.pow(dx, 2)+Math.pow(dy, 2) <= Math.pow(200, 2)) {
+//					break;
+//				}
+				spaceship.position = new GameVector(a,b);
+				// Set the spaceship so it will draw on screen again and can be hit
+				// by asteroids etc. ...
+				spaceship.willRender = true;
+				spaceship.canBeHit = true;
+			}				
 
 			/** Create a new bullet at the spaceships nose-position, giving it an
 			 * appropriate initial velocity based on the ships direction. Then
@@ -532,13 +584,12 @@ public class Main extends Application {
 
 				// Get the reference for the spaceship so we can steer it.
 				//spaceship = findSpaceshipInList(movingObjectsOnScreen);
-				spaceship = findGameObjectsInList(AsteroidsShape.InGameShape.SPACESHIP).get(0);
+				spaceship = findGameObjectsInList(GameObject.GoClass.SPACESHIP).get(0);
 
 				//set the timer for when alien should appear
 				timers.put(Timer.TIMER_CLASS.ALIEN_TIMER, new Timer(0));
 				//set the timer for when alien should fire
 				timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
-				timers.put(Timer.TIMER_CLASS.HYPERSPACE, new Timer(0));
 
 				Main.ctrlResetGameState = false;
 			}
@@ -554,68 +605,37 @@ public class Main extends Application {
 			 * @param movingObjectsOnScreen
 			 * @return the spaceship!! (null if none found)
 			 */	
-			private List<GameObject> findGameObjectsInList(InGameShape nameElement)
-			{
+			private List<GameObject> findGameObjectsInList(GoClass gameObjectClass)	{
 				List<GameObject> gameObjects = null ;
-				AsteroidsShape testShape = new AsteroidsShape(nameElement) ;
+
 				// One of the objects we've just created is the spaceship.
 				// We need to be able to reference this object directly so
 				// we can control it's position.
-				for (GameObject newGameObject: movingObjectsOnScreen) {
+				for (GameObject gameObject: movingObjectsOnScreen) {
 					// The spaceship is in the list... and it's either a 
 					// Sprite or an 'AsteroidsShape' (wish we had a better
 					// name for these).  So search for it and assign it's
 					// reference to the spaceship object.
 
-					if ((newGameObject instanceof AsteroidsShape
-							&& ((AsteroidsShape) newGameObject).type == testShape.type))
+					if (( gameObject.gameObjectClass == gameObjectClass))
 					{
 						if (gameObjects==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
 							gameObjects = new ArrayList<>();
-							gameObjects.add(newGameObject);
+							gameObjects.add(gameObject);
 						}
 						else{
-							gameObjects.add(newGameObject);
+							gameObjects.add(gameObject);
 						}
 					}
 				}
 
 				return gameObjects;
 			}
-			//overload of the function for sprite type 
-			private List<GameObject> findElementInList(List<GameObject> movingObjectsOnScreen, Graphics nameElement)
-			{
-				List<GameObject> elementList = null ;
-				Sprite testShape = new Sprite(nameElement) ;
-				// One of the objects we've just created is the spaceship.
-				// We need to be able to reference this object directly so
-				// we can control it's position.
-				for (GameObject newGameObject: movingObjectsOnScreen) {
-					// The spaceship is in the list... and it's either a 
-					// Sprite or an 'AsteroidsShape' (wish we had a better
-					// name for these).  So search for it and assign it's
-					// reference to the spaceship object.
-
-					if ((newGameObject instanceof Sprite
-							&& ((Sprite) newGameObject).type == testShape.type))
-					{
-						if (elementList==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
-							elementList = new ArrayList<>();
-							elementList.add(newGameObject);
-						}
-						else{
-							elementList.add(newGameObject);
-						}
-					}
-				}
-
-				return elementList;
-			}
 
 			private List<GameObject> removeBulletOutScreen()
 			{
 				List<GameObject> spaceshipBulletsOnScreen = null;
-				spaceshipBulletsOnScreen = findGameObjectsInList(AsteroidsShape.InGameShape.BULLET);
+				spaceshipBulletsOnScreen = findGameObjectsInList(GameObject.GoClass.BULLET);
 				if( spaceshipBulletsOnScreen != null) { //avoid error if no bullet on screen 
 					for(int i = 0;i<spaceshipBulletsOnScreen.size();i++) { 
 						//check if the bullet coordinates if outside the screen boundaries
@@ -639,8 +659,7 @@ public class Main extends Application {
 			 */
 			private void removeAlienBulletWhenHitsMaxRange() {
 				for(GameObject gameObject: movingObjectsOnScreen) {
-					if ((gameObject instanceof Sprite&& ((Sprite) gameObject).type == Sprite.Graphics.LASER)
-							||(gameObject instanceof AsteroidsShape && ((AsteroidsShape) gameObject).type == AsteroidsShape.InGameShape.ALIEN_BULLET))
+					if (gameObject.gameObjectClass == GameObject.GoClass.ALIEN_BULLET)
 					{
 						double dx = gameObject.position.getX()-gameObject.initialX;
 						double dy = gameObject.position.getY()-gameObject.initialY;
@@ -655,15 +674,15 @@ public class Main extends Application {
 
 			private List<GameObject> collisionBulletAsteroid()
 			{
-				//dinf all the bullets 
-				List<GameObject> spaceshipBulletsOnScreen = null;
-				spaceshipBulletsOnScreen = findGameObjectsInList(AsteroidsShape.InGameShape.BULLET);
+				//find all the bullets 
+				List<GameObject> spaceshipBulletsOnScreen
+					= findGameObjectsInList(GameObject.GoClass.BULLET);
 
 				//find all the asteroids 
 				List<GameObject> asteroidsOnScreen = null;
-				asteroidsOnScreen = Stream.of(findGameObjectsInList(AsteroidsShape.InGameShape.ASTEROID_SMALL),
-						findGameObjectsInList(AsteroidsShape.InGameShape.ASTEROID_MEDIUM),
-						findGameObjectsInList(AsteroidsShape.InGameShape.ASTEROID_LARGE))
+				asteroidsOnScreen = Stream.of(findGameObjectsInList(GameObject.GoClass.ASTEROID_SMALL),
+						findGameObjectsInList(GameObject.GoClass.ASTEROID_MEDIUM),
+						findGameObjectsInList(GameObject.GoClass.ASTEROID_LARGE))
 						.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
 						.collect(Collectors.toList());
 
@@ -685,25 +704,77 @@ public class Main extends Application {
 
 								//GameState.adjustScore(5);
 
-
-
-								//find the coordinated of the 'original'asteroids'
+								//store the coordinated of the 'original'asteroids'
 								double xOriginalAsteroid = asteroidsOnScreen.get(j).position.getX();
 								double yOriginalAsteroid = asteroidsOnScreen.get(j).position.getY();
 								double rotationOriginalAsteroid = asteroidsOnScreen.get(j).rotation ;
+
+								// Remove the bullet and asteroid (just destroyed) from 
+								// the on-screen collection.
 								movingObjectsOnScreen.removeAll(removeElements); // remove simultaneously both elements
 
 								//create two new asteroids
 								for(int h = 0 ; h <2 ; h++) {
 									//points ++ en fonction de la taille de l'astéroide ? 
-									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
-											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_LARGE) {
-										createMediumAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
-									}
-									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
-											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_MEDIUM) {
-										createSmallAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+//									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
+//											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_LARGE) {
+//										createMediumAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+//									}
+//									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
+//											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_MEDIUM) {
+//										createSmallAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+//
+//									}
+									// If large asteroid create two medium...
+									if (asteroidsOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_LARGE) {
+										try {
+											// Beep into hyperspace...
+											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_LARGE.path).toURI().toString());
+											MediaPlayer mediaPlayer = new MediaPlayer(sound);
+											mediaPlayer.play();
 
+											// You hit a big asteroid - get 100 points!
+											gameState.incrementScore(100);
+											createMediumAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+										}
+										catch (URISyntaxException USE) {
+											// ####################################################### LOGGING??
+											System.out.println(USE.getStackTrace());
+										}
+									}
+									// If medium asteroid create two small...
+									if (asteroidsOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_MEDIUM) {
+										try {
+											// Beep into hyperspace...
+											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_MEDIUM.path).toURI().toString());
+											MediaPlayer mediaPlayer = new MediaPlayer(sound);
+											mediaPlayer.play();
+
+											// You hit a medium asteroid - get 150 points!
+											gameState.incrementScore(150);
+											createSmallAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+										}
+										catch (URISyntaxException USE) {
+											// ####################################################### LOGGING??
+											System.out.println(USE.getStackTrace());
+										}
+									}
+									// If small asteroid no need to create anything...
+									// just do the small bang and give the player some score!
+									if (asteroidsOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_SMALL) {
+										try {
+											// Beep into hyperspace...
+											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_SMALL.path).toURI().toString());
+											MediaPlayer mediaPlayer = new MediaPlayer(sound);
+											mediaPlayer.play();
+
+											// You hit a medium asteroid - get 250 points!
+											gameState.incrementScore(250);
+										}
+										catch (URISyntaxException USE) {
+											// ####################################################### LOGGING??
+											System.out.println(USE.getStackTrace());
+										}
 									}
 								}										
 							}
@@ -777,12 +848,12 @@ public class Main extends Application {
 			{
 				//find all the bullets 
 				GameObject spaceship = null;
-				spaceship = findGameObjectsInList(AsteroidsShape.InGameShape.SPACESHIP).get(0);		
+				spaceship = findGameObjectsInList(GameObject.GoClass.SPACESHIP).get(0);		
 				//find all the asteroids 
 				List<GameObject> asteroidsOnScreen = null;
-				asteroidsOnScreen = Stream.of(findGameObjectsInList(AsteroidsShape.InGameShape.ASTEROID_SMALL),
-						findGameObjectsInList(AsteroidsShape.InGameShape.ASTEROID_MEDIUM),
-						findGameObjectsInList(AsteroidsShape.InGameShape.ASTEROID_LARGE))
+				asteroidsOnScreen = Stream.of(findGameObjectsInList(GameObject.GoClass.ASTEROID_SMALL),
+						findGameObjectsInList(GameObject.GoClass.ASTEROID_MEDIUM),
+						findGameObjectsInList(GameObject.GoClass.ASTEROID_LARGE))
 						.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
 						.collect(Collectors.toList());
 
@@ -801,7 +872,7 @@ public class Main extends Application {
 						}
 
 						GameState gameState = GameState.getInstance();
-						gameState.incrementScore(50);
+						gameState.incrementScore(-50);
 						gameState.loseALife();
 
 						System.out.println("Collision spaceship asteroid LOOSE A LIFE ");

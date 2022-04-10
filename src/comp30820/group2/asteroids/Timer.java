@@ -20,14 +20,16 @@ public class Timer {
     	this.time = time;
     }
     
-    public void increment_timer() {
+    public void increment() {
     	this.time +=1;
+    }
+    public void decrement() {
+    	this.time -=1;
     }
     
     public void set_time(int time) {
     	this.time = time;
     }
-    
     public int get_time() {
     	return this.time;
     }

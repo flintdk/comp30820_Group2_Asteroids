@@ -24,6 +24,8 @@ public abstract class GameObject {
 	public GameVector position;
 	public GameVector velocity;
 	public double rotation;  // degrees - it's the angle of the orientation!
+	public boolean willRender = true;
+	public boolean canBeHit = true;
 	
 	public Shape hitModel;  // A polygon describing our game objects on screen
 	// JavaFX rotates the coordinate space of the node (Polygon) about a specified
@@ -51,7 +53,7 @@ public abstract class GameObject {
     protected double[] ypoints;
     
     // Polygons Supported by the game
-    public enum GO_CLASS {
+    public enum GoClass {
     	BACKGROUND("Game Board Background"),
     	SPACESHIP("Triangular spaceship"),
     	ASTEROID_LARGE("Irregular shaped Asteroid, Large!"),
@@ -64,16 +66,19 @@ public abstract class GameObject {
         
         public final String description;
 
-        private GO_CLASS(String description) {
+        private GoClass(String description) {
             this.description = description;
         }
     };
+    // This AsteroidsShape will have an assigned type.
+    public GoClass gameObjectClass;
 
-	/** Default constructor, creates an 'empty' (0-positioned, no-velocity,
+	/** Private no-argument constructor, force consumers to supply a type when
+	 * creating an instance.  Supplies an 'empty' (0-positioned, no-velocity,
 	 * 0-angled, minimum-HitBox 'game object').
 	 * 
 	 */
-	public GameObject() {
+	private GameObject() {
 		this.position = new GameVector();
 		this.velocity = new GameVector();
 		this.rotation = 0;
@@ -83,6 +88,14 @@ public abstract class GameObject {
 		this.hitModel = new Polygon(0, 0, 1, 0, 1, 1, 0, 1);
 		setRotationPivotOffsets();
 		this.wrap = true ;
+	}
+	/** Parameterised constructor, creates an 'empty' (0-positioned, no-velocity,
+	 * 0-angled, minimum-HitBox 'game object'), of GoType supplied
+	 * 
+	 */
+	public GameObject(GoClass goClass) {
+		this();
+		this.gameObjectClass = goClass;
 	}
 	
 	/** Helper method to set a random initial screen position and velocity for
@@ -152,37 +165,11 @@ public abstract class GameObject {
 	 * @return
 	 */
 	public boolean isHitting(GameObject other) {
-		return Shape.intersect(getHitModel(),other.getHitModel()).getBoundsInLocal().getWidth()!= -1;
-	}
-	
-	/**
-	 * Jump the spaceship to a radius of 200 where there are no enemies
-	 * @param GameObject spaceship, List<GameObject> movingObjectsOnScreen
-	 * @return void
-	 */
-	public static void spaceshipHyperspace(GameObject spaceship, List<GameObject> movingObjectsOnScreen) {
-		boolean keepRunning = true;
-		while(keepRunning) {
-			Random r = new Random();
-			double a = Configuration.SCENE_WIDTH * r.nextDouble();
-			double b = Configuration.SCENE_HEIGHT * r.nextDouble();	
-		//GameVector position = new GameVector(Configuration.SCENE_WIDTH * r.nextDouble(),Configuration.SCENE_HEIGHT * r.nextDouble());
-			for(int i=0; i<=movingObjectsOnScreen.size()-1;i++) {
-				GameObject gameObject = movingObjectsOnScreen.get(i);
-				if(!(gameObject instanceof Sprite && ((Sprite) gameObject).type == Sprite.Graphics.SPACESHIP||(gameObject instanceof AsteroidsShape
-							&& ((AsteroidsShape) gameObject).type == AsteroidsShape.InGameShape.SPACESHIP))) 
-				{
-					double dx = gameObject.position.getX()-a;
-					double dy = gameObject.position.getY()-b;
-					if(Math.pow(dx, 2)+Math.pow(dy, 2) <= Math.pow(200, 2)) {
-						break;
-					}
-				}
-				if(i==movingObjectsOnScreen.size()-1) {
-					keepRunning=false;
-					spaceship.position = new GameVector(a,b);
-				}
-			}
+		if (canBeHit) {
+			return Shape.intersect(getHitModel(),other.getHitModel()).getBoundsInLocal().getWidth()!= -1;
+		}
+		else {
+			return false;
 		}
 	}
 	
@@ -218,7 +205,6 @@ public abstract class GameObject {
 	public void wrap (double screenWidth, double screenHeight) {
 		double halfShipWidth  = getHitModel().getLayoutBounds().getWidth() / 2;
 		double halfShipHeight = getHitModel().getLayoutBounds().getHeight() / 2;
-		boolean exitScreen = false ;
 		
 		// If we go off screen to the left (i.e. if the right edge of our sprite
 		// goes all the way past the left edge of our scene)...
@@ -255,7 +241,6 @@ public abstract class GameObject {
 	 */
 	public void updatePosition(double deltaTime) {
 		// Update the position according to velocity
-		boolean edgeScreen = false;
 		this.position
 			= new GameVector(
 				this.position.add(
@@ -286,37 +271,40 @@ public abstract class GameObject {
 	 * @param context
 	 */
 	public void render(GraphicsContext context) {
-		
-		// save and restore allow us to apply these transformations only to this
-		// particular sprite... Explain!?
-		context.save();
-		
-		// Following operations occur in REVERSE
-		// -> we're putting the transformations onto a stack
-		// -> they get processed (drawn) in the order they come off the stack (LIFO)
-
-		// We drew our shapes on a graphics context as described here:
-		//   -> https://docs.oracle.com/javafx/2/canvas/jfxpub-canvas.htm
-		// ... rather than adding polygons to our layout/pane. (A Pane is a UI
-		// element ("Node") that contains other UI elements ("child nodes") and
-		// manages the layout of those nodes within the Pane)
-		
-		// ... and finally translate our image according to position!
-		context.translate(this.position.getX(), this.position.getY());
-		// ... then rotate the image (which is now centered on the origin...
-		context.rotate(this.rotation);
-		// ... then center the on the origin...
-		// The default pivot point is '0,0' or the origin (top left corner of the
-		// screen)! We want to rotate about the center of the sprite. So we slide
-		// the image to the left and up (note the negative numbers)
-		context.translate(-rotationPivotOffsetX, -rotationPivotOffsetY);
-
-		// Draw the image at the origin...
-		drawObject(context);
-
-		// Pop the state off of the stack, setting the following attributes to
-		// their value at the time when that state was pushed onto the stack.
-		context.restore();
+		// Only draw the game object to the graphics context when indicated...
+		// (e.g. don't draw the spaceship when it's in hyperspace...)
+		if (willRender) {
+			// save and restore allow us to apply these transformations only to this
+			// particular sprite... Explain!?
+			context.save();
+			
+			// Following operations occur in REVERSE
+			// -> we're putting the transformations onto a stack
+			// -> they get processed (drawn) in the order they come off the stack (LIFO)
+	
+			// We drew our shapes on a graphics context as described here:
+			//   -> https://docs.oracle.com/javafx/2/canvas/jfxpub-canvas.htm
+			// ... rather than adding polygons to our layout/pane. (A Pane is a UI
+			// element ("Node") that contains other UI elements ("child nodes") and
+			// manages the layout of those nodes within the Pane)
+			
+			// ... and finally translate our image according to position!
+			context.translate(this.position.getX(), this.position.getY());
+			// ... then rotate the image (which is now centered on the origin...
+			context.rotate(this.rotation);
+			// ... then center the on the origin...
+			// The default pivot point is '0,0' or the origin (top left corner of the
+			// screen)! We want to rotate about the center of the sprite. So we slide
+			// the image to the left and up (note the negative numbers)
+			context.translate(-rotationPivotOffsetX, -rotationPivotOffsetY);
+	
+			// Draw the image at the origin...
+			drawObject(context);
+	
+			// Pop the state off of the stack, setting the following attributes to
+			// their value at the time when that state was pushed onto the stack.
+			context.restore();
+		}
 	}
 	
 	/** The process for drawing an image on a context is different to that used
