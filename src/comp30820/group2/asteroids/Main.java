@@ -418,9 +418,9 @@ public class Main extends Application {
 				//method not finished : need to add points if collision ! 
 				collisionBulletAsteroid();
 
-				// check if the ship is hitting an asteroids 
+				// check if the ship is hitting an asteroids or is hit by an alien bullet
 				// this method is not finished need to remove a life, a place safely the spaceship again
-				collisionSpaceshipAsteroid();
+				collisionSpaceship();
 
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.render(context));
@@ -781,10 +781,13 @@ public class Main extends Application {
 											// You hit a big asteroid - get 100 points!
 											gameState.incrementScore(100);
 											
+											double Offset = 0.45;
+											
 											createAsteroid(
 													AsteroidsShape.InGameShape.ASTEROID_MEDIUM,
-													xOriginalAsteroid + (h * xOffset) * Configuration.ASTEROID_MED_SIZE,
-													yOriginalAsteroid  + (h * yOffset) * Configuration.ASTEROID_MED_SIZE);
+													xOriginalAsteroid + (h * Offset) * Configuration.ASTEROID_MED_SIZE,
+													yOriginalAsteroid  + (h * Offset) * Configuration.ASTEROID_MED_SIZE,
+													Configuration.ASTEROID_MED_SPEED);
 										}
 										catch (URISyntaxException USE) {
 											// ####################################################### LOGGING??
@@ -801,11 +804,14 @@ public class Main extends Application {
 
 											// You hit a medium asteroid - get 150 points!
 											gameState.incrementScore(150);
-																		
+														
+											double Offset = 0.1;
+											
 											createAsteroid(
 													AsteroidsShape.InGameShape.ASTEROID_SMALL,
-													xOriginalAsteroid + (h * xOffset) * Configuration.ASTEROID_SML_SPEED,
-													yOriginalAsteroid  + (h * yOffset) * Configuration.ASTEROID_SML_SPEED);
+													xOriginalAsteroid + ( h * Offset ) * Configuration.ASTEROID_SML_SPEED,
+													yOriginalAsteroid  + ( h * Offset ) * Configuration.ASTEROID_SML_SPEED,
+													Configuration.ASTEROID_SML_SPEED);
 										}
 										catch (URISyntaxException USE) {
 											// ####################################################### LOGGING??
@@ -838,7 +844,7 @@ public class Main extends Application {
 				return movingObjectsOnScreen;
 			}
 
-			private void createAsteroid(AsteroidsShape.InGameShape asteroidType, double initialX, double initialY)
+			private void createAsteroid(AsteroidsShape.InGameShape asteroidType, double initialX, double initialY , int speed )
 			{
 
 				AsteroidsShape myNewAsteroid = new AsteroidsShape(asteroidType);
@@ -851,9 +857,9 @@ public class Main extends Application {
 				myNewAsteroid.rotation = randomRotation;
 
 				double changeXAsteroid
-				= Math.cos(Math.toRadians(myNewAsteroid.rotation)) * Configuration.ASTEROID_MED_SPEED;
+				= Math.cos(Math.toRadians(myNewAsteroid.rotation)) * speed;
 				double changeYAsteroid
-				= Math.sin(Math.toRadians(myNewAsteroid.rotation)) * Configuration.ASTEROID_MED_SPEED;
+				= Math.sin(Math.toRadians(myNewAsteroid.rotation)) * speed;
 
 				// Don't violate maximum speed limit
 				GameVector newVelocity = myNewAsteroid.velocity.add(changeXAsteroid, changeYAsteroid);
@@ -865,10 +871,11 @@ public class Main extends Application {
 				return;
 			}
 
-			private void collisionSpaceshipAsteroid()
+			private void collisionSpaceship()
 			{
 				// find the spaceship
 				List<GameObject> gameObjects = findGameObjectsInList(GameObject.GoClass.SPACESHIP);
+				
 				// We check for null/no spaceship to avoid NPE's on game startup...
 				if (gameObjects != null && gameObjects.size() > 0)
 				{
