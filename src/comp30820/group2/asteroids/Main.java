@@ -270,11 +270,7 @@ public class Main extends Application {
 				
 				//THIS IS JUST HOW I THOUGHT THE TIMERS WOULD WORK.  WENDY CAN WE
 				// DISCUSS PLEASE?
-				//timers.values().forEach( timer -> timer.increment() );
-				Timer timerToDecrement = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
-				if (timerToDecrement != null) {
-					timerToDecrement.increment();
-				}
+				timers.values().forEach( timer -> timer.increment() );
 				
 				// Now deal with specific events when timers run out...
 				Timer hyperspaceTimer = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
@@ -348,7 +344,7 @@ public class Main extends Application {
 				//set the timer for aliens
 				Timer alienTimer = timers.get(Timer.TIMER_CLASS.ALIEN_TIMER);
 				if (alienTimer != null) {
-					alienTimer.increment();
+					//alienTimer.increment();
 					List<GameObject> alienOnScreenList = findGameObjectsInList(GameObject.GoClass.ALIEN);
 					if(alienOnScreenList!=null) {
 						alienOnScreen = alienOnScreenList.get(0);
@@ -373,17 +369,22 @@ public class Main extends Application {
 						movingObjectsOnScreen.remove(alienOnScreen);	
 						timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).set_time(0);
 					}
-
-
+					
 					// get the alien bullet timer
 					Timer alienBulletTimer = timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER);
+					if(alienOnScreenList != null && alienBulletTimer == null) {
+					      timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
+					     } else if(alienOnScreenList == null) {
+					      timers.remove(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER);
+					     }
+					
+					
 					if (alienBulletTimer != null) {
 						int timerBullet = alienBulletTimer.get_time();
 						if(alienOnScreenList != null && spaceship != null
 								&& alienOnScreen.position.getX()>20 && alienOnScreen.position.getY()>10
 								&& alienOnScreen.position.getX()<1004 && alienOnScreen.position.getY()<590)
 						{
-							timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment();
 							//alien Bullet fire At regular intervals
 							GameObject.alienBulletFire(alienOnScreen,timerBullet,spaceship, movingObjectsOnScreen);
 						}
@@ -608,7 +609,7 @@ public class Main extends Application {
 				//set the timer for when alien should appear
 				timers.put(Timer.TIMER_CLASS.ALIEN_TIMER, new Timer(0));
 				//set the timer for when alien should fire
-				timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
+				//timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
 
 				Main.ctrlResetGameState = false;
 				Main.ctrlAllowMovement = true;

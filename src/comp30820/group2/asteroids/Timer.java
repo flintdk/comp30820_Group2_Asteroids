@@ -4,8 +4,6 @@ public class Timer {
 	//Timer is used to decide when the object should appear
     public enum TIMER_CLASS {
     	ALIEN_TIMER("Alien Timer"),
-    	ALIEN_TIMER("Alien Timer"),
-        ALIEN_TIMER("Alien Timer"),
         ALIEN_BULLET_TIMER("Alien bullet timer"),
     	HYPERSPACE("flash");
         

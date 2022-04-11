@@ -179,7 +179,7 @@ public abstract class GameObject {
 	 * @return void
 	 */
 	public static void alienBulletFire(GameObject alienOnScreen, int timerBullet,GameObject spaceship, List<GameObject> movingObjectsOnScreen) {
-		if(timerBullet%40==0) {
+		if(timerBullet % 40 == 0) {
 			double bulletAlienX = alienOnScreen.position.getX();
 			double bulletAlienY = alienOnScreen.position.getY();
 			GameObject alienBullet= new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN_BULLET);
