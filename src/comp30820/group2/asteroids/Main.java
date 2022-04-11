@@ -283,17 +283,7 @@ public class Main extends Application {
 				// Now deal with specific events when timers run out...
 				Timer endOfLifeTimer = timers.get(Timer.TIMER_CLASS.LOSE_A_LIFE);
 				if (endOfLifeTimer != null && endOfLifeTimer.get_time() >= 90) {    // 90 = 1.5s
-					// Our player has lost a life... but is coming back for more!
-					timers.remove(Timer.TIMER_CLASS.LOSE_A_LIFE);
-					
-					// When we recover after losing a life we are invincible for 
-					// a little bit.
-					timers.put(Timer.TIMER_CLASS.INVINCIBLE, new Timer(0));
-						timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE, new Timer(0));
-			
-					
-					
-					//returnFromHyperspace();
+					resumePlayAfterLosingLife(timers);
 				}
 				
 				//########################################################3
@@ -453,10 +443,26 @@ public class Main extends Application {
 
 
 			}
+
+			//##################################################################
+			//##################################################################
+			//##################################################################
 			
-			//##################################################################
-			//##################################################################
-			//##################################################################
+			/** When the player loses a life
+			 * 
+			 * @param timers
+			 */
+			private void resumePlayAfterLosingLife(HashMap<Enum, Timer> timers) {
+				// Our player has lost a life... but is coming back for more!
+				timers.remove(Timer.TIMER_CLASS.LOSE_A_LIFE);
+				
+				// When we recover after losing a life we are invincible for 
+				// a little bit.
+				timers.put(Timer.TIMER_CLASS.INVINCIBLE, new Timer(0));
+				timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE, new Timer(0));
+				
+				spaceship.canBeHit = false;
+			}
 
 			/** Take the ship to hyperspace! Play a sound and start a timer
 			 * (there should only ever really be one for 'being in hyperspace')
