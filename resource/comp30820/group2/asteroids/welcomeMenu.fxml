@@ -34,7 +34,7 @@
                   <Font name="Impact" size="84.0" />
                </font>
             </Label>
-            <ProgressIndicator layoutX="535.0" layoutY="448.0" prefHeight="193.0" prefWidth="255.0" />
+            <ProgressIndicator layoutX="486.0" layoutY="450.0" prefHeight="193.0" prefWidth="255.0" />
             <ImageView fitHeight="116.0" fitWidth="88.0" layoutX="816.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroid.png" />
@@ -75,7 +75,7 @@
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Label fx:id="welcomeMenuPlayerNameDisplay" alignment="CENTER" contentDisplay="TEXT_ONLY" ellipsisString="S" layoutX="440.0" layoutY="350.0" prefHeight="50.0" prefWidth="282.0" textAlignment="CENTER" textFill="RED" visible="false">
+            <Label fx:id="welcomeMenuPlayerNameDisplay" alignment="CENTER" contentDisplay="TEXT_ONLY" ellipsisString="S" layoutX="362.0" layoutY="361.0" prefHeight="40.0" prefWidth="300.0" textAlignment="CENTER" textFill="RED" visible="false">
                <font>
                   <Font name="Impact" size="20.0" />
                </font></Label>

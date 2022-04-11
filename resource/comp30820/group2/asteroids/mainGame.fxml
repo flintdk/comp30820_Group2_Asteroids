@@ -4,6 +4,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="768" maxWidth="1024" minHeight="768" minWidth="1024" prefHeight="768" prefWidth="1024" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
@@ -11,6 +14,27 @@
       <Pane minHeight="768.0" minWidth="1024.0" prefHeight="768" prefWidth="1024" BorderPane.alignment="CENTER">
          <children>
             <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutY="84.0" width="1024.0" />
+            <Label fx:id="mainGameGameOver" contentDisplay="CENTER" layoutX="330.0" layoutY="337.0" text="GAME OVER" visible="false">
+               <font>
+                  <Font name="System Bold Italic" size="64.0" />
+               </font>
+               <textFill>
+                  <RadialGradient centerX="0.5" centerY="0.5" cycleMethod="REFLECT" focusDistance="-0.02298850574712641" radius="0.7988505747126436">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color red="1.0" green="1.0" />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color green="0.44999998807907104" blue="1.0" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+            </Label>
          </children>
       </Pane>
    </center>
@@ -59,12 +83,12 @@
                   <Font size="34.0" />
                </font>
             </Label>
-            <Label fx:id="mainGamePlayerName1" layoutX="559.0" layoutY="20.0" prefHeight="17.0" prefWidth="150.0" text="Level" textFill="#fc4753">
+            <Label fx:id="mainGamePlayerName1" layoutX="559.0" layoutY="17.0" prefHeight="17.0" prefWidth="150.0" text="Level" textFill="#fc4753">
                <font>
                   <Font size="34.0" />
                </font>
             </Label>
-            <Label fx:id="mainGameLevel" layoutX="683.0" layoutY="22.0" prefHeight="17.0" prefWidth="300.0" textFill="#fc4753">
+            <Label fx:id="mainGameLevel" layoutX="683.0" layoutY="17.0" prefHeight="17.0" prefWidth="300.0" textFill="#fc4753">
                <font>
                   <Font size="34.0" />
                </font>

@@ -32,6 +32,7 @@ public class AsteroidsFXMLController implements Initializable {
 	@FXML private Label mainGameScore;
 	@FXML private Label mainGamePlayerName;
 	@FXML private Label mainGameLives;
+	@FXML private Label mainGameGameOver;
 	
 	@FXML private Label endOfGameHS1;
 	@FXML private Label endOfGameHS2;
