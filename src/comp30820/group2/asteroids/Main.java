@@ -260,7 +260,7 @@ public class Main extends Application {
 				score.setText(gameState.getDisplayScore());
 
 				Label lives = (Label) mainGameNamespace.get("mainGameLives");
-				lives.setText(gameState.getLives());
+				lives.setText(gameState.getLivesForDisplay());
 
 				// TODO:::: Configuration.insertPlayerToLeaderTableIfHighEnough();
 
@@ -282,6 +282,22 @@ public class Main extends Application {
 					// Our ship has done it's stint in hyperspace... bring us home!
 					timers.remove(Timer.TIMER_CLASS.HYPERSPACE);
 					returnFromHyperspace();
+				}
+				
+				// Now deal with specific events when timers run out...
+				Timer endOfLifeTimer = timers.get(Timer.TIMER_CLASS.LOSE_A_LIFE);
+				if (endOfLifeTimer != null && endOfLifeTimer.get_time() >= 90) {    // 90 = 1.5s
+					// Our player has lost a life... but is coming back for more!
+					timers.remove(Timer.TIMER_CLASS.LOSE_A_LIFE);
+					
+					// When we recover after losing a life we are invincible for 
+					// a little bit.
+					timers.put(Timer.TIMER_CLASS.INVINCIBLE, new Timer(0));
+						timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE, new Timer(0));
+			
+					
+					
+					//returnFromHyperspace();
 				}
 				
 				//########################################################3
@@ -881,8 +897,22 @@ public class Main extends Application {
 							GameState gameState = GameState.getInstance();
 							gameState.incrementScore(-50);
 							gameState.loseALife();
-	
-							System.out.println("Collision spaceship asteroid LOOSE A LIFE ");
+							
+							spaceship.canBeHit = false;
+							Main.ctrlAllowMovement = false;
+
+							// You've just died!
+							if (gameState.getLives() == 0) {
+								// No lives left... first thing we do is pause the
+								// screen for a bit to give the player a chance to
+								// digest the enormity of what's happened...
+								timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+							}
+							else {
+								// Losing a life hurts... but it's not like you've lost
+								// the game.
+								timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+							}
 	
 						}
 					}

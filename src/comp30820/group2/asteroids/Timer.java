@@ -3,8 +3,11 @@ package comp30820.group2.asteroids;
 public class Timer {
 	//Timer is used to decide when the object should appear
     public enum TIMER_CLASS {
-    	ALIEN_TIMER("Alien Timer"),
-    	ALIEN_TIMER("Alien Timer"),
+    	LOSE_A_LIFE("Player Loses a Life"),
+    	LOSE_THE_GAME("Player Loses the Game"),
+    	INVINCIBLE("Player Invincible for a Short Time"),
+    	INVINCIBLE_FLASH_VISIBLE("Player Ship Flashing, Visible "),
+    	INVINCIBLE_FLASH_HIDDEN("Player Ship Flashing, Visible "),
         ALIEN_TIMER("Alien Timer"),
         ALIEN_BULLET_TIMER("Alien bullet timer"),
     	HYPERSPACE("flash");
