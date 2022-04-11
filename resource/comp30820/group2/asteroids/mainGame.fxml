@@ -59,6 +59,16 @@
                   <Font size="34.0" />
                </font>
             </Label>
+            <Label fx:id="mainGamePlayerName1" layoutX="559.0" layoutY="20.0" prefHeight="17.0" prefWidth="150.0" text="Level" textFill="#fc4753">
+               <font>
+                  <Font size="34.0" />
+               </font>
+            </Label>
+            <Label fx:id="mainGameLevel" layoutX="683.0" layoutY="22.0" prefHeight="17.0" prefWidth="300.0" textFill="#fc4753">
+               <font>
+                  <Font size="34.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </bottom>
