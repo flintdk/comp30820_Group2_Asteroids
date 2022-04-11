@@ -20,7 +20,7 @@
                   <Image url="@../../../img/space.png" />
                </image>
             </ImageView>
-            <Button id="welcomeStartGame" layoutX="408.0" layoutY="524.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" prefHeight="40.0" prefWidth="191.0" text="START">
+            <Button id="welcomeStartGame" layoutX="461.0" layoutY="543.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" prefHeight="40.0" prefWidth="191.0" text="START">
                <font>
                   <Font size="18.0" />
                </font></Button>
@@ -29,12 +29,12 @@
                   <Image url="@../../../img/asteroid.png" />
                </image>
             </ImageView>
-            <Label blendMode="DIFFERENCE" contentDisplay="CENTER" layoutX="338.0" layoutY="153.0" text="ASTEROIDS" textFill="#f27373">
+            <Label blendMode="DIFFERENCE" contentDisplay="CENTER" layoutX="382.0" layoutY="151.0" text="ASTEROIDS" textFill="#f27373">
                <font>
                   <Font name="Impact" size="84.0" />
                </font>
             </Label>
-            <ProgressIndicator layoutX="478.0" layoutY="442.0" prefHeight="193.0" prefWidth="255.0" />
+            <ProgressIndicator layoutX="535.0" layoutY="448.0" prefHeight="193.0" prefWidth="255.0" />
             <ImageView fitHeight="116.0" fitWidth="88.0" layoutX="816.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroid.png" />
@@ -71,11 +71,16 @@
                   <Image url="@../../../img/asteroids-WALogo.png" />
                </image>
             </ImageView>
-            <Label fx:id="welcomeMenuPlayerNameDisplay" alignment="CENTER" contentDisplay="TEXT_ONLY" ellipsisString="S" layoutX="357.0" layoutY="350.0" prefHeight="50.0" prefWidth="310.0" textAlignment="CENTER" textFill="RED" visible="false">
+            <Label fx:id="welcomeMenuPlayerNameDisplay" alignment="CENTER" contentDisplay="TEXT_ONLY" ellipsisString="S" layoutX="440.0" layoutY="350.0" prefHeight="50.0" prefWidth="282.0" textAlignment="CENTER" textFill="RED" visible="false">
                <font>
                   <Font name="Impact" size="20.0" />
                </font></Label>
-            <TextField fx:id="welcomeMenuPlayerNameEntry" alignment="CENTER" layoutX="431.0" layoutY="350.0" onKeyPressed="#welcomeMenuPlayerNameEntryKeyPress" prefHeight="49.0" prefWidth="163.0" promptText="Enter your name..." />
+               <Button id="HowTo" fx:id="HowTo" layoutX="462.0" layoutY="594.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="192.0" text="HOW TO PLAY?">
+               <font>
+                  <Font size="20.0" />
+               </font></Button>
+               
+            <TextField fx:id="welcomeMenuPlayerNameEntry" alignment="CENTER" layoutX="467.0" layoutY="361.0" onKeyPressed="#welcomeMenuPlayerNameEntryKeyPress" prefHeight="49.0" prefWidth="163.0" promptText="Enter your name..." />
          </children>
       </Pane>
    </center>

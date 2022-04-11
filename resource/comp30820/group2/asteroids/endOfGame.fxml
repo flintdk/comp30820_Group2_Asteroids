@@ -21,6 +21,11 @@
                   <Image url="@../../../img/space.png" />
                </image>
             </ImageView>
+            
+            <Button id="HowTo" fx:id="HowTo" layoutX="452.0" layoutY="592.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" text="HOW TO PLAY?" />
+            
+            
+            
             <Button id="endGameNewGame" layoutX="417.0" layoutY="630.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" text="NEW GAME?">
                <font>
                   <Font size="27.0" />
