@@ -114,8 +114,9 @@ public abstract class GameObject {
 		this.velocity = new GameVector(initialX, initialY);
 	};
 	
-	// @Wendy
-	//set the initial position randomly for alien and set the speed
+	/** Help ALien to have random initial position(relative)
+	 * @return
+	 */
 	public void randomInitAlien() {
 		Random r = new Random();
 		this.position = new GameVector(0,Configuration.SCENE_HEIGHT * r.nextDouble());
@@ -123,8 +124,9 @@ public abstract class GameObject {
 		this.velocity = new GameVector(initialSpeed, 0);
 	}
 	
-	// @Wendy
-	//set the Alien path randomly
+	/** Help ALien to have random path
+	 * @return
+	 */
 	public void changePathAlien() {
 		Random r = new Random();
 		float m=r.nextFloat();

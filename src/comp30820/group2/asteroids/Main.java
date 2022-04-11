@@ -304,7 +304,7 @@ public class Main extends Application {
 					}
 					//System.out.println(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time());
 					//when alien timer = 800, alien appear
-					if(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time() == 800) {
+					if(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time()%800==0) {
 						if(alienOnScreenList==null) {
 							alienOnScreen = new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN);
 							alienOnScreen.randomInitAlien();
@@ -353,7 +353,7 @@ public class Main extends Application {
 				//check if any of the bullets on screen are hitting an asteroids, 
 				//if yes creates, depending on the type of the asteroids, create two new smaller asteroids
 				//method not finished : need to add points if collision ! 
-				collisionBulletAsteroid();
+				collisionBulletAsteroidAlien();
 
 				// check if the ship is hitting an asteroids or is hit by an alien bullet
 				// this method is not finished need to remove a life, a place safely the spaceship again
@@ -797,17 +797,18 @@ public class Main extends Application {
 				}
 			}
 
-			private List<GameObject> collisionBulletAsteroid()
+			private List<GameObject> collisionBulletAsteroidAlien()
 			{
 				//find all the bullets 
 				List<GameObject> spaceshipBulletsOnScreen
 					= findGameObjectsInList(GameObject.GoClass.BULLET);
 
 				//find all the asteroids 
-				List<GameObject> asteroidsOnScreen = null;
-				asteroidsOnScreen = Stream.of(findGameObjectsInList(GameObject.GoClass.ASTEROID_SMALL),
+				List<GameObject> asteroidsAlienOnScreen = null;
+				asteroidsAlienOnScreen = Stream.of(findGameObjectsInList(GameObject.GoClass.ASTEROID_SMALL),
 						findGameObjectsInList(GameObject.GoClass.ASTEROID_MEDIUM),
-						findGameObjectsInList(GameObject.GoClass.ASTEROID_LARGE))
+						findGameObjectsInList(GameObject.GoClass.ASTEROID_LARGE),
+						findGameObjectsInList(GameObject.GoClass.ALIEN))
 						.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
 						.collect(Collectors.toList());
 
@@ -815,12 +816,12 @@ public class Main extends Application {
 				if( spaceshipBulletsOnScreen != null) { //avoid error if no bullet on screen 
 					//System.out.println("num bullet  :  " + bulletList.size());
 					for(int i = 0;i<spaceshipBulletsOnScreen.size();i++) {
-						for(int j = 0;j<asteroidsOnScreen.size();j++) {
-							if( spaceshipBulletsOnScreen.get(i).isHitting(asteroidsOnScreen.get(j)) ){
+						for(int j = 0;j<asteroidsAlienOnScreen.size();j++) {
+							if( spaceshipBulletsOnScreen.get(i).isHitting(asteroidsAlienOnScreen.get(j)) ){
 								//create a list with elements that needs to be removed after a collision  
 								List<GameObject> removeElements = new ArrayList<GameObject>();
 								removeElements.add(spaceshipBulletsOnScreen.get(i));
-								removeElements.add(asteroidsOnScreen.get(j));
+								removeElements.add(asteroidsAlienOnScreen.get(j));
 
 								//System.out.println("x  destroyed :  " + asteroidsOnScreen.get(j).position.getX() + "y  destroyed :  " + asteroidsOnScreen.get(j).position.getY());
 
@@ -830,9 +831,9 @@ public class Main extends Application {
 								//GameState.adjustScore(5);
 
 								//store the coordinated of the 'original'asteroids'
-								double xOriginalAsteroid = asteroidsOnScreen.get(j).position.getX();
-								double yOriginalAsteroid = asteroidsOnScreen.get(j).position.getY();
-								double rotationOriginalAsteroid = asteroidsOnScreen.get(j).rotation ;
+								double xOriginalAsteroid = asteroidsAlienOnScreen.get(j).position.getX();
+								double yOriginalAsteroid = asteroidsAlienOnScreen.get(j).position.getY();
+								double rotationOriginalAsteroid = asteroidsAlienOnScreen.get(j).rotation ;
 
 								// Remove the bullet and asteroid (just destroyed) from 
 								// the on-screen collection.
@@ -853,7 +854,7 @@ public class Main extends Application {
 //
 //									}
 									// If large asteroid create two medium...
-									if (asteroidsOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_LARGE) {
+									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_LARGE) {
 										try {
 											// Beep into hyperspace...
 											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_LARGE.path).toURI().toString());
@@ -877,7 +878,7 @@ public class Main extends Application {
 										}
 									}
 									// If medium asteroid create two small...
-									if (asteroidsOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_MEDIUM) {
+									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_MEDIUM) {
 										try {
 											// Beep into hyperspace...
 											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_MEDIUM.path).toURI().toString());
@@ -902,7 +903,7 @@ public class Main extends Application {
 									}
 									// If small asteroid no need to create anything...
 									// just do the small bang and give the player some score!
-									if (asteroidsOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_SMALL) {
+									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_SMALL) {
 										try {
 											// Beep into hyperspace...
 											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_SMALL.path).toURI().toString());
@@ -917,6 +918,22 @@ public class Main extends Application {
 											System.out.println(USE.getStackTrace());
 										}
 									}
+									
+									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ALIEN) {
+										try {
+											// haven't change the music
+											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_SMALL.path).toURI().toString());
+											MediaPlayer mediaPlayer = new MediaPlayer(sound);
+											mediaPlayer.play();
+
+											// You hit a alien - get 300 points!
+											gameState.incrementScore(300);
+										}
+										catch (URISyntaxException USE) {
+											// ####################################################### LOGGING??
+											System.out.println(USE.getStackTrace());
+										}
+									}
 								}										
 							}
 						}
@@ -924,7 +941,7 @@ public class Main extends Application {
 					}
 				}
 				
-				if (asteroidsOnScreen.isEmpty()) {
+				if (asteroidsAlienOnScreen.isEmpty()) {
 					// If we've destroyed all the asteroids on screen then the
 					// level is over! Move to the next level
 					gameState.setLevel(gameState.getLevel() + 1);
