@@ -73,12 +73,13 @@ public class GameState {
 	}
 	//----------
 	
-	public String getLives() {
-		// TODO Auto-generated method stub
+	public String getLivesForDisplay() {
 		String livesstring = Integer.toString(lives);
 		return livesstring;
 	}
-
+	public int getLives() {
+		return lives;
+	}
 	public void setLives(int lives) {
 		this.lives = lives;
 	}
