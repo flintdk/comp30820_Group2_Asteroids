@@ -930,8 +930,57 @@ public class Main extends Application {
 	
 						}
 					}
+						
+					List<GameObject> alienBulletsOnScreen = null;
+					alienBulletsOnScreen = findGameObjectsInList(GameObject.GoClass.ALIEN_BULLET);
+					
+					if (alienBulletsOnScreen != null && alienBulletsOnScreen.size() > 0)
+					{
+						for(int j = 0;j<alienBulletsOnScreen.size();j++) {
+							if( spaceship.isHitting(alienBulletsOnScreen.get(j)) ) {
+								try {
+									// Awww... we blew up! BOOM!
+									Media sound = new Media(Main.class.getResource(SoundEffects.BANG_LARGE.path).toURI().toString());
+									MediaPlayer mediaPlayer = new MediaPlayer(sound);
+									//mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+									mediaPlayer.play();
+								}
+								catch (URISyntaxException USE) {
+									// ####################################################### LOGGING??
+									System.out.println(USE.getStackTrace());
+								}
+												GameState gameState = GameState.getInstance();
+								gameState.incrementScore(-50);
+								gameState.loseALife();
+								
+								spaceship.canBeHit = false;
+								Main.ctrlAllowMovement = false;
+										// You've just died!
+								if (gameState.getLives() == 0) {
+									// No lives left... first thing we do is pause the
+									// screen for a bit to give the player a chance to
+									// digest the enormity of what's happened...
+									timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+								}
+								else {
+									// Losing a life hurts... but it's not like you've lost
+									// the game.
+									timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+								}
+		
+							}
+							else {
+								// Losing a life hurts... but it's not like you've lost
+								// the game.
+								timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+							}
+	
+						}
+					}
 				}
-			}
+					
+				}
+				
 			
 			/** <p>Set the List 'movingObjectsOnScreen' to an initial state</p>
 			 * <p>When starting a game of asteroids the player spaceship is static, on
