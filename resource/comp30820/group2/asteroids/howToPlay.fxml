@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.Light.Distant?>
@@ -13,17 +12,16 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
+<BorderPane fx:id="mainBorderPane" maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
    <center>
-      <Pane prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+      <Pane BorderPane.alignment="CENTER">
          <children>
-            <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutX="1.0" width="800.0" />
-            <ImageView fitHeight="605.0" fitWidth="857.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="768.0" fitWidth="1024.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/space.png" />
                </image>
             </ImageView>
-            <Label layoutX="226.0" layoutY="37.0" text="HOW TO PLAY" textFill="#f86262">
+            <Label layoutX="317.0" layoutY="37.0" text="HOW TO PLAY" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -41,7 +39,7 @@
                <font>
                   <Font name="Impact" size="76.0" />
                </font></Label>
-            <Label layoutX="134.0" layoutY="191.0" text="CONTROLS" textFill="#f86262">
+            <Label layoutX="212.0" layoutY="210.0" text="CONTROLS" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -60,7 +58,7 @@
                   <Font name="Impact" size="46.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="281.0" text="Press UP to move spaceship up" textFill="#f86262">
+            <Label layoutX="130.0" layoutY="300.0" text="Press UP to fire spaceship engines" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -79,7 +77,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="50.0" layoutY="320.0" text="Press DOWN to move spaceship down" textFill="#f86262">
+            <Label layoutX="130.0" layoutY="340.0" text="Press LEFT to rotate spaceship left" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -98,7 +96,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="358.0" text="Press LEFT to move spaceship left" textFill="#f86262">
+            <Label layoutX="130.0" layoutY="380.0" text="Press RIGHT to rotate spaceship right" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -117,7 +115,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="397.0" text="Press RIGHT to move spaceship right" textFill="#f86262">
+            <Label layoutX="130.0" layoutY="500.0" text="Press Q to quit the game" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -136,7 +134,7 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="478.0" text="Press Q to quit the game" textFill="#f86262">
+            <Label layoutX="130.0" layoutY="420.0" text="Press SPACEBAR to fire bullets" textFill="#f86262">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -155,50 +153,50 @@
                   <Font name="Impact" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="51.0" layoutY="438.0" text="Press SPACEBAR to to fire bullets" textFill="#f86262">
-               <effect>
-                  <Lighting>
-                     <bumpInput>
-                        <Shadow />
-                     </bumpInput>
-                     <light>
-                        <Light.Distant>
-                           <color>
-                              <Color red="1.0" green="0.20370370149612427" blue="0.20370370149612427" />
-                           </color>
-                        </Light.Distant>
-                     </light>
-                  </Lighting>
-               </effect>
-               <font>
-                  <Font name="Impact" size="30.0" />
-               </font>
-            </Label>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="707.0" layoutY="-70.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="884.0" layoutY="-6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroid.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="84.0" fitWidth="46.0" layoutX="70.0" layoutY="69.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="84.0" fitWidth="46.0" layoutX="37.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroid.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="91.0" fitWidth="105.0" layoutX="492.0" layoutY="469.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="91.0" fitWidth="105.0" layoutX="650.0" layoutY="563.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroid.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="55.0" fitWidth="155.0" layoutX="627.0" layoutY="511.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="55.0" fitWidth="155.0" layoutX="841.0" layoutY="667.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/asteroids-large.png" />
                </image>
             </ImageView>
-            <Button id="endGameGoToMenu" blendMode="SCREEN" layoutX="601.0" layoutY="345.0" mnemonicParsing="false" text="BACK TO MAIN MENU">
+            <Button id="howToPlayGoToWelcomeMenu" blendMode="SCREEN" layoutX="416.0" layoutY="594.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" prefHeight="40.0" prefWidth="192.0" text="MAIN MENU">
                <font>
-                  <Font name="Impact" size="14.0" />
+                  <Font size="18.0" />
                </font>
             </Button>
+            <Label layoutX="130.0" layoutY="460.0" text="Press H to go to Hyperspace!" textFill="#f86262">
+               <effect>
+                  <Lighting>
+                     <bumpInput>
+                        <Shadow />
+                     </bumpInput>
+                     <light>
+                        <Light.Distant>
+                           <color>
+                              <Color red="1.0" green="0.20370370149612427" blue="0.20370370149612427" />
+                           </color>
+                        </Light.Distant>
+                     </light>
+                  </Lighting>
+               </effect>
+               <font>
+                  <Font name="Impact" size="30.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </center>

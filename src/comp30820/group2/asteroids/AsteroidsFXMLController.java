@@ -142,13 +142,20 @@ public class AsteroidsFXMLController implements Initializable {
 		String buttonId = ((Control)event.getSource()).getId();
 		if (buttonId.equals("welcomeStartGame"))
 		{
-			// PICK UP TEXT FROM TEXT BOX AND STORE SOMEWHERE FOR LATER
-						
-			// Should the code be commented to allow the name to be passed through?
-			
 			Main.setCtrlResetGameState(true);
 			activateScene(stage, Configuration.GameWindows.MAIN_GAME);
-			
+		}
+		else if (buttonId.equals("welcomeHowToPlay"))
+		{
+			activateScene(stage, Configuration.GameWindows.HOW_TO_PLAY);
+		}
+		else if (buttonId.equals("endGameGoToWelcomeMenu"))
+		{
+			activateScene(stage, Configuration.GameWindows.WELCOME_MAIN_MENU);
+		}
+		else if (buttonId.equals("howToPlayGoToWelcomeMenu"))
+		{
+			activateScene(stage, Configuration.GameWindows.WELCOME_MAIN_MENU);
 		}
 		else if (buttonId.equals("endGameNewGame"))
 		{
