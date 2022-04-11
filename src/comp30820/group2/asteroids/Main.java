@@ -70,6 +70,7 @@ public class Main extends Application {
 	// This is quite useful for debugging...
 	private static Pane mainGamePane;
 	private static boolean ctrlResetGameState;
+	private static boolean ctrlAllowMovement;  // Allows us to enable/disable movement of all objects
 
 	public static void main(String[] args)
 	{
@@ -210,7 +211,8 @@ public class Main extends Application {
 
 		// The first time we enter the animation timer, we definitely want to 
 		// set the game state to initial settings.
-		Main.ctrlResetGameState = true;
+		Main.ctrlResetGameState = false;
+		Main.ctrlAllowMovement = false;  // Motion disabled by default!
 
 		// Grab a handle on the gamestate singlton
 		GameState gameState = GameState.getInstance();
@@ -229,7 +231,7 @@ public class Main extends Application {
 			GameObject alienOnScreen;
 
 			// We keep track of all the objects on screen.
-			List<GameObject> movingObjectsOnScreen = null;
+			List<GameObject> movingObjectsOnScreen = new ArrayList<GameObject>();
 
 			// NOT USED!?
 			//			List<GameObject> alienBulletsOnScreen = null;
@@ -267,15 +269,16 @@ public class Main extends Application {
 				//########################################################3
 				
 				//THIS IS JUST HOW I THOUGHT THE TIMERS WOULD WORK.  WENDY CAN WE
-				// DISCUSS PLEASE?  
+				// DISCUSS PLEASE?
+				//timers.values().forEach( timer -> timer.increment() );
 				Timer timerToDecrement = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
 				if (timerToDecrement != null) {
-					timerToDecrement.decrement();
+					timerToDecrement.increment();
 				}
 				
 				// Now deal with specific events when timers run out...
 				Timer hyperspaceTimer = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
-				if (hyperspaceTimer != null && hyperspaceTimer.get_time() <= 0) {
+				if (hyperspaceTimer != null && hyperspaceTimer.get_time() >= 120) {    // 120 = 2s
 					// Our ship has done it's stint in hyperspace... bring us home!
 					timers.remove(Timer.TIMER_CLASS.HYPERSPACE);
 					returnFromHyperspace();
@@ -332,42 +335,48 @@ public class Main extends Application {
 
 
 				//set the timer for aliens
-				timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).increment();
-				List<GameObject> alienOnScreenList = findGameObjectsInList(GameObject.GoClass.ALIEN);
-				if(alienOnScreenList!=null) {
-					alienOnScreen = alienOnScreenList.get(0);
-				}
-				//System.out.println(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time());
-				//when alien timer = 800, alien appear
-				if(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time() == 800) {
-					if(alienOnScreenList==null) {
-						alienOnScreen = new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN);
-						alienOnScreen.randomInitAlien();
-						movingObjectsOnScreen.add(alienOnScreen);					
+				Timer alienTimer = timers.get(Timer.TIMER_CLASS.ALIEN_TIMER);
+				if (alienTimer != null) {
+					alienTimer.increment();
+					List<GameObject> alienOnScreenList = findGameObjectsInList(GameObject.GoClass.ALIEN);
+					if(alienOnScreenList!=null) {
+						alienOnScreen = alienOnScreenList.get(0);
 					}
-				}
+					//System.out.println(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time());
+					//when alien timer = 800, alien appear
+					if(timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).get_time() == 800) {
+						if(alienOnScreenList==null) {
+							alienOnScreen = new AsteroidsShape(AsteroidsShape.InGameShape.ALIEN);
+							alienOnScreen.randomInitAlien();
+							movingObjectsOnScreen.add(alienOnScreen);					
+						}
+					}
+					
+					//if the alien object exist, set the path for alien
+					if(alienOnScreen!=null){
+						alienOnScreen.changePathAlien();
+					}
+					//if alien out of screen, remove it and reset timer again
 
-				//if the alien object exist, set the path for alien
-				if(alienOnScreen!=null){
-					alienOnScreen.changePathAlien();
-				}
-				//if alien out of screen, remove it and reset timer again
-
-				if(alienOnScreenList!=null && (alienOnScreen.position.getX()<0)) {
-					movingObjectsOnScreen.remove(alienOnScreen);	
-					timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).set_time(0);
-				}
+					if(alienOnScreenList!=null && (alienOnScreen.position.getX()<0)) {
+						movingObjectsOnScreen.remove(alienOnScreen);	
+						timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).set_time(0);
+					}
 
 
-				// get the alien bullet timer
-				int timerBullet = timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).get_time();
-				if(alienOnScreenList != null && spaceship != null
-						&& alienOnScreen.position.getX()>0 && alienOnScreen.position.getY()>0
-						&& alienOnScreen.position.getX()<850 && alienOnScreen.position.getY()<600)
-				{
-					timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment();
-					//alien Bullet fire At regular intervals
-					GameObject.alienBulletFire(alienOnScreen,timerBullet,spaceship, movingObjectsOnScreen);
+					// get the alien bullet timer
+					Timer alienBulletTimer = timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER);
+					if (alienBulletTimer != null) {
+						int timerBullet = alienBulletTimer.get_time();
+						if(alienOnScreenList != null && spaceship != null
+								&& alienOnScreen.position.getX()>0 && alienOnScreen.position.getY()>0
+								&& alienOnScreen.position.getX()<850 && alienOnScreen.position.getY()<600)
+						{
+							timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment();
+							//alien Bullet fire At regular intervals
+							GameObject.alienBulletFire(alienOnScreen,timerBullet,spaceship, movingObjectsOnScreen);
+						}
+					}
 				}
 
 				//if the alien bullet out of fire range, it should be removed
@@ -386,7 +395,9 @@ public class Main extends Application {
 				collisionSpaceshipAsteroid();
 
 				// LAMBDA EXPRESSION
-				movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
+				if (ctrlAllowMovement) {
+					movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
+				}
 
 				background.render(context);
 
@@ -421,6 +432,10 @@ public class Main extends Application {
 
 
 			}
+			
+			//##################################################################
+			//##################################################################
+			//##################################################################
 
 			/** Take the ship to hyperspace! Play a sound and start a timer
 			 * (there should only ever really be one for 'being in hyperspace')
@@ -440,7 +455,7 @@ public class Main extends Application {
 				
 				// We've gone into hyperspace - we want to stay there until the
 				// timer runs out!
-				timers.put(Timer.TIMER_CLASS.HYPERSPACE, new Timer(120));  // 120 = 2s
+				timers.put(Timer.TIMER_CLASS.HYPERSPACE, new Timer(0));
 				// Set the spaceship so it won't draw on screen and can't be hit
 				// until the timer runs out...
 				spaceship.willRender = false;
@@ -592,6 +607,7 @@ public class Main extends Application {
 				timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
 
 				Main.ctrlResetGameState = false;
+				Main.ctrlAllowMovement = true;
 			}
 
 			/** <p>For the supplied 'InGameShape - look for and return all game
@@ -608,23 +624,26 @@ public class Main extends Application {
 			private List<GameObject> findGameObjectsInList(GoClass gameObjectClass)	{
 				List<GameObject> gameObjects = null ;
 
-				// One of the objects we've just created is the spaceship.
-				// We need to be able to reference this object directly so
-				// we can control it's position.
-				for (GameObject gameObject: movingObjectsOnScreen) {
-					// The spaceship is in the list... and it's either a 
-					// Sprite or an 'AsteroidsShape' (wish we had a better
-					// name for these).  So search for it and assign it's
-					// reference to the spaceship object.
-
-					if (( gameObject.gameObjectClass == gameObjectClass))
-					{
-						if (gameObjects==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
-							gameObjects = new ArrayList<>();
-							gameObjects.add(gameObject);
-						}
-						else{
-							gameObjects.add(gameObject);
+				// Check for null to avoid NPE on application startup...
+				if (movingObjectsOnScreen != null) {
+					// One of the objects we've just created is the spaceship.
+					// We need to be able to reference this object directly so
+					// we can control it's position.
+					for (GameObject gameObject: movingObjectsOnScreen) {
+						// The spaceship is in the list... and it's either a 
+						// Sprite or an 'AsteroidsShape' (wish we had a better
+						// name for these).  So search for it and assign it's
+						// reference to the spaceship object.
+	
+						if (( gameObject.gameObjectClass == gameObjectClass))
+						{
+							if (gameObjects==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
+								gameObjects = new ArrayList<>();
+								gameObjects.add(gameObject);
+							}
+							else{
+								gameObjects.add(gameObject);
+							}
 						}
 					}
 				}
@@ -658,15 +677,18 @@ public class Main extends Application {
 			 * @return void
 			 */
 			private void removeAlienBulletWhenHitsMaxRange() {
-				for(GameObject gameObject: movingObjectsOnScreen) {
-					if (gameObject.gameObjectClass == GameObject.GoClass.ALIEN_BULLET)
-					{
-						double dx = gameObject.position.getX()-gameObject.initialX;
-						double dy = gameObject.position.getY()-gameObject.initialY;
-						double d = Math.sqrt(Math.pow(dx,2)+ Math.pow(dy,2));
-						if(d>400){
-							movingObjectsOnScreen.remove(gameObject);
-							break;
+				// Check for null to avoid NPE on startup...
+				if (movingObjectsOnScreen != null) {
+					for(GameObject gameObject: movingObjectsOnScreen) {
+						if (gameObject.gameObjectClass == GameObject.GoClass.ALIEN_BULLET)
+						{
+							double dx = gameObject.position.getX()-gameObject.initialX;
+							double dy = gameObject.position.getY()-gameObject.initialY;
+							double d = Math.sqrt(Math.pow(dx,2)+ Math.pow(dy,2));
+							if(d>400){
+								movingObjectsOnScreen.remove(gameObject);
+								break;
+							}
 						}
 					}
 				}
@@ -846,39 +868,108 @@ public class Main extends Application {
 
 			private void collisionSpaceshipAsteroid()
 			{
-				//find all the bullets 
-				GameObject spaceship = null;
-				spaceship = findGameObjectsInList(GameObject.GoClass.SPACESHIP).get(0);		
-				//find all the asteroids 
-				List<GameObject> asteroidsOnScreen = null;
-				asteroidsOnScreen = Stream.of(findGameObjectsInList(GameObject.GoClass.ASTEROID_SMALL),
-						findGameObjectsInList(GameObject.GoClass.ASTEROID_MEDIUM),
-						findGameObjectsInList(GameObject.GoClass.ASTEROID_LARGE))
-						.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
-						.collect(Collectors.toList());
-
-				for(int i = 0;i<asteroidsOnScreen.size();i++) {
-					if( spaceship.isHitting(asteroidsOnScreen.get(i)) ) {
-						try {
-							// Awww... we blew up! BOOM!
-							Media sound = new Media(Main.class.getResource(SoundEffects.BANG_LARGE.path).toURI().toString());
-							MediaPlayer mediaPlayer = new MediaPlayer(sound);
-							//mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-							mediaPlayer.play();
+				// find the spaceship
+				List<GameObject> gameObjects = findGameObjectsInList(GameObject.GoClass.SPACESHIP);
+				// We check for null/no spaceship to avoid NPE's on game startup...
+				if (gameObjects != null && gameObjects.size() > 0)
+				{
+					spaceship = gameObjects.get(0);
+					//find all the asteroids 
+					List<GameObject> asteroidsOnScreen = null;
+					asteroidsOnScreen = Stream.of(findGameObjectsInList(GameObject.GoClass.ASTEROID_SMALL),
+							findGameObjectsInList(GameObject.GoClass.ASTEROID_MEDIUM),
+							findGameObjectsInList(GameObject.GoClass.ASTEROID_LARGE))
+							.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
+							.collect(Collectors.toList());
+	
+					for(int i = 0;i<asteroidsOnScreen.size();i++) {
+						if( spaceship.isHitting(asteroidsOnScreen.get(i)) ) {
+							try {
+								// Awww... we blew up! BOOM!
+								Media sound = new Media(Main.class.getResource(SoundEffects.BANG_LARGE.path).toURI().toString());
+								MediaPlayer mediaPlayer = new MediaPlayer(sound);
+								//mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+								mediaPlayer.play();
+							}
+							catch (URISyntaxException USE) {
+								// ####################################################### LOGGING??
+								System.out.println(USE.getStackTrace());
+							}
+	
+							GameState gameState = GameState.getInstance();
+							gameState.incrementScore(-50);
+							gameState.loseALife();
+	
+							System.out.println("Collision spaceship asteroid LOOSE A LIFE ");
+	
 						}
-						catch (URISyntaxException USE) {
-							// ####################################################### LOGGING??
-							System.out.println(USE.getStackTrace());
-						}
-
-						GameState gameState = GameState.getInstance();
-						gameState.incrementScore(-50);
-						gameState.loseALife();
-
-						System.out.println("Collision spaceship asteroid LOOSE A LIFE ");
-
 					}
 				}
+			}
+			
+			/** <p>Set the List 'movingObjectsOnScreen' to an initial state</p>
+			 * <p>When starting a game of asteroids the player spaceship is static, on
+			 * screen and surrounded by floating asteroids.  Set up this list.</p>
+			 * @return
+			 */
+			public List<GameObject> getStartOfLevelMovingObjects() {
+
+				// Grab the current gameState so we know how many asteroids to spawn...
+				GameState gameState = GameState.getInstance();
+
+				// We keep track of all the objects on screen.  The list is created
+				// above, but when starting a level we make sure to start with a 
+				// clean list...
+				movingObjectsOnScreen.clear();
+
+				// Create on-screen objects at the very start of the game:
+				GameObject spaceship;
+
+				// Initialise the startup objects...
+				if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
+					spaceship = new Sprite(Graphics.SPACESHIP);
+
+					// We create 1 asteroid on level 1, two asteroids on level 2, etc. etc.
+					// so the game gets harder and harder as we move through the levels...
+					for (int i = 0; i < gameState.getLevel() ; i++) {
+						Sprite initialAsteroid  = new Sprite(Graphics.ASTEROID,
+								Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
+								Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? INVESTIGATE!
+						initialAsteroid.randomPosRotVelInit();
+						movingObjectsOnScreen.add(initialAsteroid);
+						// If you want to see the asteroid on the plain layout (no graphics) then
+						// all you have to do is uncomment the following line... (useful for debugging)...
+						// mainGamePane.getChildren().add(initialAsteroid1.hitModel);
+					}
+				}
+				// Configure funny pictures in a non-published game state?? Lol...
+				//		else if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.EASTER_EGG) {
+				//
+				//		}
+				else {
+					// Configuration.GraphicsMode.CLASSIC
+					// Default to 'Classic' mode where the game objects are Polygons..
+					spaceship = new AsteroidsShape(AsteroidsShape.InGameShape.SPACESHIP);
+
+					// We create 1 asteroid on level 1, two asteroids on level 2, etc. etc.
+					// so the game gets harder and harder as we move through the levels...
+					for (int i = 0; i < gameState.getLevel() ; i++) {
+						AsteroidsShape initialAsteroid  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_LARGE);
+						initialAsteroid.randomPosRotVelInit();
+						movingObjectsOnScreen.add(initialAsteroid);
+						// If you want to see the asteroid on the plain layout (no graphics) then
+						// all you have to do is uncomment the following line... (useful for debugging)...
+						// mainGamePane.getChildren().add(initialAsteroid1.hitModel);
+					}
+				}
+
+				spaceship.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
+				movingObjectsOnScreen.add(spaceship);
+				// If you want to see the spaceship on the plain layout (no graphics) then
+				// all you have to do is uncomment the following line... (useful for debugging)...
+				// mainGamePane.getChildren().add(spaceship.hitModel);
+
+				return movingObjectsOnScreen;
 			}
 
 		};
@@ -889,69 +980,6 @@ public class Main extends Application {
 	//##########################################################################
 	//          EVERYTHING THAT FOLLOWS IS OUTSIDE THE GAME LOOP
 	//##########################################################################
-
-	/** <p>Set the List 'movingObjectsOnScreen' to an initial state</p>
-	 * <p>When starting a game of asteroids the player spaceship is static, on
-	 * screen and surrounded by floating asteroids.  Set up this list.</p>
-	 * @return
-	 */
-	public List<GameObject> getStartOfLevelMovingObjects() {
-
-		// Grab the current gameState so we know how many asteroids to spawn...
-		GameState gameState = GameState.getInstance();
-
-		// We keep track of all the objects on screen.
-		List<GameObject> movingObjectsOnScreen = new ArrayList<GameObject>();
-
-		// Create on-screen objects at the very start of the game:
-		GameObject spaceship;
-
-		// Initialise the startup objects...
-		if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
-			spaceship = new Sprite(Graphics.SPACESHIP);
-
-			// We create 1 asteroid on level 1, two asteroids on level 2, etc. etc.
-			// so the game gets harder and harder as we move through the levels...
-			for (int i = 0; i < gameState.getLevel() ; i++) {
-				Sprite initialAsteroid  = new Sprite(Graphics.ASTEROID,
-						Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2),
-						Double.valueOf(Configuration.ASTEROID_LRG_SIZE*2) );    // ############### WHY DO PICTURES APPEAR SMALLER THAN POLYGONS?!? INVESTIGATE!
-				initialAsteroid.randomPosRotVelInit();
-				movingObjectsOnScreen.add(initialAsteroid);
-				// If you want to see the asteroid on the plain layout (no graphics) then
-				// all you have to do is uncomment the following line... (useful for debugging)...
-				// mainGamePane.getChildren().add(initialAsteroid1.hitModel);
-			}
-		}
-		// Configure funny pictures in a non-published game state?? Lol...
-		//		else if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.EASTER_EGG) {
-		//
-		//		}
-		else {
-			// Configuration.GraphicsMode.CLASSIC
-			// Default to 'Classic' mode where the game objects are Polygons..
-			spaceship = new AsteroidsShape(AsteroidsShape.InGameShape.SPACESHIP);
-
-			// We create 1 asteroid on level 1, two asteroids on level 2, etc. etc.
-			// so the game gets harder and harder as we move through the levels...
-			for (int i = 0; i < gameState.getLevel() ; i++) {
-				AsteroidsShape initialAsteroid  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_LARGE);
-				initialAsteroid.randomPosRotVelInit();
-				movingObjectsOnScreen.add(initialAsteroid);
-				// If you want to see the asteroid on the plain layout (no graphics) then
-				// all you have to do is uncomment the following line... (useful for debugging)...
-				// mainGamePane.getChildren().add(initialAsteroid1.hitModel);
-			}
-		}
-
-		spaceship.position = new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
-		movingObjectsOnScreen.add(spaceship);
-		// If you want to see the spaceship on the plain layout (no graphics) then
-		// all you have to do is uncomment the following line... (useful for debugging)...
-		// mainGamePane.getChildren().add(spaceship.hitModel);
-
-		return movingObjectsOnScreen;
-	}
 
 	/* GETTERS AND SETTERS */
 	/** Get the reference to the main game scene.
