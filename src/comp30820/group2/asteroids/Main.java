@@ -260,7 +260,7 @@ public class Main extends Application {
 				score.setText(gameState.getDisplayScore());
 
 				Label lives = (Label) mainGameNamespace.get("mainGameLives");
-				lives.setText(gameState.getLives());
+				lives.setText(gameState.getLivesForDisplay());
 
 				// TODO:::: Configuration.insertPlayerToLeaderTableIfHighEnough();
 
@@ -270,11 +270,7 @@ public class Main extends Application {
 				
 				//THIS IS JUST HOW I THOUGHT THE TIMERS WOULD WORK.  WENDY CAN WE
 				// DISCUSS PLEASE?
-				//timers.values().forEach( timer -> timer.increment() );
-				Timer timerToDecrement = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
-				if (timerToDecrement != null) {
-					timerToDecrement.increment();
-				}
+				timers.values().forEach( timer -> timer.increment() );
 				
 				// Now deal with specific events when timers run out...
 				Timer hyperspaceTimer = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
@@ -282,6 +278,22 @@ public class Main extends Application {
 					// Our ship has done it's stint in hyperspace... bring us home!
 					timers.remove(Timer.TIMER_CLASS.HYPERSPACE);
 					returnFromHyperspace();
+				}
+				
+				// Now deal with specific events when timers run out...
+				Timer endOfLifeTimer = timers.get(Timer.TIMER_CLASS.LOSE_A_LIFE);
+				if (endOfLifeTimer != null && endOfLifeTimer.get_time() >= 90) {    // 90 = 1.5s
+					// Our player has lost a life... but is coming back for more!
+					timers.remove(Timer.TIMER_CLASS.LOSE_A_LIFE);
+					
+					// When we recover after losing a life we are invincible for 
+					// a little bit.
+					timers.put(Timer.TIMER_CLASS.INVINCIBLE, new Timer(0));
+						timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE, new Timer(0));
+			
+					
+					
+					//returnFromHyperspace();
 				}
 				
 				//########################################################3
@@ -348,7 +360,7 @@ public class Main extends Application {
 				//set the timer for aliens
 				Timer alienTimer = timers.get(Timer.TIMER_CLASS.ALIEN_TIMER);
 				if (alienTimer != null) {
-					alienTimer.increment();
+					//alienTimer.increment();
 					List<GameObject> alienOnScreenList = findGameObjectsInList(GameObject.GoClass.ALIEN);
 					if(alienOnScreenList!=null) {
 						alienOnScreen = alienOnScreenList.get(0);
@@ -373,17 +385,22 @@ public class Main extends Application {
 						movingObjectsOnScreen.remove(alienOnScreen);	
 						timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).set_time(0);
 					}
-
-
+					
 					// get the alien bullet timer
 					Timer alienBulletTimer = timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER);
+					if(alienOnScreenList != null && alienBulletTimer == null) {
+					      timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
+					     } else if(alienOnScreenList == null) {
+					      timers.remove(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER);
+					     }
+					
+					
 					if (alienBulletTimer != null) {
 						int timerBullet = alienBulletTimer.get_time();
 						if(alienOnScreenList != null && spaceship != null
 								&& alienOnScreen.position.getX()>20 && alienOnScreen.position.getY()>10
 								&& alienOnScreen.position.getX()<1004 && alienOnScreen.position.getY()<590)
 						{
-							timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment();
 							//alien Bullet fire At regular intervals
 							GameObject.alienBulletFire(alienOnScreen,timerBullet,spaceship, movingObjectsOnScreen);
 						}
@@ -608,7 +625,7 @@ public class Main extends Application {
 				//set the timer for when alien should appear
 				timers.put(Timer.TIMER_CLASS.ALIEN_TIMER, new Timer(0));
 				//set the timer for when alien should fire
-				timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
+				//timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
 
 				Main.ctrlResetGameState = false;
 				Main.ctrlAllowMovement = true;
@@ -739,7 +756,8 @@ public class Main extends Application {
 								// the on-screen collection.
 								movingObjectsOnScreen.removeAll(removeElements); // remove simultaneously both elements
 
-								
+								double xOffset = Math.cos(Math.toRadians(rotationOriginalAsteroid));
+								double yOffset = Math.sin(Math.toRadians(rotationOriginalAsteroid));
 								//create two new asteroids
 								for(int h = -1 ; h <2 ; h+=2) {
 									//points ++ en fonction de la taille de l'astéroide ? 
@@ -884,25 +902,36 @@ public class Main extends Application {
 								System.out.println(USE.getStackTrace());
 							}
 	
-							
-							
-							
 							GameState gameState = GameState.getInstance();
 							gameState.incrementScore(-50);
 							gameState.loseALife();
-	
-							System.out.println("Collision spaceship asteroid LOOSE A LIFE ");
+							
+							spaceship.canBeHit = false;
+							Main.ctrlAllowMovement = false;
+
+							// You've just died!
+							if (gameState.getLives() == 0) {
+								// No lives left... first thing we do is pause the
+								// screen for a bit to give the player a chance to
+								// digest the enormity of what's happened...
+								timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+							}
+							else {
+								// Losing a life hurts... but it's not like you've lost
+								// the game.
+								timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+							}
 	
 						}
 					}
-					
+						
 					List<GameObject> alienBulletsOnScreen = null;
 					alienBulletsOnScreen = findGameObjectsInList(GameObject.GoClass.ALIEN_BULLET);
 					
-					if (alienBulletsOnScreen != null && alienBulletsOnScreen.size() > 0) {
-
-						for(int i = 0;i<alienBulletsOnScreen.size();i++) {
-							if( spaceship.isHitting(alienBulletsOnScreen.get(i)) ) {
+					if (alienBulletsOnScreen != null && alienBulletsOnScreen.size() > 0)
+					{
+						for(int j = 0;j<alienBulletsOnScreen.size();j++) {
+							if( spaceship.isHitting(alienBulletsOnScreen.get(j)) ) {
 								try {
 									// Awww... we blew up! BOOM!
 									Media sound = new Media(Main.class.getResource(SoundEffects.BANG_LARGE.path).toURI().toString());
@@ -914,18 +943,32 @@ public class Main extends Application {
 									// ####################################################### LOGGING??
 									System.out.println(USE.getStackTrace());
 								}
-								
-								GameState gameState = GameState.getInstance();
+												GameState gameState = GameState.getInstance();
 								gameState.incrementScore(-50);
 								gameState.loseALife();
-		
-								System.out.println("Collision spaceship alien Bullet LOOSE A LIFE ");
+								
+								spaceship.canBeHit = false;
+								Main.ctrlAllowMovement = false;
+										// You've just died!
+								if (gameState.getLives() == 0) {
+									// No lives left... first thing we do is pause the
+									// screen for a bit to give the player a chance to
+									// digest the enormity of what's happened...
+									timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+								}
+								else {
+									// Losing a life hurts... but it's not like you've lost
+									// the game.
+									timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
+								}
 		
 							}
 						}
 					}
 				}
-			}
+					
+				}
+				
 			
 			/** <p>Set the List 'movingObjectsOnScreen' to an initial state</p>
 			 * <p>When starting a game of asteroids the player spaceship is static, on
