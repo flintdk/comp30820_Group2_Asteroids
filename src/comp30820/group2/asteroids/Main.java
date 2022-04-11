@@ -285,6 +285,7 @@ public class Main extends Application {
 				}
 				
 				//########################################################3
+				// PROCESS KEY INPUT
 				//########################################################3
 
 				// Process user input
@@ -333,6 +334,16 @@ public class Main extends Application {
 				// Instead of running each update individually, we can use a Lambda Expression to
 				// the method on each object as we iterate over the list.
 
+				//########################################################3
+				// GAME ANIMATION AND FRAME PROCESSING
+				//########################################################3
+				
+				// LAMBDA EXPRESSION
+				if (ctrlAllowMovement) {
+					movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
+				}
+				
+				background.render(context);
 
 				//set the timer for aliens
 				Timer alienTimer = timers.get(Timer.TIMER_CLASS.ALIEN_TIMER);
@@ -369,8 +380,8 @@ public class Main extends Application {
 					if (alienBulletTimer != null) {
 						int timerBullet = alienBulletTimer.get_time();
 						if(alienOnScreenList != null && spaceship != null
-								&& alienOnScreen.position.getX()>0 && alienOnScreen.position.getY()>0
-								&& alienOnScreen.position.getX()<850 && alienOnScreen.position.getY()<600)
+								&& alienOnScreen.position.getX()>20 && alienOnScreen.position.getY()>10
+								&& alienOnScreen.position.getX()<1004 && alienOnScreen.position.getY()<590)
 						{
 							timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER).increment();
 							//alien Bullet fire At regular intervals
@@ -393,13 +404,6 @@ public class Main extends Application {
 				// check if the ship is hitting an asteroids 
 				// this method is not finished need to remove a life, a place safely the spaceship again
 				collisionSpaceshipAsteroid();
-
-				// LAMBDA EXPRESSION
-				if (ctrlAllowMovement) {
-					movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
-				}
-
-				background.render(context);
 
 				// LAMBDA EXPRESSION
 				movingObjectsOnScreen.forEach( (object) -> object.render(context));
@@ -735,8 +739,10 @@ public class Main extends Application {
 								// the on-screen collection.
 								movingObjectsOnScreen.removeAll(removeElements); // remove simultaneously both elements
 
+								double xOffset = Math.cos(Math.toRadians(rotationOriginalAsteroid));
+								double yOffset = Math.sin(Math.toRadians(rotationOriginalAsteroid));
 								//create two new asteroids
-								for(int h = 0 ; h <2 ; h++) {
+								for(int h = -1 ; h <2 ; h+=2) {
 									//points ++ en fonction de la taille de l'astéroide ? 
 //									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
 //											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_LARGE) {
@@ -757,7 +763,11 @@ public class Main extends Application {
 
 											// You hit a big asteroid - get 100 points!
 											gameState.incrementScore(100);
-											createMediumAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+											
+											createAsteroid(
+													AsteroidsShape.InGameShape.ASTEROID_MEDIUM,
+													xOriginalAsteroid + (h * xOffset) * Configuration.ASTEROID_MED_SIZE,
+													yOriginalAsteroid  + (h * yOffset) * Configuration.ASTEROID_MED_SIZE);
 										}
 										catch (URISyntaxException USE) {
 											// ####################################################### LOGGING??
@@ -774,7 +784,11 @@ public class Main extends Application {
 
 											// You hit a medium asteroid - get 150 points!
 											gameState.incrementScore(150);
-											createSmallAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+																		
+											createAsteroid(
+													AsteroidsShape.InGameShape.ASTEROID_SMALL,
+													xOriginalAsteroid + (h * xOffset) * Configuration.ASTEROID_SML_SPEED,
+													yOriginalAsteroid  + (h * yOffset) * Configuration.ASTEROID_SML_SPEED);
 										}
 										catch (URISyntaxException USE) {
 											// ####################################################### LOGGING??
@@ -807,62 +821,30 @@ public class Main extends Application {
 				return movingObjectsOnScreen;
 			}
 
-			private void createMediumAsteroid(double xOriginalAsteroid , double yOriginalAsteroid , double rotationOriginalAsteroid){
-				// NOT USED??
-				//				GameObject newAsteroids;
-				//				newAsteroids  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_MEDIUM);
+			private void createAsteroid(AsteroidsShape.InGameShape asteroidType, double initialX, double initialY)
+			{
 
-				double asteroidIniX = xOriginalAsteroid + Math.cos(Math.toRadians(rotationOriginalAsteroid)) * Configuration.ASTEROID_MED_SIZE ;
-				double asteroidIniY = yOriginalAsteroid + Math.sin(Math.toRadians(rotationOriginalAsteroid)) * Configuration.ASTEROID_MED_SIZE;
-
-				movingObjectsOnScreen.add(new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_MEDIUM));
-				movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).position = new GameVector( asteroidIniX,asteroidIniY);
+				AsteroidsShape myNewAsteroid = new AsteroidsShape(asteroidType);
+				
+				myNewAsteroid.position = new GameVector( initialX,initialY);
 
 				Random r = new Random();
 				double randomRotation = 0 + (360 - 0) * r.nextDouble();
 
-				movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation = randomRotation;
+				myNewAsteroid.rotation = randomRotation;
 
 				double changeXAsteroid
-				= Math.cos(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.ASTEROID_MED_SPEED;
+				= Math.cos(Math.toRadians(myNewAsteroid.rotation)) * Configuration.ASTEROID_MED_SPEED;
 				double changeYAsteroid
-				= Math.sin(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.ASTEROID_MED_SPEED;
+				= Math.sin(Math.toRadians(myNewAsteroid.rotation)) * Configuration.ASTEROID_MED_SPEED;
 
 				// Don't violate maximum speed limit
-				GameVector newVelocity = movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).velocity.add(changeXAsteroid, changeYAsteroid);
+				GameVector newVelocity = myNewAsteroid.velocity.add(changeXAsteroid, changeYAsteroid);
 
 				// Now we want to add those velocity increments to the current velocity!
-				movingObjectsOnScreen.get(movingObjectsOnScreen .size()-1).velocity = newVelocity;
-				return;
-			}
-
-			private void createSmallAsteroid(double xOriginalAsteroid , double yOriginalAsteroid , double rotationOriginalAsteroid){
-				// NOT USED??
-				//				GameObject newAsteroids;
-				//				newAsteroids  = new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_SMALL);
-
-				double asteroidIniX = xOriginalAsteroid + Math.cos(Math.toRadians(rotationOriginalAsteroid)) * Configuration.ASTEROID_SML_SPEED;
-				double asteroidIniY = yOriginalAsteroid + Math.sin(Math.toRadians(rotationOriginalAsteroid)) * Configuration.ASTEROID_SML_SPEED;
-
-				movingObjectsOnScreen.add(new AsteroidsShape(AsteroidsShape.InGameShape.ASTEROID_SMALL));
-				movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).position = new GameVector( asteroidIniX,asteroidIniY);
-
-				Random r = new Random();
-				double randomRotation = 0 + (360 - 0) * r.nextDouble();
-
-
-				movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation = randomRotation;
-
-				double changeXAsteroid
-				= Math.cos(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.ASTEROID_SML_SPEED;
-				double changeYAsteroid
-				= Math.sin(Math.toRadians(movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).rotation)) * Configuration.ASTEROID_SML_SPEED;
-
-				// Don't violate maximum speed limit
-				GameVector newVelocity = movingObjectsOnScreen.get(movingObjectsOnScreen.size()-1).velocity.add(changeXAsteroid, changeYAsteroid);
-
-				// Now we want to add those velocity increments to the current velocity!
-				movingObjectsOnScreen.get(movingObjectsOnScreen .size()-1).velocity = newVelocity;
+				myNewAsteroid.velocity = newVelocity;
+				
+				movingObjectsOnScreen.add(myNewAsteroid);
 				return;
 			}
 
