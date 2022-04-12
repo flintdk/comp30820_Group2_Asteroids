@@ -1,6 +1,7 @@
 package comp30820.group2.asteroids;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -219,8 +220,20 @@ public class Configuration {
     	// First see if a user-specific file exists...
         try
         {
-//        	Path userConfigPath = config.resolve(propsFileName);
-//        	File userConfigFile = userConfigPath.toFile();
+        	Path userConfigPath = config.resolve(propsFileName);
+        	File userConfigFile = userConfigPath.toFile();
+        	
+        	if (userConfigFile.exists()) {
+        		FileInputStream fis = new FileInputStream(userConfigFile);
+        		configProps.load(fis); // load asteroids .properties file
+
+        		setConfigFromProperties(configProps);
+
+        		fis.close();
+
+        		System.out.println("Asteroid: Configuration loaded from User file.");
+        		configLoaded = true;
+        	}
 
             // Next - attempt to load the default configuration file
             if (!configLoaded) {
