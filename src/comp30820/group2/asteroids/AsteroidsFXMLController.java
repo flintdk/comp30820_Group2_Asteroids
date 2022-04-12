@@ -101,15 +101,15 @@ public class AsteroidsFXMLController implements Initializable {
 			PriorityQueue<PlayerScore> copyOfScores
 				= new PriorityQueue<PlayerScore>(Configuration.HIGH_SCORES);
 
-			endOfGameHS5.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS5.setText(copyOfScores.poll().getHallOfFameScore());
 			endOfGameHS5.setVisible(true);
-			endOfGameHS4.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS4.setText(copyOfScores.poll().getHallOfFameScore());
 			endOfGameHS4.setVisible(true);
-			endOfGameHS3.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS3.setText(copyOfScores.poll().getHallOfFameScore());
 			endOfGameHS3.setVisible(true);
-			endOfGameHS2.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS2.setText(copyOfScores.poll().getHallOfFameScore());
 			endOfGameHS2.setVisible(true);
-			endOfGameHS1.setText(copyOfScores.poll().getPlayerName());
+			endOfGameHS1.setText(copyOfScores.poll().getHallOfFameScore());
 			endOfGameHS1.setVisible(true);
 		}
 		
