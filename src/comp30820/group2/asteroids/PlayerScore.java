@@ -24,12 +24,20 @@ public class PlayerScore implements Comparable<PlayerScore> {
 	 */
 	@Override
 	public int compareTo(PlayerScore otherScore) {
-		// Note you have to BEAT the othert score to get in front of it - if you
+		// Note you have to BEAT the other score to get in front of it - if you
 		// just match the score... oh well... better luck next time!!
 		if(this.score > otherScore.score)  
 			return 1;  
 		else  
 			return -1;  
+	}
+	
+	/** Return a PlayerScore formatted for inclusion in the Hall of Fame
+	 * 
+	 * @return
+	 */
+	public String getHallOfFameScore() {
+		return getPlayerName() + " - " + Integer.toString(getScore());
 	}
 
 	/* GETTERS AND SETTERS */

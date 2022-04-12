@@ -65,7 +65,7 @@
       </Pane>
    </top>
    <bottom>
-      <Pane prefHeight="84" prefWidth="1024" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
+      <Pane prefHeight="84.0" prefWidth="1024" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="status1" layoutX="28.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text="Status1" textFill="RED" visible="false" />
             <Label fx:id="status2" layoutX="592.0" layoutY="5.0" prefHeight="25.0" prefWidth="420.0" text="Status2" textFill="RED" visible="false" />

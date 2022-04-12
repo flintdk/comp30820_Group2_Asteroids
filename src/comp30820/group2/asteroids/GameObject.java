@@ -102,7 +102,6 @@ public abstract class GameObject {
 	 * game objects.  
 	 * 
 	 */
-	// ################################################ Can we use this for hyperspace as well as asteroids?
 	public void randomPosRotVelInit() {
 		Random r = new Random();
 		this.position = new GameVector((Configuration.SCENE_WIDTH * r.nextDouble()),(Configuration.SCENE_HEIGHT * r.nextDouble()));
