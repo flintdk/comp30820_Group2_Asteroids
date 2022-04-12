@@ -1,7 +1,6 @@
 package comp30820.group2.asteroids;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,7 +136,8 @@ public class Configuration {
 	public static int SCENE_HEIGHT = 600;
 	public static int SPEED_MAX = 500;
 	public static int SPEED_INCREMENT = 10;
-	public static int SPEED_BULLET = 300;
+	public static int SPEED_BULLET = 150;
+	public static int SPEED_BULLET_MIN = 50;
 	public static int SPEED_ALIEN = 150;
 	public static int ASTEROID_LRG_SIZE = 60;
 	public static int ASTEROID_LRG_SPEED = 50;
@@ -298,6 +298,9 @@ public class Configuration {
 		if (configProps.getProperty("SPEED_BULLET") != null) {
 			SPEED_BULLET = Integer.parseInt(configProps.getProperty("SPEED_BULLET"));
 		}
+		if (configProps.getProperty("SPEED_BULLET_MIN") != null) {
+			SPEED_BULLET_MIN= Integer.parseInt(configProps.getProperty("SPEED_BULLET_MIN"));
+		}
 		if (configProps.getProperty("SPEED_ALIEN") != null) {
 			SPEED_ALIEN = Integer.parseInt(configProps.getProperty("SPEED_ALIEN"));
 		}
@@ -429,6 +432,7 @@ public class Configuration {
 		configProps.setProperty("SPEED_MAX", String.valueOf(SPEED_MAX));
 		configProps.setProperty("SPEED_INCREMENT",  String.valueOf(SPEED_INCREMENT));
 		configProps.setProperty("SPEED_BULLET",  String.valueOf(SPEED_BULLET));
+		configProps.setProperty("SPEED_BULLET_MIN",  String.valueOf(SPEED_BULLET_MIN));
 		configProps.setProperty("SPEED_ALIEN",  String.valueOf(SPEED_ALIEN));
 		configProps.setProperty("ASTEROID_LRG_SIZE",  String.valueOf(ASTEROID_LRG_SIZE));
 		configProps.setProperty("ASTEROID_LRG_SPEED",  String.valueOf(ASTEROID_LRG_SPEED));
