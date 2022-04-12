@@ -22,7 +22,7 @@
                </image>
             </ImageView>
             
-            <Button id="HowTo" fx:id="HowTo" layoutX="346.0" layoutY="542.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" text="HOW TO PLAY?">
+            <Button id="endGameHowToPlay" layoutX="346.0" layoutY="542.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" prefHeight="40.0" prefWidth="160.0" text="HOW TO PLAY?">
                <font>
                   <Font size="18.0" />
                </font></Button>
@@ -51,7 +51,7 @@
                <font>
                   <Font name="Impact" size="76.0" />
                </font></Label>
-            <Button id="endGameGoToMenu" layoutX="518.0" layoutY="542.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" prefHeight="40.0" prefWidth="160.0" text="MAIN MENU">
+            <Button id="endGameGoToWelcomeMenu" layoutX="518.0" layoutY="542.0" mnemonicParsing="false" onAction="#asteroidsButtonClick" prefHeight="40.0" prefWidth="160.0" text="MAIN MENU">
                <font>
                   <Font size="18.0" />
                </font>

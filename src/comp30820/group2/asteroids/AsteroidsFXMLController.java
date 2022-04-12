@@ -146,7 +146,7 @@ public class AsteroidsFXMLController implements Initializable {
 			Main.setCtrlResetGameState(true);
 			activateScene(stage, Configuration.GameWindows.MAIN_GAME);
 		}
-		else if (buttonId.equals("welcomeHowToPlay"))
+		else if (buttonId.equals("welcomeHowToPlay") || buttonId.equals("endGameHowToPlay"))
 		{
 			activateScene(stage, Configuration.GameWindows.HOW_TO_PLAY);
 		}
