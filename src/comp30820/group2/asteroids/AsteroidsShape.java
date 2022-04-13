@@ -187,5 +187,22 @@ public class AsteroidsShape extends GameObject {
 		context.setFill(Color.BLACK);
 		context.fillPolygon(xpoints,ypoints,xpoints.length);
 	}
+	
+	/** For the specified superclass enumeration value 'goClass', return the
+	 * corresponding InGameShape value for an AsteroidsShape.
+	 * 
+	 * @param goClass
+	 * @return null if none found.
+	 */
+	public static InGameShape getInGameShapeForGOClass(GoClass goClass ) {
+		InGameShape inGameShape = null;
+		for (InGameShape nextShape : InGameShape.values()) { 
+		    if (nextShape.goClass == goClass) {
+		    	inGameShape = nextShape;
+		    	break;
+		    }
+		}
+		return inGameShape;
+	}
 
 }

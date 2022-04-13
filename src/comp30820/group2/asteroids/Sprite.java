@@ -2,7 +2,9 @@ package comp30820.group2.asteroids;
 
 import java.net.URISyntaxException;
 
+import comp30820.group2.asteroids.AsteroidsShape.InGameShape;
 import comp30820.group2.asteroids.Configuration.Resource;
+import comp30820.group2.asteroids.GameObject.GoClass;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Polygon;
@@ -108,6 +110,23 @@ public class Sprite extends GameObject {
 	 */
 	public void drawObject(GraphicsContext context) {
 		context.drawImage(this.image, 0, 0);
+	}
+	
+	/** For the specified superclass enumeration value 'goClass', return the
+	 * corresponding Graphics value for a Sprite.
+	 * 
+	 * @param goClass
+	 * @return null if none found.
+	 */
+	public static Graphics getGraphicsForGOClass(GoClass goClass ) {
+		Graphics sprite = null;
+		for (Graphics nextSprite : Graphics.values()) { 
+		    if (nextSprite.goClass == goClass) {
+		    	sprite = nextSprite;
+		    	break;
+		    }
+		}
+		return sprite;
 	}
 
 }

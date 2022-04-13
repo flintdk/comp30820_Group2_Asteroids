@@ -582,39 +582,49 @@ public class Main extends Application {
 			private void fireABulletFromSpaceshipAndPlaySound()
 			{
 				// Fire!!
-				AsteroidsShape myNewBullet = new AsteroidsShape(AsteroidsShape.InGameShape.BULLET);
+				GameObject newBullet;
+				if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
+					newBullet = new Sprite(Sprite.getGraphicsForGOClass(GameObject.GoClass.BULLET));
+				}
+				else {
+					newBullet = new AsteroidsShape(AsteroidsShape.getInGameShapeForGOClass(GameObject.GoClass.BULLET));
+				}
 
-				//get the initial position of the bullet based on the spaceship position 
-				double bulletIniX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
-				double bulletIniY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
-				myNewBullet.position = new GameVector( bulletIniX,bulletIniY);
-				myNewBullet.rotation = spaceship.rotation;
+				// Get the initial position of the bullet based on the spaceship position 
+				double bulletPosnX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
+				double bulletPosnY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
+				newBullet.position = new GameVector(bulletPosnX,bulletPosnY);
 
-
+				// Bullet speed emerges from muzzle of gun in straight line.
+				// But bullet already in motion as it is in the spaceship!
+				// We add spaceship speed to bullet speed to calculate the actual
+				// bullet speed.
+				// We do one small tweak...  we set a minimum speed for that bullet
+				// so it is not possible to leave one floating, static on the screen.
+				// This wouldn't happen in reality... but... meh....
 				double spaceshipSpeedX = spaceship.velocity.getX() ;
 				double spaceshipSpeedY = spaceship.velocity.getY() ;
 
-				double changeX = Math.cos(Math.toRadians(myNewBullet.rotation)) * Configuration.SPEED_BULLET_MIN;
-				double changeY = Math.sin(Math.toRadians(myNewBullet.rotation)) * Configuration.SPEED_BULLET_MIN;
+				// If the spaceship was standing still... what would the initial
+				// speed of the bullet be?  Work it out...
+				double bulletInitVelX = Math.cos(Math.toRadians(spaceship.rotation)) * Configuration.SPEED_BULLET;
+				double bulletInitVelY = Math.sin(Math.toRadians(spaceship.rotation)) * Configuration.SPEED_BULLET;
 
-				//if the ship is not moving we still want to be able to shoot
-				if( spaceshipSpeedX != 0 || spaceshipSpeedY != 0) {
-					changeX
-					= Math.cos(Math.toRadians(spaceship.rotation)) * Math.abs(spaceship.velocity.getX()) * 2 ;
-					changeY
-					= Math.sin(Math.toRadians(spaceship.rotation)) * Math.abs(spaceship.velocity.getY()) * 2 ;
-				}				
-
-				GameVector newVelocity = myNewBullet.velocity.add(changeX, changeY);
+				// Depending on the direction the bullet is going... the following
+				// will make the bullet faster... or slower. It just depends!
+				bulletInitVelX += spaceshipSpeedX;
+				bulletInitVelY += spaceshipSpeedY;
+				
+				GameVector suggestedVelocity = newBullet.velocity.add(bulletInitVelX, bulletInitVelY);
 				// Don't violate minimum speed limit
-				if (newVelocity.getLength() < Configuration.SPEED_BULLET) {
-					newVelocity.lengthSetTo(Configuration.SPEED_BULLET);
+				if (suggestedVelocity.getLength() < Configuration.SPEED_BULLET_MIN) {
+					suggestedVelocity.lengthSetTo(Configuration.SPEED_BULLET_MIN);
 				}
 
 				// Now we want to add those velocity increments to the current velocity!
-				myNewBullet.velocity = newVelocity;
+				newBullet.velocity = suggestedVelocity;
 
-				movingObjectsOnScreen.add(myNewBullet);
+				movingObjectsOnScreen.add(newBullet);
 
 				playSoundEffect(SoundEffects.FIRE);
 			}
@@ -853,7 +863,7 @@ public class Main extends Application {
 										double Offset = 0.45;
 
 										createAsteroid(
-												AsteroidsShape.InGameShape.ASTEROID_MEDIUM,
+												GameObject.GoClass.ASTEROID_MEDIUM,
 												xOriginalAsteroid + (h * Offset) * Configuration.ASTEROID_MED_SIZE,
 												yOriginalAsteroid  + (h * Offset) * Configuration.ASTEROID_MED_SIZE,
 												Configuration.ASTEROID_MED_SPEED);
@@ -868,7 +878,7 @@ public class Main extends Application {
 
 										double Offset = 0.1;
 										createAsteroid(
-												AsteroidsShape.InGameShape.ASTEROID_SMALL,
+												GameObject.GoClass.ASTEROID_SMALL,
 												xOriginalAsteroid + ( h * Offset ) * Configuration.ASTEROID_SML_SPEED,
 												yOriginalAsteroid  + ( h * Offset ) * Configuration.ASTEROID_SML_SPEED,
 												Configuration.ASTEROID_SML_SPEED);
@@ -932,9 +942,15 @@ public class Main extends Application {
 			 * @param AsteroidsShape.InGameShape asteroidType, double initialX, double initialY , int speed
 			 * @return void
 			 */
-			private void createAsteroid(AsteroidsShape.InGameShape asteroidType, double initialX, double initialY , int speed )
+			private void createAsteroid(GameObject.GoClass asteroidClass, double initialX, double initialY , int speed )
 			{
-				AsteroidsShape myNewAsteroid = new AsteroidsShape(asteroidType);
+				GameObject myNewAsteroid;
+				if (Configuration.GRAPHICS_MODE == Configuration.GraphicsMode.ARCADE) {
+					myNewAsteroid = new Sprite(Sprite.getGraphicsForGOClass(asteroidClass));
+				}
+				else {
+					myNewAsteroid = new AsteroidsShape(AsteroidsShape.getInGameShapeForGOClass(asteroidClass));
+				}
 
 				myNewAsteroid.position = new GameVector( initialX,initialY);
 
@@ -944,9 +960,9 @@ public class Main extends Application {
 				myNewAsteroid.rotation = randomRotation;
 
 				double changeXAsteroid
-				= Math.cos(Math.toRadians(myNewAsteroid.rotation)) * speed;
+					= Math.cos(Math.toRadians(myNewAsteroid.rotation)) * speed;
 				double changeYAsteroid
-				= Math.sin(Math.toRadians(myNewAsteroid.rotation)) * speed;
+					= Math.sin(Math.toRadians(myNewAsteroid.rotation)) * speed;
 
 				// Don't violate maximum speed limit
 				GameVector newVelocity = myNewAsteroid.velocity.add(changeXAsteroid, changeYAsteroid);
