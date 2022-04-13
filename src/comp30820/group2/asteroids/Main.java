@@ -66,7 +66,7 @@ public class Main extends Application {
 	// If you want to see the raw Hit Model drawn on the game pane (i.e.
 	// not using the graphics context - all we have to do is rab the main
 	// game pane from the .fxml.  Then below we can add children etc..
-	// This is quite useful for debugging...
+	@SuppressWarnings("unused")  // Following is quite useful for debugging...  
 	private static Pane mainGamePane;
 	private static boolean ctrlResetGameState;
 	private static boolean ctrlAllowMovement;  // Allows us to enable/disable movement of all objects
@@ -214,7 +214,7 @@ public class Main extends Application {
 		Main.ctrlAllowMovement = false;  // Motion disabled by default!
 		// Occasionally handy to know the center of the screen...
 		GameVector centerOfScreen
-			= new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
+		= new GameVector( (Configuration.SCENE_WIDTH / 2),(Configuration.SCENE_HEIGHT / 2) );
 
 		// Grab a handle on the gamestate singlton
 		GameState gameState = GameState.getInstance();
@@ -263,28 +263,28 @@ public class Main extends Application {
 				//########################################################3
 				// TIMERS
 				//########################################################3
-				
+
 				// Increment all Timers...
 				timers.values().forEach( timer -> timer.increment() );
-				
+
 				// Then check them to control in-game behaviour.
 				manageTimedEvents();
-				
+
 				//########################################################3
 				// PROCESS KEY INPUT
 				//########################################################3
 
-				processKeyboardInput(mainStage, controller);
+				processKeyboardInput();
 
 				//########################################################3
 				// GAME ANIMATION AND FRAME PROCESSING
 				//########################################################3
-				
+
 				// LAMBDA EXPRESSION
 				if (ctrlAllowMovement) {
 					movingObjectsOnScreen.forEach( (object) -> object.updatePosition(1/60.0));
 				}
-				
+
 				background.render(context);
 
 				//set the timer for aliens
@@ -304,7 +304,7 @@ public class Main extends Application {
 							movingObjectsOnScreen.add(alienOnScreen);					
 						}
 					}
-					
+
 					//if the alien object exist, set the path for alien
 					if(alienOnScreen!=null){
 						alienOnScreen.changePathAlien();
@@ -315,16 +315,16 @@ public class Main extends Application {
 						movingObjectsOnScreen.remove(alienOnScreen);	
 						timers.get(Timer.TIMER_CLASS.ALIEN_TIMER).set_time(0);
 					}
-					
+
 					// get the alien bullet timer
 					Timer alienBulletTimer = timers.get(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER);
 					if(alienOnScreenList != null && alienBulletTimer == null) {
-					      timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
-					     } else if(alienOnScreenList == null) {
-					      timers.remove(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER);
-					     }
-					
-					
+						timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
+					} else if(alienOnScreenList == null) {
+						timers.remove(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER);
+					}
+
+
 					if (alienBulletTimer != null) {
 						int timerBullet = alienBulletTimer.get_time();
 						if(alienOnScreenList != null && spaceship != null
@@ -359,8 +359,8 @@ public class Main extends Application {
 			//##################################################################
 			// KEYBOARD INPUT
 			//##################################################################
-			
-			private void processKeyboardInput(Stage mainStage, AsteroidsFXMLController controller) {
+
+			private void processKeyboardInput() {
 				// Process user input
 				// FOR CONSIDERATION: Should we extract our keystrokes and make
 				//                    them part of the configuration file so users
@@ -416,66 +416,6 @@ public class Main extends Application {
 				// the method on each object as we iterate over the list.
 			}
 
-			//##################################################################
-			//##################################################################
-			//##################################################################
-			
-			private void processKeyboardInput(Stage mainStage, AsteroidsFXMLController controller) {
-				// Process user input
-				// FOR CONSIDERATION: Should we extract our keystrokes and make
-				//                    them part of the configuration file so users
-				//                    can choose/save their own.
-				if (keys.getCurrentlyActiveKeys().containsKey("LEFT")) {
-					spaceship.rotation -= 3;
-				}
-				if (keys.getCurrentlyActiveKeys().containsKey("Q")) {
-					try {
-						controller.activateScene(mainStage, Configuration.GameWindows.END_OF_GAME);
-					}
-					catch (IOException IOe) {
-						IOe.printStackTrace();
-					}
-				}
-				if (keys.getCurrentlyActiveKeys().containsKey("RIGHT")) {
-					spaceship.rotation += 3;
-				}
-				// For UP we want to make sure we move in the direction the
-				// spaceship is facing!!
-				if (keys.getCurrentlyActiveKeys().containsKey("UP")) {
-					// Don't allow the player to use engines if the spaceship is
-					// temporarily off the screen...
-					if (spaceship.willRender) {
-						// The animation timer runs 60 times a second.  If a player presses a button
-						// that triggers a sound to play (like say the ships thrusters) then - if the
-						// player holds the button down - you can get an audio distortion as the media
-						// player attempts to play the clip over and over again (60 times per second)
-						// HOW TO DEAL WITH THIS?
-						fireEnginesAndChangeVelocity();
-					}
-				}
-				// For UP we want to make sure we move in the direction the
-				// spaceship is facing!!
-				if (keys.markKeyPressAsProcessed("SPACE")) {
-					// Don't allow the player to fire if the spaceship is temporarily
-					// off the screen...
-					if (spaceship.willRender) {
-						fireABulletFromSpaceshipAndPlaySound();
-					}
-				}
-
-				//press keyboard H and Let the spaceship jump to a place where is no enemies
-				if (keys.getCurrentlyActiveKeys().containsKey("H")) {
-					goToHyperspace();
-				}
-
-				// We know the frame rate of the AnimationTimer, so every time
-				// the 'handle' gets called, we know that 1/60th of a second has
-				// passed.
-				// This is ordered from background to front 
-				// Instead of running each update individually, we can use a Lambda Expression to
-				// the method on each object as we iterate over the list.
-			}
-			
 			//##################################################################
 			// TIMED EVENTS
 			//##################################################################
@@ -499,7 +439,7 @@ public class Main extends Application {
 				// the player to mourn...
 				Timer endOfLifeTimer = timers.get(Timer.TIMER_CLASS.LOSE_A_LIFE);
 				if (endOfLifeTimer != null && endOfLifeTimer.get_time() >= 90) {    // 90 = 1.5s
-					resumePlayAfterLosingLife(timers);
+					resumePlayAfterLosingLife();
 				}
 				//----------------------------------------
 				// When we recover after losing a life we are invincible for 
@@ -535,7 +475,7 @@ public class Main extends Application {
 					// is running the whole time (we don't pause it) so  it must
 					// be removed or we'll just launch this scene over and over...
 					timers.remove(Timer.TIMER_CLASS.LOSE_THE_GAME);
-					
+
 					// Set the game over label not to display - you don't want
 					// that still on the screen if the player decides to play
 					// again!
@@ -554,7 +494,7 @@ public class Main extends Application {
 			//##################################################################
 			// GENERAL HELPER FUNCTIONS
 			//##################################################################
-			
+
 			/** Update the Main Game screen labels with the current values for
 			 * score, lives and level.
 			 * 
@@ -567,11 +507,11 @@ public class Main extends Application {
 
 				Label lives = (Label) mainGameNamespace.get("mainGameLives");
 				lives.setText(gameState.getLivesForDisplay());
-				
+
 				Label level = (Label) mainGameNamespace.get("mainGameLevel");
 				level.setText(Integer.toString(gameState.getLevel()));
 			}
-			
+
 			/** <p>Perform the necessary functions when play resumes after losing
 			 * a life.</p>
 			 * <p>When the player loses a life there is an explosion and the player
@@ -583,114 +523,15 @@ public class Main extends Application {
 			 * 
 			 * @param timers
 			 */
-			private void resumePlayAfterLosingLife(HashMap<Enum, Timer> timers) {
+			private void resumePlayAfterLosingLife() {
 				// Our player has lost a life... but is coming back for more!
 				timers.remove(Timer.TIMER_CLASS.LOSE_A_LIFE);
-				
+
 				// When we recover after losing a life we are invincible for 
 				// a little bit.
 				timers.put(Timer.TIMER_CLASS.INVINCIBLE, new Timer(0));
 				timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE, new Timer(0));
-				
-				spaceship.canBeHit = false;
-				spaceship.willRender = true;
-			}
 
-			/** Several events in the game rely on a timer.  For example the
-			 * pause when a player goes into hyperspace, or the pause after a
-			 * player loses a life.  This method groups all the timed events into
-			 * a single place for more convenient management.
-			 * 
-			 */
-			private void manageTimedEvents() {
-				// Now deal with specific events when timers run out...
-				Timer hyperspaceTimer = timers.get(Timer.TIMER_CLASS.HYPERSPACE);
-				if (hyperspaceTimer != null && hyperspaceTimer.get_time() >= 120) {    // 120 = 2s
-					// Our ship has done it's stint in hyperspace... bring us home!
-					timers.remove(Timer.TIMER_CLASS.HYPERSPACE);
-					returnFromHyperspace();
-				}
-				//----------------------------------------
-				// When we lose a life the game pauses for 1.5 seconds to allow
-				// the player to mourn...
-				Timer endOfLifeTimer = timers.get(Timer.TIMER_CLASS.LOSE_A_LIFE);
-				if (endOfLifeTimer != null && endOfLifeTimer.get_time() >= 90) {    // 90 = 1.5s
-					resumePlayAfterLosingLife(timers);
-				}
-				//----------------------------------------
-				// When we recover after losing a life we are invincible for 
-				// a little bit.
-				Timer invincibilityTimer = timers.get(Timer.TIMER_CLASS.INVINCIBLE);
-				if (invincibilityTimer != null && invincibilityTimer.get_time() >= 120) {    // 120 = 1.5s
-					timers.remove(Timer.TIMER_CLASS.INVINCIBLE);
-					// Also remove any 'flash' timers...
-					timers.remove(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE);
-					timers.remove(Timer.TIMER_CLASS.INVINCIBLE_FLASH_HIDDEN);
-					// Bye-bye super powers!
-					spaceship.canBeHit = true;
-					spaceship.willRender = true;
-				}
-				//----------------------------------------
-				// Manage the flashing ship while invincible...
-				Timer flashVisible = timers.get(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE);
-				if (flashVisible != null && flashVisible.get_time() >= 6) {    // 6 = 1/10th s
-					timers.remove(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE);
-					timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_HIDDEN, new Timer(0));
-					spaceship.willRender = false;
-				}
-				Timer flashHidden = timers.get(Timer.TIMER_CLASS.INVINCIBLE_FLASH_HIDDEN);
-				if (flashHidden != null && flashHidden.get_time() >= 6) {    // 6 = 1/10th s
-					timers.remove(Timer.TIMER_CLASS.INVINCIBLE_FLASH_HIDDEN);
-					timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE, new Timer(0));
-					spaceship.willRender = true;
-				}
-				//----------------------------------------
-				Timer endOfGameTimer = timers.get(Timer.TIMER_CLASS.LOSE_THE_GAME);
-				if (endOfGameTimer != null && endOfGameTimer.get_time() >= 300) {    // 90 = 1.5s
-					// Be very careful to remove this timer!  Remember the loop
-					// is running the whole time (we don't pause it) so  it must
-					// be removed or we'll just launch this scene over and over...
-					timers.remove(Timer.TIMER_CLASS.INVINCIBLE_FLASH_HIDDEN);
-					
-					// Set the game over label not to display - you don't want
-					// that still on the screen if the player decides to play
-					// again!
-					Label gameOver= (Label) mainGameNamespace.get("mainGameGameOver");
-					gameOver.setVisible(true);
-
-					try {
-						controller.activateScene(mainStage, Configuration.GameWindows.END_OF_GAME);
-					}
-					catch (IOException IOe) {
-						IOe.printStackTrace();
-					}
-				}
-			}
-
-			//##################################################################
-			//##################################################################
-			//##################################################################
-			
-			/** <p>Perform the necessary functions when play resumes after losing
-			 * a life.</p>
-			 * <p>When the player loses a life there is an explosion and the player
-			 * ship disappears from the screen.  But when play resumes we don't
-			 * just pop back in straight away.  Rather for the first few seconds
-			 * the player in invincible (and the ship flashes to indicate this).
-			 * We use... some of our lovely timers to manage this using the
-			 * animation loop as our clock.</p>
-			 * 
-			 * @param timers
-			 */
-			private void resumePlayAfterLosingLife(HashMap<Enum, Timer> timers) {
-				// Our player has lost a life... but is coming back for more!
-				timers.remove(Timer.TIMER_CLASS.LOSE_A_LIFE);
-				
-				// When we recover after losing a life we are invincible for 
-				// a little bit.
-				timers.put(Timer.TIMER_CLASS.INVINCIBLE, new Timer(0));
-				timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE, new Timer(0));
-				
 				spaceship.canBeHit = false;
 				spaceship.willRender = true;
 			}
@@ -702,7 +543,7 @@ public class Main extends Application {
 			private void goToHyperspace() {
 				// Beep into hyperspace...
 				playSoundEffect(SoundEffects.HYPERSPACE_ENTER);
-				
+
 				// We've gone into hyperspace - we want to stay there until the
 				// timer runs out!
 				timers.put(Timer.TIMER_CLASS.HYPERSPACE, new Timer(0));
@@ -711,7 +552,7 @@ public class Main extends Application {
 				spaceship.willRender = false;
 				spaceship.canBeHit = false;
 			}
-			
+
 			/** Return from hyperspace.
 			 *
 			 * @param GameObject spaceship, List<GameObject> movingObjectsOnScreen
@@ -720,7 +561,7 @@ public class Main extends Application {
 			private void returnFromHyperspace()  {
 				// Beep out of hyperspace...
 				playSoundEffect(SoundEffects.HYPERSPACE_EXIT);
-				
+
 				Random r = new Random();
 				spaceship.position = new GameVector(
 						Configuration.SCENE_WIDTH * r.nextDouble(),
@@ -738,44 +579,43 @@ public class Main extends Application {
 			 * @param 
 			 * @return void
 			 */
-			private void fireABulletFromSpaceshipAndPlaySound() {
-					// Fire!!
-					AsteroidsShape myNewBullet = new AsteroidsShape(AsteroidsShape.InGameShape.BULLET);
-					
-					//get the initial position of the bullet based on the spaceship position 
-					double bulletIniX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
-					double bulletIniY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
-					
-					myNewBullet.position = new GameVector( bulletIniX,bulletIniY);
-					myNewBullet.rotation = spaceship.rotation;
-					
-					
-					double spaceshipSpeedX = spaceship.velocity.getX() ;
-					double spaceshipSpeedY = spaceship.velocity.getY() ;
+			private void fireABulletFromSpaceshipAndPlaySound()
+			{
+				// Fire!!
+				AsteroidsShape myNewBullet = new AsteroidsShape(AsteroidsShape.InGameShape.BULLET);
 
-					double changeX = Math.cos(Math.toRadians(myNewBullet.rotation)) * Configuration.SPEED_BULLET_MIN;
-					double changeY = Math.sin(Math.toRadians(myNewBullet.rotation)) * Configuration.SPEED_BULLET_MIN;
-					
-					//if the ship is not moving we still want to be able to shoot
-					if( spaceshipSpeedX != 0 || spaceshipSpeedY != 0) {
-						changeX
-							= Math.cos(Math.toRadians(spaceship.rotation)) * Math.abs(spaceship.velocity.getX()) * 2 ;
-						changeY
-							= Math.sin(Math.toRadians(spaceship.rotation)) * Math.abs(spaceship.velocity.getY()) * 2 ;
-							
-					}				
-					
-					GameVector newVelocity = myNewBullet.velocity.add(changeX, changeY);
-					// Don't violate minimum speed limit
-					if (newVelocity.getLength() < Configuration.SPEED_BULLET) {
-						newVelocity.lengthSetTo(Configuration.SPEED_BULLET);
-					}
-					
-					// Now we want to add those velocity increments to the current velocity!
-					myNewBullet.velocity = newVelocity;
+				//get the initial position of the bullet based on the spaceship position 
+				double bulletIniX = spaceship.position.getX() + Math.cos(Math.toRadians(spaceship.rotation)) * 12;
+				double bulletIniY = spaceship.position.getY() + Math.sin(Math.toRadians(spaceship.rotation)) * 12;
+				myNewBullet.position = new GameVector( bulletIniX,bulletIniY);
+				myNewBullet.rotation = spaceship.rotation;
 
-					movingObjectsOnScreen.add(myNewBullet);
-					
+
+				double spaceshipSpeedX = spaceship.velocity.getX() ;
+				double spaceshipSpeedY = spaceship.velocity.getY() ;
+
+				double changeX = Math.cos(Math.toRadians(myNewBullet.rotation)) * Configuration.SPEED_BULLET_MIN;
+				double changeY = Math.sin(Math.toRadians(myNewBullet.rotation)) * Configuration.SPEED_BULLET_MIN;
+
+				//if the ship is not moving we still want to be able to shoot
+				if( spaceshipSpeedX != 0 || spaceshipSpeedY != 0) {
+					changeX
+					= Math.cos(Math.toRadians(spaceship.rotation)) * Math.abs(spaceship.velocity.getX()) * 2 ;
+					changeY
+					= Math.sin(Math.toRadians(spaceship.rotation)) * Math.abs(spaceship.velocity.getY()) * 2 ;
+				}				
+
+				GameVector newVelocity = myNewBullet.velocity.add(changeX, changeY);
+				// Don't violate minimum speed limit
+				if (newVelocity.getLength() < Configuration.SPEED_BULLET) {
+					newVelocity.lengthSetTo(Configuration.SPEED_BULLET);
+				}
+
+				// Now we want to add those velocity increments to the current velocity!
+				myNewBullet.velocity = newVelocity;
+
+				movingObjectsOnScreen.add(myNewBullet);
+
 				playSoundEffect(SoundEffects.FIRE);
 			}
 
@@ -874,7 +714,7 @@ public class Main extends Application {
 						// Sprite or an 'AsteroidsShape' (wish we had a better
 						// name for these).  So search for it and assign it's
 						// reference to the spaceship object.
-	
+
 						if (( gameObject.gameObjectClass == gameObjectClass))
 						{
 							if (gameObjects==null){// i'm not sure why but it needs that if when the list is empty otherwise error..
@@ -949,7 +789,7 @@ public class Main extends Application {
 			{
 				//find all the bullets 
 				List<GameObject> spaceshipBulletsOnScreen
-					= findGameObjectsInList(GameObject.GoClass.BULLET);
+				= findGameObjectsInList(GameObject.GoClass.BULLET);
 
 				//find all the asteroids 
 				List<GameObject> asteroidsAlienOnScreen = null;
@@ -981,26 +821,28 @@ public class Main extends Application {
 								//store the coordinated of the 'original'asteroids'
 								double xOriginalAsteroid = asteroidsAlienOnScreen.get(j).position.getX();
 								double yOriginalAsteroid = asteroidsAlienOnScreen.get(j).position.getY();
-								double rotationOriginalAsteroid = asteroidsAlienOnScreen.get(j).rotation ;
+								// Not used?
+								//								double rotationOriginalAsteroid = asteroidsAlienOnScreen.get(j).rotation ;
 
 								// Remove the bullet and asteroid (just destroyed) from 
 								// the on-screen collection.
 								movingObjectsOnScreen.removeAll(removeElements); // remove simultaneously both elements
 
-								double xOffset = Math.cos(Math.toRadians(rotationOriginalAsteroid));
-								double yOffset = Math.sin(Math.toRadians(rotationOriginalAsteroid));
+								// Not Used?
+								//								double xOffset = Math.cos(Math.toRadians(rotationOriginalAsteroid));
+								//								double yOffset = Math.sin(Math.toRadians(rotationOriginalAsteroid));
 								//create two new asteroids
 								for(int h = -1 ; h <2 ; h+=2) {
 									//points ++ en fonction de la taille de l'astéroide ? 
-//									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
-//											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_LARGE) {
-//										createMediumAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
-//									}
-//									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
-//											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_MEDIUM) {
-//										createSmallAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
-//
-//									}
+									//									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
+									//											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_LARGE) {
+									//										createMediumAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+									//									}
+									//									if (asteroidsOnScreen.get(j) instanceof AsteroidsShape
+									//											&& ((AsteroidsShape) asteroidsOnScreen.get(j)).type == AsteroidsShape.InGameShape.ASTEROID_MEDIUM) {
+									//										createSmallAsteroid(xOriginalAsteroid,yOriginalAsteroid,rotationOriginalAsteroid);
+									//
+									//									}
 									// If large asteroid create two medium...
 									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_LARGE) {
 										playSoundEffect(SoundEffects.BANG_LARGE);
@@ -1018,60 +860,35 @@ public class Main extends Application {
 									}
 									// If medium asteroid create two small...
 									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_MEDIUM) {
-										try {
-											// Medium Bang!
-											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_MEDIUM.path).toURI().toString());
-											MediaPlayer mediaPlayer = new MediaPlayer(sound);
-											mediaPlayer.play();
+										// Medium Bang!
+										playSoundEffect(SoundEffects.BANG_MEDIUM);
 
-											// You hit a medium asteroid - get 150 points!
-											gameState.incrementScore(150);
-														
-											double Offset = 0.1;
-											
-											createAsteroid(
-													AsteroidsShape.InGameShape.ASTEROID_SMALL,
-													xOriginalAsteroid + ( h * Offset ) * Configuration.ASTEROID_SML_SPEED,
-													yOriginalAsteroid  + ( h * Offset ) * Configuration.ASTEROID_SML_SPEED,
-													Configuration.ASTEROID_SML_SPEED);
-										}
-										catch (URISyntaxException USE) {
-											// ####################################################### LOGGING??
-											System.out.println(USE.getStackTrace());
-										}
+										// You hit a medium asteroid - get 150 points!
+										gameState.incrementScore(150);
+
+										double Offset = 0.1;
+										createAsteroid(
+												AsteroidsShape.InGameShape.ASTEROID_SMALL,
+												xOriginalAsteroid + ( h * Offset ) * Configuration.ASTEROID_SML_SPEED,
+												yOriginalAsteroid  + ( h * Offset ) * Configuration.ASTEROID_SML_SPEED,
+												Configuration.ASTEROID_SML_SPEED);
 									}
 									// If small asteroid no need to create anything...
 									// just do the small bang and give the player some score!
 									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ASTEROID_SMALL) {
-										try {
-											// Beep into hyperspace...
-											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_SMALL.path).toURI().toString());
-											MediaPlayer mediaPlayer = new MediaPlayer(sound);
-											mediaPlayer.play();
+										// Small Bang!
+										playSoundEffect(SoundEffects.BANG_SMALL);
 
-											// You hit a medium asteroid - get 250 points!
-											gameState.incrementScore(250);
-										}
-										catch (URISyntaxException USE) {
-											// ####################################################### LOGGING??
-											System.out.println(USE.getStackTrace());
-										}
+										// You hit a medium asteroid - get 250 points!
+										gameState.incrementScore(250);
 									}
-									
-									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ALIEN) {
-										try {
-											// haven't change the music
-											Media sound = new Media(Main.class.getResource(SoundEffects.BANG_SMALL.path).toURI().toString());
-											MediaPlayer mediaPlayer = new MediaPlayer(sound);
-											mediaPlayer.play();
 
-											// You hit a alien - get 300 points!
-											gameState.incrementScore(300);
-										}
-										catch (URISyntaxException USE) {
-											// ####################################################### LOGGING??
-											System.out.println(USE.getStackTrace());
-										}
+									if (asteroidsAlienOnScreen.get(j).gameObjectClass == GameObject.GoClass.ALIEN) {
+										// Small Bang - puny alien!
+										playSoundEffect(SoundEffects.BANG_SMALL);
+
+										// You hit a alien - get 300 points!
+										gameState.incrementScore(300);
 									}
 								}										
 							}
@@ -1079,7 +896,7 @@ public class Main extends Application {
 
 					}
 				}
-				
+
 				if (asteroidsAlienOnScreen.isEmpty()) {
 					// If we've destroyed all the asteroids on screen then the
 					// level is over! Move to the next level
@@ -1118,7 +935,7 @@ public class Main extends Application {
 			private void createAsteroid(AsteroidsShape.InGameShape asteroidType, double initialX, double initialY , int speed )
 			{
 				AsteroidsShape myNewAsteroid = new AsteroidsShape(asteroidType);
-				
+
 				myNewAsteroid.position = new GameVector( initialX,initialY);
 
 				Random r = new Random();
@@ -1136,11 +953,11 @@ public class Main extends Application {
 
 				// Now we want to add those velocity increments to the current velocity!
 				myNewAsteroid.velocity = newVelocity;
-				
+
 				movingObjectsOnScreen.add(myNewAsteroid);
 				return;
 			}
-			
+
 			/** check if the spaceship has hit a asteroid or has been hit by an alien bullet
 			 * then lose a life
 			 * 
@@ -1150,7 +967,7 @@ public class Main extends Application {
 			{
 				// find the spaceship
 				List<GameObject> gameObjects = findGameObjectsInList(GameObject.GoClass.SPACESHIP);
-				
+
 				// We check for null/no spaceship to avoid NPE's on game startup...
 				if (gameObjects != null && gameObjects.size() > 0)
 				{
@@ -1162,13 +979,13 @@ public class Main extends Application {
 							findGameObjectsInList(GameObject.GoClass.ASTEROID_LARGE))
 							.flatMap(x -> x == null? null : x.stream()) //don't add is null, avoid errors 
 							.collect(Collectors.toList());
-	
+
 					for(int i = 0;i<asteroidsOnScreen.size();i++) {
 						if( spaceship.isHitting(asteroidsOnScreen.get(i)) ) {
 							spaceshipHasBeenHit();
 						}
 					}
-						
+
 					List<GameObject> alienBulletsOnScreen = null;
 					alienBulletsOnScreen = findGameObjectsInList(GameObject.GoClass.ALIEN_BULLET);
 					if (alienBulletsOnScreen != null && alienBulletsOnScreen.size() > 0)
@@ -1180,8 +997,8 @@ public class Main extends Application {
 						}
 					}
 				}
-					
-				}
+
+			}
 
 			/** Player spaceship has been hit!  Is this the end?  Carry out all
 			 * expected steps when the player spaceship is hit.  Play the
@@ -1195,7 +1012,7 @@ public class Main extends Application {
 				GameState gameState = GameState.getInstance();
 				gameState.incrementScore(-50);
 				gameState.loseALife();
-				
+
 				// After we die we're invincible for a bit.  But more importantly,
 				// while the player death plays out on screen, we want to make
 				// sure the game doesn't keep registering more deaths.
@@ -1215,11 +1032,11 @@ public class Main extends Application {
 					// No lives left... pause the screen for a bit to give the
 					// player a chance to digest the enormity of what's happened...
 					timers.put(Timer.TIMER_CLASS.LOSE_THE_GAME, new Timer(0));
-					
+
 					// Stop stuff moving - allows the animation loop to keep going
 					// but prevents any further collisions/impacts.
 					Main.ctrlAllowMovement = false;
-					
+
 					Label gameOver= (Label) mainGameNamespace.get("mainGameGameOver");
 					gameOver.setVisible(true);
 				}
@@ -1229,8 +1046,8 @@ public class Main extends Application {
 					timers.put(Timer.TIMER_CLASS.LOSE_A_LIFE, new Timer(0));
 				}
 			}
-				
-			
+
+
 			/** <p>Set the List 'movingObjectsOnScreen' to an initial state</p>
 			 * <p>When starting a game of asteroids the player spaceship is static, on
 			 * screen and surrounded by floating asteroids.  Set up this list.</p>
