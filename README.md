@@ -31,6 +31,7 @@ Player has a total of 3 lives and once there is no lives left the game is ended.
 This game also tracks the highest rank players and displays a hall of frame where players can see the top 5 players of all time
 
 
+
 USER CONTROLS
 
 The players ship can perform 5 actions: 
