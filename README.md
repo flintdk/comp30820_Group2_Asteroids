@@ -26,16 +26,25 @@ About
 This is a Java game that was devolped using Javafx, it is based off the classic game of Asteroids, Asteroids is a classic arcade game, where a space ship moves through space destroying asteroids and occasional 
 alien ships. The difficulty of the game increases as the levels progress.
 
+Player has a total of 3 lives and once there is no lives left the game is ended.
 
-USER INPUT
+This game also tracks the highest rank players and displays a hall of frame where players can see the top 5 players of all time
+
+
+USER CONTROLS
 
 The players ship can perform 5 actions: 
 - Rotate Right Rotate the ship in the clockwise direction 
 - Rotate Left Rotate the ship in the anti-clockwise direction 
-- Fire Fire a bullet in the direction the ship is currently pointing 
+- Fire Fire a bullet in the direction the ship is currently pointing
 - Apply Thrust Add speed to the current motion in the direction the ship is currently pointing 
-Hyperspace  Jump  Disappear  from  current  location  and  reappear  in  a  new  location  on  the  screen  (The  new 
-location should not be in contact with another object)
+- Hyperspace  Jump  Disappear  from  current  location  and  reappear  in  a  new  location  on  the  screen
+
+WAYS TO DIE
+
+- Get hit by an asteroids
+- Get shot by alien bullet
+
 
 Installation
 -------
