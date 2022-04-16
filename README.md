@@ -19,8 +19,6 @@ COMP30820 Group 2, Asteroids
 * Wendi Song
 
 
-## What is it?
-
 
 About
 --------
