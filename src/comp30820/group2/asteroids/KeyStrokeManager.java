@@ -105,64 +105,53 @@ public class KeyStrokeManager {
 		//   -> https://www.javatpoint.com/java-lambda-expressions
 		// ... etc..
         KeyStrokeManager.scene.setOnKeyPressed(
-				(KeyEvent event) ->
-				{
-					String keyName = event.getCode().toString();
-					// Avoid adding duplicates to list
-					if (keyName == "SPACE") { //first check if it's a space,  because we only want it to count 1 time
-						if (!currentlyActiveKeys.containsKey(keyName)) {
-							currentlyActiveKeys.put(keyName, true);
-			            }
-					}
-					else if (!currentlyActiveKeys.containsKey(keyName)) {
-						currentlyActiveKeys.put(keyName, false);
-					}
-					//System.out.println("list of key pressed : " + currentlyActiveKeys);
+        		(KeyEvent event) ->
+        		{
+        			String keyName = event.getCode().toString();
+        			// We don't want to add the key if it's already been added...
+        			// ... as that would overwrite the boolean flag...
+        			if (!currentlyActiveKeys.containsKey(keyName)) {
+        				currentlyActiveKeys.put(keyName, true);
+        			}
+        			//System.out.println("list of key pressed : " + currentlyActiveKeys);
+        		}
 
-				}
-				
-		);
+        		);
         KeyStrokeManager.scene.setOnKeyReleased(
-				(KeyEvent event) ->
-				{
-					String keyName = event.getCode().toString();	
-					if(currentlyActiveKeys.size() > 0 && currentlyActiveKeys.get(keyName) == false) {
-						currentlyActiveKeys.remove(keyName);
-					}
-				}
-		);
+        		(KeyEvent event) ->
+        		{
+        			String keyName = event.getCode().toString();	
+        			if(currentlyActiveKeys.size() > 0 && currentlyActiveKeys.containsKey(keyName)) {
+        				currentlyActiveKeys.remove(keyName);
+        			}
+        		}
+        		);
     }
     
-	/** @Elise?
-	 * method allowing us to distinct if a key has been pressed only once, no matter how long it has been pressed on
+	/** method allowing us to distinct if a key has been pressed only once, no matter how long it has been pressed on
+	 * 
 	 * @param codeString
 	 * @return
 	 */
-    // @Elise Suggestion: rename this to "markKeyPressAsProcessed" or some such
-    // really descriptive thing that explains what it does?
-	protected boolean markKeyPressAsProcessed(String codeString) {
+	protected boolean processKeypressAndMarkAsProcessed(String codeString) {
+		// When the user presses a key, they tend to 'hold it down' for a bit.
+		// Sometimes (like firing a bullet, or entering hyperspace) we want to
+		// process that keypress just once, record the fact we've processed it,
+		// and then take no action again until the key is pressed a second time.
         Boolean isActive = currentlyActiveKeys.get(codeString);//returns the value from the 
 
-        if (isActive != null && isActive) {//there is a space pressed and it's value is true 
+        if (isActive != null && isActive) {
+        	// the key 'codeString' is pressed and it's HashMap value is 'true'
+        	// ... so set it to false...
         	currentlyActiveKeys.put(codeString, false);
+        	// ... and then tell the calling process it's ok to act on this keystroke
+        	// once.
             return true;
         } else {
             return false;
         }
     }
 
-//    @Override
-//    public String toString() {
-//        StringBuilder keysDown = new StringBuilder("KeyStrokeManager on scene (").append(scene).append(")");
-//        for (KeyCode code : keysCurrentlyDown) {
-//            keysDown.append(code.getName()).append(" ");
-//        }
-//        return keysDown.toString();
-//    }
-    
-//	public ArrayList<String> getKeyPressedList() {
-//		return keyPressedList;
-//	}
 	public HashMap<String, Boolean> getCurrentlyActiveKeys() {
 		return currentlyActiveKeys;
 	}

@@ -11,10 +11,10 @@
 
 <BorderPane maxHeight="768" maxWidth="1024" minHeight="768" minWidth="1024" prefHeight="768" prefWidth="1024" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp30820.group2.asteroids.AsteroidsFXMLController">
    <center>
-      <Pane minHeight="768.0" minWidth="1024.0" prefHeight="768" prefWidth="1024" BorderPane.alignment="CENTER">
+      <Pane BorderPane.alignment="CENTER">
          <children>
-            <Canvas fx:id="asteroidsGameCanvas" height="600.0" layoutY="84.0" width="1024.0" />
-            <Label fx:id="mainGameGameOver" contentDisplay="CENTER" layoutX="330.0" layoutY="337.0" text="GAME OVER" visible="false">
+            <Canvas fx:id="asteroidsGameCanvas" height="600.0" width="1024.0" />
+            <Label fx:id="mainGameGameOver" contentDisplay="CENTER" layoutX="330.0" layoutY="253.0" text="GAME OVER" visible="false">
                <font>
                   <Font name="System Bold Italic" size="64.0" />
                </font>

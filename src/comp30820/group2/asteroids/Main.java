@@ -392,10 +392,10 @@ public class Main extends Application {
 						// HOW TO DEAL WITH THIS?
 						fireEnginesAndChangeVelocity();
 					}
-				}
+				} 
 				// For UP we want to make sure we move in the direction the
 				// spaceship is facing!!
-				if (keys.markKeyPressAsProcessed("SPACE")) {
+				if (keys.processKeypressAndMarkAsProcessed("SPACE")) {
 					// Don't allow the player to fire if the spaceship is temporarily
 					// off the screen...
 					if (spaceship.willRender) {
@@ -404,7 +404,8 @@ public class Main extends Application {
 				}
 
 				//press keyboard H and Let the spaceship jump to a place where is no enemies
-				if (keys.getCurrentlyActiveKeys().containsKey("H")) {
+				if (keys.processKeypressAndMarkAsProcessed("H")) {
+				//if (keys.getCurrentlyActiveKeys().containsKey("H")) {
 					goToHyperspace();
 				}
 
@@ -691,10 +692,12 @@ public class Main extends Application {
 				//spaceship = findSpaceshipInList(movingObjectsOnScreen);
 				spaceship = findGameObjectsInList(GameObject.GoClass.SPACESHIP).get(0);
 
-				//set the timer for when alien should appear
+				// Start the timer for when alien should appear
 				timers.put(Timer.TIMER_CLASS.ALIEN_TIMER, new Timer(0));
-				//set the timer for when alien should fire
-				//timers.put(Timer.TIMER_CLASS.ALIEN_BULLET_TIMER, new Timer(0));
+				
+				// When we start the game we are invincible for a little bit....
+				timers.put(Timer.TIMER_CLASS.INVINCIBLE, new Timer(0));
+				timers.put(Timer.TIMER_CLASS.INVINCIBLE_FLASH_VISIBLE, new Timer(0));
 
 				Main.ctrlResetGameState = false;
 				Main.ctrlAllowMovement = true;
